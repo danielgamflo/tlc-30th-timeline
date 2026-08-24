@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Life Church — 30th Anniversary Timeline</title>
+<link rel="stylesheet" href="css/style.css?v=28">
+</head>
+<body>
+
+  <div class="viewport">
+    <div class="stage" id="stage" data-format="1920">
+
+      <!-- ============ SCENE: LOGO ============ -->
+      <section class="scene" id="scene-logo">
+
+        <!-- the timeline rule. lives at the exact centerY the timeline scene uses -->
+        <div class="rule" id="logo-rule"></div>
+
+        <div class="logo-stack" id="logo-stack">
+          <div class="logo-wordmark" id="logo-wordmark">The Life Church</div>
+          <img class="logo-mark" id="logo-mark" src="assets/logo/30years-mustard.png" alt="30 years">
+          <div class="logo-dates" id="logo-dates">
+            <span class="logo-dates__rule logo-dates__rule--l" id="logo-rule-l"></span>
+            <span class="logo-dates__text">1996 &mdash; 2026</span>
+            <span class="logo-dates__rule logo-dates__rule--r" id="logo-rule-r"></span>
+          </div>
+        </div>
+
+        <!-- the seed the expanded card will grow from -->
+        <div class="seed" id="logo-seed"></div>
+
+      </section>
+
+      <!-- ============ SCENE: TIMELINE ============ -->
+      <section class="scene" id="scene-timeline">
+
+        <div class="rule" style="transform:scaleX(1)"></div>
+        <div class="strip" id="tl-strip"></div>
+
+        <div class="expanded" id="tl-expanded">
+          <div class="exp__photo" id="exp-photo"></div>
+          <div class="exp__divider" id="exp-divider"></div>
+          <div class="exp__panel" id="exp-panel">
+            <div class="exp__label" id="exp-label"><span id="exp-label-t"></span></div>
+            <div class="exp__year"  id="exp-year"></div>
+            <div class="exp__title" id="exp-title"></div>
+            <!-- the paragraph creeps inside this window -->
+            <div class="exp__body"  id="exp-body">
+              <div class="exp__bodyinner" id="exp-bodyinner">
+                <p class="exp__para" id="exp-para"></p>
+              </div>
+            </div>
+
+            <!-- optional. pinned to the foot of the panel, never scrolls -->
+            <div class="exp__stat" id="exp-stat"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============ THE RUNNING BARS ============ -->
+      <!-- outside the scenes on purpose: they frame the whole piece -->
+      <div class="ticker ticker--top"><div class="ticker__track"></div></div>
+      <div class="ticker ticker--bottom"><div class="ticker__track"></div></div>
+
+    </div>
+  </div>
+
+  <div class="small-screen">
+    <p>
+      <b>The Life Church &middot; 30 Years</b>
+      This piece is built for a 1920&times;1080 screen.
+      Please open it on a desktop or laptop.
+    </p>
+  </div>
+
+  <div class="hud" id="hud">
+    <span class="hud__mode" id="hud-mode">PAUSED</span>
+    <span class="hud__time" id="hud-time">0.00s</span>
+    <span class="hud__scene" id="hud-scene">logo</span>
+    <span class="hud__fmt" id="hud-fmt">1920&times;1080</span>
+    <span class="hud__keys">space play &middot; &larr;&rarr; beat &middot; &#8679;&larr;&rarr; 0.1s &middot; R reset &middot; 1/2/3 size &middot; 4/6/8 distance &middot; 0 fit &middot; H hide</span>
+  </div>
+
+<script src="js/anim.js?v=28"></script>
+<script src="js/logo.js?v=28"></script>
+<script src="js/timeline.js?v=28"></script>
+<script src="js/ticker.js?v=28"></script>
+<script src="js/outro.js?v=28"></script>
+<script src="js/main.js?v=28"></script>
+</body>
+</html>

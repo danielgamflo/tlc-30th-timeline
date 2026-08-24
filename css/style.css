@@ -1,0 +1,636 @@
+/* ============================================================
+   The Life Church — 30th Anniversary Timeline
+   Neo-brutalist / mid-century museum
+   ============================================================ */
+
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-light.otf") format("opentype");
+  font-weight: 300; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-regular.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-ultrabold.otf") format("opentype");
+  font-weight: 800; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-regularitalic.otf") format("opentype");
+  font-weight: 400; font-style: italic; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-ultrabolditalic.otf") format("opentype");
+  font-weight: 800; font-style: italic; font-display: block;
+}
+
+:root {
+  /* palette */
+  --orange: #BB6024;
+  --mustard: #CB9216;
+  --olive:  #666737;
+  --sage:   #9FB0A3;
+  --khaki:  #D7D0C5;
+  --ochre:  #86754F;
+  --ink:    #000000;
+  --paper:  #F4F0E6;
+  --line:   #B3A996;   /* the rail itself is a warm grey, never black */
+  --bar:    #2C2721;   /* the running bars: warm near-black, not pure */
+
+  /* structure */
+  --stroke: 4px;
+  --rule: 4px;
+
+  /* the fine vertical hatching that sits over every coloured ground */
+  --stripes: repeating-linear-gradient(
+    90deg,
+    rgba(0,0,0,.07) 0 1px,
+    rgba(0,0,0,0)   1px 22px
+  );
+
+  /* Museum everywhere — light / regular / ultrabold + italics */
+  --serif: "Museum", Georgia, serif;
+  --sans: var(--serif);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: #12100d;
+  overflow: hidden;
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- viewport + stage ------------------------------- */
+/* the stage is always at true pixel size; we CSS-scale it to fit
+   the window. capture mode sets scale to 1 so pixels are exact. */
+
+.viewport {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  flex: none;
+  background: var(--paper);
+  overflow: hidden;
+  transform-origin: center center;
+}
+
+/* paper grain — static, deterministic */
+.stage::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: .05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+}
+
+.scene {
+  position: absolute; inset: 0;
+}
+
+/* ---------- the timeline rule ------------------------------ */
+/* sits dead-center vertically; every scene shares this Y */
+
+.rule {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: var(--rule);
+  margin-top: calc(var(--rule) / -2);
+  background: var(--line);
+  transform: scaleX(0);
+  transform-origin: center center;
+}
+
+/* the square the expanded card grows out of */
+.seed {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 46px; height: 46px;
+  margin: -23px 0 0 -23px;
+  background-color: var(--mustard);
+  border: 8px solid var(--ink);
+  border-radius: 50%;      /* hands off to the timeline's centre ring */
+  opacity: 0;
+}
+
+/* ---------- logo scene ------------------------------------- */
+/* the block is a centred flex column, and the gaps are tuned so the
+   mark's centre lands exactly on the stage centre:
+     above mark = 40 + 44 = 84     below mark = 54 + 30 = 84
+   that makes the outro morph a pure scale onto the seed — no drift.
+   MARK_H in logo.js must match .logo-mark height.                  */
+
+.logo-stack {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-wordmark {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1;
+  height: 40px;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  text-indent: .22em;          /* balances the trailing letter-space */
+  white-space: nowrap;
+  margin-bottom: 44px;
+  opacity: 0;
+}
+
+.logo-mark {
+  display: block;
+  width: 720px;
+  height: 256px;               /* 966x344 source, locked so layout is exact */
+  margin-bottom: 54px;
+  opacity: 0;
+  transform-origin: center center;
+}
+
+.logo-dates {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  opacity: 0;
+}
+
+.logo-dates__text {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.logo-dates__rule {
+  display: block;
+  width: 90px; height: 3px;
+  background: var(--ink);
+  transform: scaleX(0);
+}
+.logo-dates__rule--l { transform-origin: right center; }
+.logo-dates__rule--r { transform-origin: left  center; }
+
+/* ============================================================
+   TIMELINE SCENE
+   ============================================================ */
+
+/* the strip carries every node; only its X moves */
+.strip {
+  position: absolute;
+  left: 0; top: 50%;
+  width: 0; height: 0;
+}
+
+.node { position: absolute; left: 0; top: 0; }
+
+/* marker on the rule — a dot when idle, the mustard square at centre.
+   two stacked shapes that cross-fade rather than one shape whose
+   width/height/border get rewritten: transform and opacity stay off
+   the layout path, which matters at 5760 x 1080 on a modest player. */
+.node__marker { position: absolute; left: 0; top: 0; }
+
+/* a ring, not a dot: heavy black stroke, hollow until its date has
+   been through the centre — then it fills with that date's accent */
+.node__dot {
+  position: absolute; left: 0; top: 0;
+  width: 26px; height: 26px;
+  margin: -13px 0 0 -13px;
+  background: var(--paper);
+  border: 6px solid var(--ink);
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+/* the date at the centre: the same ring, larger and filled */
+.node__square {
+  position: absolute; left: 0; top: 0;
+  width: 46px; height: 46px;
+  margin: -23px 0 0 -23px;
+  background-color: var(--mustard);
+  border: 8px solid var(--ink);
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* the stem from the rule out to the card */
+.node__stem {
+  position: absolute;
+  left: 0; top: 0;
+  width: var(--rule);           /* exactly the rail's weight */
+  height: 44px;
+  margin-left: calc(var(--rule) / -2);
+  background: var(--line);
+  transform-origin: top center;
+}
+.node--bottom .node__stem { transform-origin: top center; }
+.node--top    .node__stem { top: -44px; transform-origin: bottom center; }
+
+/* the small card */
+.node__card {
+  position: absolute;
+  left: 0;
+  width: 200px;
+  margin-left: -100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center bottom;
+}
+.node--top    .node__card { bottom: 44px; transform-origin: center bottom; }
+.node--bottom .node__card { top: 44px;    transform-origin: center top; }
+
+/* date block always sits against the rule, so it flips order */
+.node--top    .node__card { flex-direction: column; }
+.node--bottom .node__card { flex-direction: column; }
+
+.card__date {
+  order: 2;                    /* top: below the box, i.e. toward the rule */
+  text-align: center;
+  color: var(--ink);
+  padding-top: 18px;           /* clear air between the box and the date */
+}
+.node--bottom .card__date {
+  order: 0;                    /* bottom: above the box, again toward the rule */
+  padding-top: 0;
+  padding-bottom: 18px;
+}
+
+.card__label {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: .01em;
+}
+/* the size is set per card in timeline.js so the year always spans
+   YEAR_FILL of the box, whether it reads 1996 or 1990s */
+.card__year {
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 60px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* only the box scales on entry — it grows away from the rule while
+   the date block below it stays at true size. transform does not
+   affect layout, so nothing else moves. */
+.node--top    .card__box { transform-origin: center bottom; }
+.node--bottom .card__box { transform-origin: center top; }
+
+.card__box {
+  order: 1;
+  width: 200px;
+  border: var(--stroke) solid var(--ink);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow:
+    -1px 1px 0 var(--ink),
+    -3px 3px 0 var(--ink),
+    -5px 5px 0 var(--ink),
+    -7px 7px 0 var(--ink),
+    -9px 9px 0 var(--ink);
+}
+
+.card__photo {
+  width: 100%;
+  height: 132px;
+  display: block;
+  object-fit: cover;
+  background: var(--khaki);
+  border-bottom: var(--stroke) solid var(--ink);
+}
+.card__photo--empty {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 30px;
+  color: rgba(0,0,0,.22);
+}
+
+.card__short__t { display: block; }
+
+.card__short {
+  background-image: var(--stripes);
+  padding: 11px 12px 13px;
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.06;
+  color: var(--ink);
+  text-align: left;
+}
+
+/* ---------- the expanded card ------------------------------ */
+
+/* the box is always 880 tall. it arrives square (880 wide), then
+   widens to 1500. JS owns its transform, always in this order:
+     translate(-50%,-50%) translateY(exit) scale(s) rotate(r)      */
+.expanded {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 1500px; height: 880px;
+  border: 14px solid var(--ink);      /* twice the stroke, no shadow */
+  border-radius: 26px;
+  overflow: hidden;
+  background-color: var(--mustard);
+  background-image: var(--stripes);
+  display: flex;
+  opacity: 0;
+  transform-origin: center center;
+}
+
+.exp__photo {
+  width: 52%;
+  flex: none;
+  position: relative;
+  overflow: hidden;
+  /* revealed by mask, sweeping from the divider leftward */
+  clip-path: inset(0 0 0 100%);
+}
+.exp__photo img { width: 100%; height: 100%; object-fit: cover; display: block;
+                  position: absolute; inset: 0; }
+.exp__photo--empty { background: var(--khaki); }
+.exp__photo--empty::after {
+  content: attr(data-year);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 130px;
+  color: rgba(0,0,0,.14);
+}
+
+/* draws out of its own centre toward both edges */
+.exp__divider {
+  position: absolute;
+  left: 52%; top: 0; bottom: 0;
+  width: 14px;                  /* matches the card's stroke */
+  margin-left: -7px;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: center center;
+}
+
+.exp__panel {
+  flex: 1;
+  padding: 46px 50px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: transparent;      /* the striped ground belongs to .expanded */
+}
+
+/* a window the date rises out of, from behind the year pill */
+.exp__label {
+  height: 38px;
+  overflow: hidden;
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 38px;
+  color: inherit;
+}
+.exp__label span { display: block; }
+
+.exp__year {
+  align-self: flex-start;
+  /* the long shadow hangs 22px below the pill's own box, so the gap
+     has to clear that before it starts being air */
+  margin: 10px 0 56px;
+  padding: 6px 40px 12px;
+  background: var(--sage);
+  border: 6px solid var(--ink);
+  border-radius: 999px;
+  /* projected, not blurred — a solid copy offset down-left */
+  box-shadow:
+    -1px 1px 0 var(--ink),
+    -2px 2px 0 var(--ink),
+    -3px 3px 0 var(--ink),
+    -4px 4px 0 var(--ink),
+    -5px 5px 0 var(--ink),
+    -6px 6px 0 var(--ink),
+    -7px 7px 0 var(--ink),
+    -8px 8px 0 var(--ink),
+    -9px 9px 0 var(--ink),
+    -10px 10px 0 var(--ink),
+    -11px 11px 0 var(--ink),
+    -12px 12px 0 var(--ink),
+    -13px 13px 0 var(--ink),
+    -14px 14px 0 var(--ink),
+    -15px 15px 0 var(--ink),
+    -16px 16px 0 var(--ink),
+    -17px 17px 0 var(--ink),
+    -18px 18px 0 var(--ink),
+    -19px 19px 0 var(--ink),
+    -20px 20px 0 var(--ink),
+    -21px 21px 0 var(--ink),
+    -22px 22px 0 var(--ink);
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 92px;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.exp__title {
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 1.14;
+  color: inherit;
+  margin-bottom: 22px;
+}
+
+/* the clipped window the paragraph scrolls inside */
+.exp__body {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.exp__bodyinner { position: absolute; left: 0; top: 0; right: 0; }
+
+.exp__para {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 29px;
+  line-height: 1.45;
+  color: inherit;
+}
+
+/* optional — sits at the foot of the panel when a date has one,
+   and simply gives its room back to the paragraph when it doesn't */
+.exp__stat {
+  margin-top: auto;
+  padding: 4px 0 0 20px;
+  border-left: 6px solid var(--ink);
+  flex: none;
+}
+.exp__stat b {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 34px;
+  line-height: 1.2;
+}
+.exp__stat span {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 22px;
+  opacity: .72;
+}
+
+/* ---------- square 1080 ------------------------------------- */
+
+.stage[data-format="1080"] .expanded {
+  width: 940px; height: 940px;
+  margin: -470px 0 0 -470px;
+  flex-direction: column;
+}
+.stage[data-format="1080"] .exp__photo {
+  width: 100%; height: 44%;
+  border-right: 0;
+  border-bottom: 14px solid var(--ink);
+}
+.stage[data-format="1080"] .exp__panel { padding: 36px 44px 40px; }
+.stage[data-format="1080"] .exp__year { font-size: 74px; margin: 8px 0 48px; }
+.stage[data-format="1080"] .exp__title { font-size: 30px; margin-bottom: 16px; }
+.stage[data-format="1080"] .exp__para { font-size: 21px; }
+
+/* ============================================================
+   THE RUNNING BARS
+   ============================================================ */
+
+.ticker {
+  position: absolute;
+  left: 0; right: 0;
+  height: 46px;
+  background: var(--bar);
+  overflow: hidden;
+  z-index: 500;                /* the exiting card passes behind them */
+  display: flex;
+  align-items: center;
+}
+.ticker--top    { top: 0; }
+.ticker--bottom { bottom: 0; }
+
+.ticker__track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.ticker__unit {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.ticker__unit i {
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.ticker__unit b {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--paper);
+  opacity: .55;
+  padding: 0 22px 0 19px;      /* 19 balances the trailing letter-space */
+}
+
+/* ---------- HUD -------------------------------------------- */
+
+.hud {
+  position: fixed;
+  left: 14px; bottom: 12px;
+  z-index: 10000;
+  display: flex; align-items: center; gap: 16px;
+  font: 500 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #d8d2c4;
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(216,210,196,.22);
+  border-radius: 7px;
+  padding: 9px 13px;
+  backdrop-filter: blur(6px);
+  user-select: none;
+}
+.hud__mode { color: var(--mustard); font-weight: 700; letter-spacing: .08em; }
+.hud__time { min-width: 62px; }
+.hud__scene { color: var(--sage); }
+.hud__fmt { color: #8d8677; }
+.hud__keys { color: #6e6960; letter-spacing: .02em; }
+
+body.hud-off .hud { display: none; }
+
+/* opened on a phone, the stage would scale down to nothing. say so
+   rather than showing an unreadable 4cm-wide version of the piece. */
+.small-screen {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 20000;
+  background: var(--paper);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+.small-screen p {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.5;
+  color: #2C2721;
+  max-width: 22em;
+}
+.small-screen b {
+  display: block;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  opacity: .5;
+}
+@media (max-width: 900px) { .small-screen { display: flex; } }
+body.capture .hud { display: none; }
+body.capture { background: #000; }
