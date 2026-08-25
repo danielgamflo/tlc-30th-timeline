@@ -35,8 +35,8 @@
   --mustard: #CB9216;
   --olive:  #666737;
   --sage:   #9FB0A3;
-  --khaki:  #D7D0C5;
-  --ochre:  #86754F;
+  --cream:  #D7D0C5;   /* every card panel, always */
+  --khaki:  #D7D0C5;   /* kept: older rules still name it */
   --ink:    #000000;
   --paper:  #F4F0E6;
   --line:   #B3A996;   /* the rail itself is a warm grey, never black */
@@ -175,8 +175,8 @@ html, body {
   height: 40px;
   color: var(--ink);
   text-transform: uppercase;
-  letter-spacing: .22em;
-  text-indent: .22em;          /* balances the trailing letter-space */
+  letter-spacing: .11em;
+  text-indent: .11em;          /* balances the trailing letter-space */
   white-space: nowrap;
   margin-bottom: 44px;
   opacity: 0;

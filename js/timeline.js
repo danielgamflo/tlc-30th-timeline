@@ -32,10 +32,18 @@ var SCENE_TIMELINE = (function () {
   var HOLD     = 9.50;
   var EXIT     = 2.40;
   var ADVANCE  = 0.95;
-  /* 40 x 14.70s  +  6.5s logo  +  5.5s outro  =  600.0s exactly */
+
+  /* the running time follows the content: dates x CYCLE + 9.5 + 2.5.
+     42 dates -> 10:29. nothing anywhere assumes a count, so adding or
+     dropping a date is a line of JSON and the piece just gets longer
+     or shorter.
+
+     if it ever has to land on a fixed length instead, HOLD is the dial:
+         HOLD = (TARGET - 12) / dates - 5.20
+     at 600s and 42 dates that is 8.80, i.e. 0.7s less reading each. */
   var CYCLE = APPEAR + SPIN + WIDEN + HOLD + EXIT + ADVANCE;
 
-  var SPIN_FROM = 120;    /* degrees the box turns through on the way in */
+  var SPIN_FROM = 45;     /* starts as a diamond, settles to the rectangle */
   var BOX_W = 1500;       /* final 16:9 width; height is fixed in css    */
   var BOX_H = 880;        /* the square phase is BOX_H x BOX_H           */
 
@@ -53,20 +61,16 @@ var SCENE_TIMELINE = (function () {
 
   var PAPER = "#F4F0E6";
 
-  /* full palette — used for accents (marker, pill, rules) */
-  var COLORS = ["#BB6024", "#CB9216", "#666737", "#9FB0A3", "#D7D0C5", "#86754F"];
+  /* the brand's five. colour lives in the accents now, never under the
+     body copy: one date owns one colour, and its ring on the rail, its
+     year pill, its card band and its stat rule are all that colour.
+     mustard leads so the logo's seed hands straight to the first ring. */
+  var ACCENTS = ["#CB9216", "#BB6024", "#666737", "#9FB0A3"];
 
-  var MUSTARD = "#CB9216";   /* the rail's markers, and nothing else */
-
-  /* the card grounds: green, beige, stone. burnt orange and mustard
-     are out of the cards entirely. all three clear 9:1 against black.
-     STONE is the one colour not in the original six — the palette has
-     no true grey, so it is a desaturated neighbour of the khaki. */
-  var STONE  = "#B5B2AB";
-  var PANELS = ["#9FB0A3", "#D7D0C5", STONE];
-
-  /* rules and marks on top of a panel, never a text bed */
-  var ACCENTS = ["#666737", "#86754F"];
+  /* and cream is the fifth: every panel, always. black on it reads
+     11:1, which is why the paragraphs got easier to read at distance
+     the moment the colour moved off the ground. */
+  var PANEL = "#D7D0C5";
 
   var data = [], nodes = [], r = {}, parts = [], built = false;
   var shownIndex = -1, overflowPx = 0;
@@ -110,8 +114,8 @@ var SCENE_TIMELINE = (function () {
     for (var i = 0; i < data.length; i++) {
       var d = data[i];
       var top = (i % 2 === 0);          /* first one above, then alternating */
-      var color = panelFor(i);
       var accent = accentFor(i);
+      var color = accent;             /* the band is the date's colour */
 
       var node = document.createElement("div");
       node.className = "node " + (top ? "node--top" : "node--bottom");
@@ -205,18 +209,7 @@ var SCENE_TIMELINE = (function () {
     }
   }
 
-  function panelFor(i)  { return PANELS[i % PANELS.length]; }
   function accentFor(i) { return ACCENTS[i % ACCENTS.length]; }
-
-  /* the year badge must not disappear into the panel behind it */
-  function pillFor(panel) {
-    for (var i = 0; i < PANELS.length; i++) {
-      /* the 6px black outline carries the separation, so a gentle
-         step is enough — sage on mustard, the way the sketch has it */
-      if (PANELS[i] !== panel && A.contrast(PANELS[i], panel) > 1.15) return PANELS[i];
-    }
-    return PAPER;
-  }
 
   /* archive photos are landscape; the frame is portrait, so 40% of
      every shot is cropped away. centred is only right by luck — the
@@ -242,18 +235,15 @@ var SCENE_TIMELINE = (function () {
     if (i === shownIndex) return;
     shownIndex = i;
     var d = data[i];
-    var color = panelFor(i);
     var accent = accentFor(i);
-    var ink = A.inkOn(color, "#000000", PAPER);
-    var pill = pillFor(color);
 
-    /* the coloured, hatched ground belongs to the box itself — during
-       the square phase the whole card is that one flat field */
-    r.exp.style.backgroundColor = color;
-    r.expPanel.style.color = ink;
-    r.expYear.style.background = pill;
-    r.expYear.style.color = A.inkOn(pill, "#000000", PAPER);
-    r.expYear.style.borderColor = ink;
+    /* the ground is cream on every date; the colour is carried by the
+       pill, the rail's ring and the stat rule, which all match */
+    r.exp.style.backgroundColor = PANEL;
+    r.expPanel.style.color = "#000000";
+    r.expYear.style.background = accent;
+    r.expYear.style.color = A.inkOn(accent, "#000000", PAPER);
+    r.expYear.style.borderColor = "#000000";
     r.expStat.style.borderLeftColor = accent;
     r.expLabelT.textContent = d.label || "";
     r.expYear.textContent  = d.year;
@@ -370,9 +360,10 @@ var SCENE_TIMELINE = (function () {
 
       /* hollow while its date is still ahead, filled once it has been
          through the centre — the rail reads as a progress bar */
-      n.dot.style.background   = (j < i) ? MUSTARD : PAPER;
+      n.dot.style.background   = (j < i) ? n.accent : PAPER;
       n.dot.style.opacity      = A.round(1 - m, 3);
       n.dot.style.transform    = "scale(" + A.round(A.lerp(1, 0.62, m), 4) + ")";
+      n.square.style.background = n.accent;
       n.square.style.opacity   = A.round(m, 3);
       n.square.style.transform = "scale(" + A.round(A.lerp(0.32, 1, m), 4) + ")";
 
@@ -393,12 +384,17 @@ var SCENE_TIMELINE = (function () {
     /* 1 + 2. it grows out of the marker turning 120deg -> 0 and lands
        SQUARE, then opens out to 16:9. the element is always BOX_H tall,
        so the square phase is just a narrower width. */
-    var spinE  = A.easeOutQuint(spin);
+    /* grow and turn are separate beats on purpose. tied together, the
+       rotation is over in a fifth of a second and the diamond never
+       registers — it just looks like a wobble. so it comes up AS a
+       diamond, sits there a moment, and only then squares itself. */
+    var spinE  = A.easeOutQuint(A.seg(ct, tSpin, SPIN * 0.52));
+    var turnE  = A.easeInOutCubic(A.seg(ct, tSpin + SPIN * 0.46, SPIN * 0.54));
     var widenE = A.easeInOutQuint(widen);
 
     var boxW = A.lerp(BOX_H, BOX_W, widenE);
     var boxScale = A.lerp(SQUARE / BOX_H, 1, spinE);
-    var boxRot = A.lerp(SPIN_FROM, 0, spinE);
+    var boxRot = A.lerp(SPIN_FROM, 0, turnE);
 
     /* 8. at the end the whole card leaves upward, off the top.
        75-75 in After Effects terms: heavy ease at both ends. */

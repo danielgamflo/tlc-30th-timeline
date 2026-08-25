@@ -53,7 +53,7 @@ var SCENE_LOGO = (function () {
     /* --- wordmark --------------------------------------------- */
     var w    = A.ease(t, 1.10, 0.80, A.easeOutQuint);
     var wOut = A.ease(t, 7.00, 0.40, A.easeInCubic);
-    var track = A.lerp(0.62, 0.22, w);
+    var track = A.lerp(0.40, 0.11, w);   /* tighter, per review */
     r.wordmark.style.opacity       = A.round(w * (1 - wOut), 3);
     r.wordmark.style.letterSpacing = A.round(track, 4) + "em";
     r.wordmark.style.textIndent    = A.round(track, 4) + "em";

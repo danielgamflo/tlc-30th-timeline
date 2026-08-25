@@ -46,8 +46,15 @@ Dropped frames therefore cost picture, never running time — the piece is
 ## Timing
 
 ```
-9.5s logo  +  40 dates × 14.70s  +  2.5s outro  =  600.0s
+9.5s logo  +  42 dates × 14.70s  +  2.5s outro  =  629.4s   (10:29)
 ```
+
+The running time follows the content. Nothing in the code assumes a
+count, so adding or dropping a date is a line of JSON and the piece
+simply gets longer or shorter — duration, rail markers, positions,
+colour rotation, the top/bottom alternation and the jump buttons all
+recompute. If it ever has to land on a fixed length instead, `HOLD` is
+the dial: `(target − 12) / dates − 5.20`.
 
 The piece loops. The outro carries no logo: the last card flies up, the
 rail retracts into the centre it grew from, the running bars leave last,
@@ -75,9 +82,16 @@ All six live at the top of `js/timeline.js`.
   on architecture, where the edges are in the parked cars, not the sign.
 - `stat` / `source` are optional; without them the paragraph takes the room
 
-**Still outstanding:** the paragraphs and stats are placeholders. Date 40
-(`"tbd": true`) is the late-90s milestone still being chosen. 18 dates from
-2017 on have no photograph yet.
+**Still outstanding:** every `paragraph` is still placeholder prose, not
+the church's copy — the review round returned the same text it was given.
+The real material is in the team's "possible things to include" notes,
+which is where the `stat` values will come from. Entries flagged
+`"draft": true` were added with no copy at all. 18 dates from 2017 on
+have no photograph.
+
+Editing only `data/timeline.json` still needs the `?v=` in `index.html`
+bumped: the data's cache-buster is read off the script tag, so data and
+code always move together.
 
 ## Files
 
