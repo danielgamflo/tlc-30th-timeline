@@ -69,7 +69,10 @@ All six live at the top of `js/timeline.js`.
 
 - `photos: [...]` instead of `photo` cross-fades several shots across the hold
 - `focus` moves the crop (the frame is portrait, archive photos are landscape,
-  so 40% of each is cropped — centred is only right by luck)
+  so 40% of each is cropped — centred is only right by luck). Eight dates
+  carry a computed value; the rest sit at centre waiting for a human eye.
+  Edge-density guessing works on people lit against a dark stage and fails
+  on architecture, where the edges are in the parked cars, not the sign.
 - `stat` / `source` are optional; without them the paragraph takes the room
 
 **Still outstanding:** the paragraphs and stats are placeholders. Date 40

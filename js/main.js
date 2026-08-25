@@ -354,7 +354,16 @@ var APP = (function () {
 
   /* data first, then Museum — nothing may reflow after the first frame */
   window.__ready = false;
-  fetch("data/timeline.json")
+  /* the data must carry the same cache-buster as the code. without it
+     the browser (and the CDN in front of Pages) happily serves last
+     week's copy, and an edit to the timeline silently does nothing. */
+  var VER = (function () {
+    var tags = document.getElementsByTagName("script");
+    var m = tags[tags.length - 1].src.match(/[?&]v=([^&]+)/);
+    return m ? m[1] : Date.now();
+  })();
+
+  fetch("data/timeline.json?v=" + VER)
     .then(function (res) { return res.json(); })
     .then(decodeAll)
     .then(function (rows) {

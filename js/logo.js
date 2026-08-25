@@ -12,7 +12,7 @@
      8.05  the rule draws out of that same point
      8.30  the seed lands on the rule  -> hands off to the timeline
 
-   the gap at 4.95 is deliberate: the logo collapses to a point, a
+   the gap at 7.95 is deliberate: the logo collapses to a point, a
    beat passes, and only then does the line grow out of it. letting
    the two overlap made them read as one muddled move.
    ============================================================ */
