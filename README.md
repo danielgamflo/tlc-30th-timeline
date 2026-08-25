@@ -24,6 +24,8 @@ Open `index.html` through any static server. `?dev` unlocks the working mode.
 | `1` `2` `3` | 1080×1080 / 1920×1080 / 5760×1080 |
 | `4` `6` `8` | preview at 4 / 6 / 8 screen-heights of viewing distance |
 | `0` | fit to window |
+| `↑` `↓` | jump a whole date — how you review without waiting 10 minutes |
+| `N` | leave a note on the date on screen |
 | `F` | fullscreen · `H` toggle HUD |
 
 ## How it is built
@@ -44,8 +46,13 @@ Dropped frames therefore cost picture, never running time — the piece is
 ## Timing
 
 ```
-40 dates × 14.70s  +  6.5s logo  +  5.5s outro  =  600.0s
+9.5s logo  +  40 dates × 14.70s  +  2.5s outro  =  600.0s
 ```
+
+The piece loops. The outro carries no logo: the last card flies up, the
+rail retracts into the centre it grew from, the running bars leave last,
+and the frame is bare paper — which is exactly frame 0, so the wrap has
+no seam.
 
 Per date: `APPEAR 0.55 · SPIN 0.85 · WIDEN 0.45 · HOLD 9.50 · EXIT 2.40 · ADVANCE 0.95`
 All six live at the top of `js/timeline.js`.
@@ -79,7 +86,29 @@ js/logo.js          opening
 js/timeline.js      the 40 dates
 js/outro.js         closing — a clone of the logo markup, played backwards
 js/ticker.js        the two running bars
+js/notes.js         review comments, one per date (localStorage)
 js/main.js          clock, scenes, keys
 assets/photos/      1500px, q65 derivatives. originals live in Footage/
-assets/fonts/       PP Museum — licensed, keep this repo private
+assets/fonts/       PP Museum — licensed
 ```
+
+## Review notes
+
+`+` on the right, or `N`, leaves a comment on whatever date is on screen.
+The `+` turns orange on dates that already have one. **Copy all** puts the
+whole set on the clipboard as plain text to send back.
+
+Notes live in `localStorage`, in the reviewer's own browser. They do not
+sync between people or machines — each reviewer copies their own list and
+sends it. Shared live comments would need a small backend; a Cloudflare
+Worker with KV is the least-effort route and the front end barely changes.
+
+## Photographs
+
+Derivatives are rebuilt from the originals in `Footage/`, never
+re-compressed from an earlier derivative. Fourteen of the archive files
+had letterbox bars baked in. The detector crops a row only when it is
+**dark and uniform** — a synthetic bar has no pixel variance, a dark
+auditorium ceiling does, and going by darkness alone ate real content.
+No photo is cropped past 2:1, because beyond that the portrait frame
+starts destroying the composition rather than saving it.

@@ -56,14 +56,17 @@ var SCENE_TIMELINE = (function () {
   /* full palette — used for accents (marker, pill, rules) */
   var COLORS = ["#BB6024", "#CB9216", "#666737", "#9FB0A3", "#D7D0C5", "#86754F"];
 
-  /* only these three ever sit under text. measured against black:
-     mustard 7.7:1, sage 9.2:1, khaki 11:1. olive / ochre / burnt
-     orange all fall under 5:1 either way, so they stay accents. */
-  var PANELS = ["#CB9216", "#9FB0A3", "#D7D0C5"];
+  var MUSTARD = "#CB9216";   /* the rail's markers, and nothing else */
 
-  /* the other three earn their keep here — rules and marks on top of
-     a panel, never a text bed. all three clear 1.5:1 on every panel. */
-  var ACCENTS = ["#BB6024", "#666737", "#86754F"];
+  /* the card grounds: green, beige, stone. burnt orange and mustard
+     are out of the cards entirely. all three clear 9:1 against black.
+     STONE is the one colour not in the original six — the palette has
+     no true grey, so it is a desaturated neighbour of the khaki. */
+  var STONE  = "#B5B2AB";
+  var PANELS = ["#9FB0A3", "#D7D0C5", STONE];
+
+  /* rules and marks on top of a panel, never a text bed */
+  var ACCENTS = ["#666737", "#86754F"];
 
   var data = [], nodes = [], r = {}, parts = [], built = false;
   var shownIndex = -1, overflowPx = 0;
@@ -289,6 +292,8 @@ var SCENE_TIMELINE = (function () {
     r.expYear.style.transform = "none";
     yearTravel = r.expYear.offsetWidth || 380;
 
+    if (window.NOTES) NOTES.setDate(d);
+
     /* how far the paragraph has to creep, if at all */
     r.expInner.style.transform = "translateY(0px)";
     overflowPx = Math.max(0, r.expInner.offsetHeight - r.expBody.clientHeight);
@@ -365,7 +370,7 @@ var SCENE_TIMELINE = (function () {
 
       /* hollow while its date is still ahead, filled once it has been
          through the centre — the rail reads as a progress bar */
-      n.dot.style.background   = (j < i) ? n.accent : PAPER;
+      n.dot.style.background   = (j < i) ? MUSTARD : PAPER;
       n.dot.style.opacity      = A.round(1 - m, 3);
       n.dot.style.transform    = "scale(" + A.round(A.lerp(1, 0.62, m), 4) + ")";
       n.square.style.opacity   = A.round(m, 3);
@@ -494,6 +499,15 @@ var SCENE_TIMELINE = (function () {
     setData: setData,
     render: render,
     invalidate: invalidate,
+
+    /* the start of every date's cycle, in scene-local seconds. the
+       viewer jumps between these, not between animation beats — a
+       10-minute piece is not reviewable one frame at a time. */
+    get dateStarts() {
+      var out = [];
+      for (var i = 0; i < data.length; i++) out.push(i * CYCLE);
+      return out;
+    },
 
     /* authoring aid: nudge the current date's focus and read the value
        straight off the HUD to paste into the JSON. 40 photos are not

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Life Church — 30th Anniversary Timeline</title>
-<link rel="stylesheet" href="css/style.css?v=28">
+<link rel="stylesheet" href="css/style.css?v=31">
 </head>
 <body>
 
@@ -67,6 +67,29 @@
     </div>
   </div>
 
+  <!-- viewer controls. deliberately OUTSIDE the stage, like the HUD:
+       nothing here can ever land in a rendered frame. -->
+  <div class="controls" id="controls">
+    <button class="pill" id="btn-prev"  title="Previous date  (up arrow)">&#8676;</button>
+    <button class="pill" id="btn-play"  title="Play / pause  (space)"><span id="btn-play-i">&#9654;</span></button>
+    <button class="pill" id="btn-stop"  title="Stop">&#9632;</button>
+    <button class="pill" id="btn-again" title="Start over  (R)">&#8635;</button>
+    <button class="pill" id="btn-next"  title="Next date  (down arrow)">&#8677;</button>
+    <button class="pill" id="btn-note"  title="Leave a note on this date  (N)">+</button>
+  </div>
+
+  <!-- review notes. lives outside the stage, never rendered into a frame -->
+  <div class="notes" id="notes">
+    <div class="notes__where" id="notes-where"></div>
+    <div class="notes__when"  id="notes-when"></div>
+    <textarea id="notes-text" placeholder="What would you change about this one?"></textarea>
+    <div class="notes__row">
+      <button class="notes__btn" id="notes-save">Save</button>
+      <button class="notes__btn notes__btn--ghost" id="notes-copy">Copy all</button>
+    </div>
+    <div class="notes__count" id="notes-count"></div>
+  </div>
+
   <div class="small-screen">
     <p>
       <b>The Life Church &middot; 30 Years</b>
@@ -80,14 +103,15 @@
     <span class="hud__time" id="hud-time">0.00s</span>
     <span class="hud__scene" id="hud-scene">logo</span>
     <span class="hud__fmt" id="hud-fmt">1920&times;1080</span>
-    <span class="hud__keys">space play &middot; &larr;&rarr; beat &middot; &#8679;&larr;&rarr; 0.1s &middot; R reset &middot; 1/2/3 size &middot; 4/6/8 distance &middot; 0 fit &middot; H hide</span>
+    <span class="hud__keys">space play &middot; &larr;&rarr; beat &middot; &#8679;&larr;&rarr; 0.1s &middot; R reset &middot; 1/2/3 size &middot; 4/6/8 distance &middot; 0 fit &middot; &darr;&uarr; date &middot; H hide</span>
   </div>
 
-<script src="js/anim.js?v=28"></script>
-<script src="js/logo.js?v=28"></script>
-<script src="js/timeline.js?v=28"></script>
-<script src="js/ticker.js?v=28"></script>
-<script src="js/outro.js?v=28"></script>
-<script src="js/main.js?v=28"></script>
+<script src="js/anim.js?v=31"></script>
+<script src="js/logo.js?v=31"></script>
+<script src="js/timeline.js?v=31"></script>
+<script src="js/ticker.js?v=31"></script>
+<script src="js/notes.js?v=31"></script>
+<script src="js/outro.js?v=31"></script>
+<script src="js/main.js?v=31"></script>
 </body>
 </html>

@@ -20,9 +20,9 @@ var TICKER = (function () {
      leaves — top drops in, bottom rises in — and they clear again
      before the loop wraps, so frame 0 is always empty paper. */
   var BAR_H  = 46;     /* must match css .ticker height */
-  var IN_AT  = 5.30;   /* absolute seconds — the logo is shrinking */
+  var IN_AT  = 8.30;   /* absolute seconds — the logo is shrinking */
   var IN_DUR = 0.85;
-  var OUT_LEAD = 1.70; /* seconds before the end that they start to go */
+  var OUT_LEAD = 1.50; /* seconds before the end that they start to go */
   var OUT_DUR  = 1.10;
 
   var bars = [];       /* { track, unit } */

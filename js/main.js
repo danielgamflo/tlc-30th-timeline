@@ -123,10 +123,12 @@ var APP = (function () {
     if (playing) return;
     playing = true;
     lastNow = performance.now();
+    if (onPlayStateChange) onPlayStateChange();
     requestAnimationFrame(tick);
   }
 
-  function pause() { playing = false; paintHud(); }
+  var onPlayStateChange = null;
+  function pause() { playing = false; paintHud(); if (onPlayStateChange) onPlayStateChange(); }
   function toggle() { playing ? pause() : play(); }
 
   var fpsAcc = 0, fpsCount = 0, fpsShown = 0;
@@ -144,6 +146,23 @@ var APP = (function () {
     if (next >= total) next = 0;          /* loop */
     seek(next);
     requestAnimationFrame(tick);
+  }
+
+  /* jump whole dates, not animation beats. lands a hair after the
+     card has settled so you see it finished rather than mid-move. */
+  function jumpDate(dir) {
+    var base = SCENE_TIMELINE.start;
+    var settled = 0.55 + 0.85 + 0.45 + 2.6;    /* APPEAR+SPIN+WIDEN+contents */
+    var stops = SCENE_TIMELINE.dateStarts.map(function (s) {
+      return toFrame(base + s + settled);
+    });
+    var f = currentFrame(), i;
+    if (dir > 0) {
+      for (i = 0; i < stops.length; i++) if (stops[i] > f + 2) return seekFrame(stops[i]);
+      return seekFrame(stops[0]);
+    }
+    for (i = stops.length - 1; i >= 0; i--) if (stops[i] < f - 2) return seekFrame(stops[i]);
+    return seekFrame(stops[stops.length - 1]);
   }
 
   function nextMarker() {
@@ -235,6 +254,11 @@ var APP = (function () {
       return;
     }
 
+    if (k === "ArrowDown") { e.preventDefault(); jumpDate(1);  return; }
+    if (k === "ArrowUp")   { e.preventDefault(); jumpDate(-1); return; }
+
+    if (k === "n" || k === "N") { NOTES.toggle(); return; }
+
     if (k === "r" || k === "R") { pause(); seek(0); return; }
     if (k === "h" || k === "H") { document.body.classList.toggle("hud-off"); return; }
     if (k === "f" || k === "F") {
@@ -263,6 +287,17 @@ var APP = (function () {
     seek(0);
     window.addEventListener("resize", fit);
     window.addEventListener("keydown", keys);
+
+    var playIcon = document.getElementById("btn-play-i");
+    function paintPlay() { playIcon.innerHTML = playing ? "&#10073;&#10073;" : "&#9654;"; }
+    onPlayStateChange = paintPlay;
+
+    document.getElementById("btn-play").onclick  = function () { toggle(); paintPlay(); this.blur(); };
+    document.getElementById("btn-stop").onclick  = function () { pause(); seek(0); paintPlay(); this.blur(); };
+    document.getElementById("btn-again").onclick = function () { seek(0); play(); paintPlay(); this.blur(); };
+    document.getElementById("btn-next").onclick   = function () { jumpDate(1);  this.blur(); };
+    document.getElementById("btn-prev").onclick   = function () { jumpDate(-1); this.blur(); };
+    NOTES.init(function () { pause(); paintPlay(); });
 
     /* presentation mode is the default: no HUD, and it runs on its own.
        add ?dev to the url to get the HUD and the paused start back —
