@@ -40,6 +40,12 @@
   --ink:    #000000;
   --paper:  #F4F0E6;
   --line:   #B3A996;   /* the rail itself is a warm grey, never black */
+
+  /* the ruled paper the whole piece sits on. alpha rather than a
+     lighter hue, so the ruling keeps its warmth as it fades back */
+  --grid:        rgba(221, 205, 165, .5);
+  --grid-cell:   48px;
+  --grid-weight: 2px;
   --bar:    #2C2721;   /* the running bars: warm near-black, not pure */
 
   /* structure */
@@ -77,12 +83,29 @@ html, body {
   display: flex; align-items: center; justify-content: center;
 }
 
+/* ruled paper, drawn rather than photographed: two tiled gradients
+   weigh nothing, stay crisp at 5760 across, and are perfectly
+   deterministic for the frame-by-frame export — a bitmap texture would
+   have to be scaled per format and would moire against itself.
+
+   the vertical offset is the point: a horizontal rule of the grid is
+   centred on the stage's own centre line, which is exactly where the
+   timeline rail sits. the rail then lands ON a grid line instead of
+   crossing the paper at an arbitrary height, and it keeps doing so at
+   every format, because both are pinned to 50%. */
 .stage {
   position: relative;
   width: 1920px;
   height: 1080px;
   flex: none;
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(180deg, var(--grid) var(--grid-weight),
+                    transparent var(--grid-weight)),
+    linear-gradient(90deg,  var(--grid) var(--grid-weight),
+                    transparent var(--grid-weight));
+  background-size: var(--grid-cell) var(--grid-cell);
+  background-position: center calc(50% - var(--grid-weight) / 2);
   overflow: hidden;
   transform-origin: center center;
 }
@@ -93,7 +116,7 @@ html, body {
   position: absolute; inset: 0;
   pointer-events: none;
   z-index: 999;
-  opacity: .05;
+  opacity: .028;              /* the grid carries the texture now */
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
 }

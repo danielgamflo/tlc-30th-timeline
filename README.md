@@ -106,6 +106,28 @@ sync between people or machines — each reviewer copies their own list and
 sends it. Shared live comments would need a small backend; a Cloudflare
 Worker with KV is the least-effort route and the front end barely changes.
 
+## The ruled paper
+
+Two tiled gradients, not a bitmap: nothing to download, crisp at 5760
+across, and identical on every render — a texture image would have to be
+scaled per format and would moire against itself.
+
+```css
+--grid:        rgba(221, 205, 165, .5);
+--grid-cell:   48px;
+--grid-weight: 2px;
+```
+
+The vertical offset is the part worth keeping. The grid is positioned
+`center calc(50% - var(--grid-weight) / 2)`, which centres one of its
+horizontal rules on the stage's centre line — exactly where the timeline
+rail sits. The rail lands *on* a grid line rather than crossing the paper
+at an arbitrary height, and because both are pinned to 50% it stays that
+way at 1080, 1920 and 5760 with no per-format adjustment.
+
+Keep the cell well clear of the cards' 22px hatching. Two patterns at
+similar frequencies interfere, and at a distance that reads as noise.
+
 ## Photographs
 
 Derivatives are rebuilt from the originals in `Footage/`, never
