@@ -43,9 +43,9 @@ var SCENE_TIMELINE = (function () {
      at 600s and 42 dates that is 8.80, i.e. 0.7s less reading each. */
   var CYCLE = APPEAR + SPIN + WIDEN + HOLD + EXIT + ADVANCE;
 
-  var SPIN_FROM = 45;     /* starts as a diamond, settles to the rectangle */
-  var BOX_W = 1500;       /* final 16:9 width; height is fixed in css    */
-  var BOX_H = 880;        /* the square phase is BOX_H x BOX_H           */
+  var BOX_W = 1500;       /* final width                                 */
+  var BOX_H = 880;        /* final height                                */
+  var DIAMOND_H = 600;    /* 1500 x 600 = the crest's lozenge, 2.5:1     */
 
   var SPACING = 300;      /* px between dates on the strip */
   var CARD_W = 200;       /* must match css .card__box width */
@@ -237,9 +237,11 @@ var SCENE_TIMELINE = (function () {
     var d = data[i];
     var accent = accentFor(i);
 
-    /* the ground is cream on every date; the colour is carried by the
-       pill, the rail's ring and the stat rule, which all match */
-    r.exp.style.backgroundColor = PANEL;
+    /* the ground settles to cream on every date; the colour is carried
+       by the pill, the rail's ring and the stat rule, which all match.
+       the background itself is written per frame in render(), because
+       the lozenge has to bloom in the date's colour — cream on the
+       cream paper is 1.2:1 and the shape simply is not there. */
     r.expPanel.style.color = "#000000";
     r.expYear.style.background = accent;
     r.expYear.style.color = A.inkOn(accent, "#000000", PAPER);
@@ -381,36 +383,45 @@ var SCENE_TIMELINE = (function () {
 
     /* ---- the expanded card ---------------------------------- */
 
-    /* 1 + 2. it grows out of the marker turning 120deg -> 0 and lands
-       SQUARE, then opens out to 16:9. the element is always BOX_H tall,
-       so the square phase is just a narrower width. */
-    /* grow and turn are separate beats on purpose. tied together, the
-       rotation is over in a fifth of a second and the diamond never
-       registers — it just looks like a wobble. so it comes up AS a
-       diamond, sits there a moment, and only then squares itself. */
-    var spinE  = A.easeOutQuint(A.seg(ct, tSpin, SPIN * 0.52));
-    var turnE  = A.easeInOutCubic(A.seg(ct, tSpin + SPIN * 0.46, SPIN * 0.54));
-    var widenE = A.easeInOutQuint(widen);
+    /* 1 + 2. it blooms out of the marker as the crest's lozenge — the
+       flat horizontal diamond from the badge, hatched the same way —
+       and that silhouette then fills out into the card.
 
-    var boxW = A.lerp(BOX_H, BOX_W, widenE);
-    var boxScale = A.lerp(SQUARE / BOX_H, 1, spinE);
-    var boxRot = A.lerp(SPIN_FROM, 0, turnE);
+       this is a real morph of the outline, not a rotated square: an
+       8-point polygon whose shoulders slide from the mid-points out to
+       the corners. k=0 is the diamond, k=50 is exactly the border box,
+       and it keeps going to 72 so the clip retreats past the edges and
+       lets the 26px corner radius appear on its own. stopping at 50
+       would hold sharp corners and then pop them round. */
+    var bloom = A.easeOutQuint(A.seg(ct, tSpin, SPIN));
+    var fill  = A.easeInOutQuint(widen);
+
+    var k = A.lerp(0, 72, fill);
+    r.exp.style.clipPath = fill >= 1 ? "none" : (
+      "polygon(0% " + (50-k) + "%, " + (50-k) + "% 0%, " + (50+k) + "% 0%, " +
+      "100% " + (50-k) + "%, 100% " + (50+k) + "%, " + (50+k) + "% 100%, " +
+      (50-k) + "% 100%, 0% " + (50+k) + "%)");
+
+    /* the lozenge carries no outline in the crest, so the stroke arrives
+       with the corners rather than being clipped into nonsense */
+    r.exp.style.borderColor = "rgba(0,0,0," + A.round(A.clamp(k / 40), 3) + ")";
+
+    /* blooms in the date's colour — the same colour as the ring it grew
+       out of — and cools to cream as it becomes the card */
+    r.exp.style.backgroundColor = A.mix(accentFor(i), PANEL, A.easeOutCubic(fill));
+
+    r.exp.style.height = A.round(A.lerp(DIAMOND_H, BOX_H, fill), 1) + "px";
+    r.exp.style.width  = BOX_W + "px";
 
     /* 8. at the end the whole card leaves upward, off the top.
        75-75 in After Effects terms: heavy ease at both ends. */
     var exitE = A.easeInOutQuint(exit);
     var exitY = -exitE * (r.root.clientHeight / 2 + BOX_H / 2 + 80);
 
-    r.exp.style.width = A.round(boxW, 1) + "px";
     r.exp.style.opacity = A.round(A.clamp(A.seg(ct, tSpin, 0.10) * 2), 3);
     r.exp.style.transform =
       "translate(-50%, -50%) translateY(" + A.round(exitY, 1) + "px)" +
-      " scale(" + A.round(boxScale, 4) + ")" +
-      " rotate(" + A.round(boxRot, 2) + "deg)";
-
-    /* everything below hangs off tWiden, not tHold: the year and the
-       date start while the box is still opening out, so the square ->
-       16:9 move hands straight into them instead of stopping first. */
+      " scale(" + A.round(A.lerp(SQUARE / BOX_W, 1, bloom), 4) + ")";
 
     /* 4a. the divider builds out of its own centre toward both edges */
     var line = A.ease(ct, tWiden + 0.20, 0.40, A.easeOutQuint);

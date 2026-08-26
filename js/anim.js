@@ -87,6 +87,20 @@ var A = (function () {
     return (hi + 0.05) / (lo + 0.05);
   }
 
+  /* blend two hex colours — for a shape that has to change colour
+     across a beat rather than cut */
+  function mix(a, b, t) {
+    function rgb(h) {
+      h = h.replace("#", "");
+      if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+      return [0,1,2].map(function (i) { return parseInt(h.substr(i*2,2), 16); });
+    }
+    var x = rgb(a), y = rgb(b);
+    return "rgb(" + [0,1,2].map(function (i) {
+      return Math.round(x[i] + (y[i] - x[i]) * t);
+    }).join(",") + ")";
+  }
+
   /* pick whichever of the two inks reads better on this background */
   function inkOn(bg, dark, light) {
     dark = dark || "#000000";
@@ -96,7 +110,7 @@ var A = (function () {
 
   return {
     clamp: clamp, lerp: lerp, seg: seg, ease: ease, tween: tween, round: round,
-    luminance: luminance, contrast: contrast, inkOn: inkOn,
+    luminance: luminance, contrast: contrast, inkOn: inkOn, mix: mix,
     linear: linear,
     easeOutCubic: easeOutCubic,
     easeInCubic: easeInCubic,

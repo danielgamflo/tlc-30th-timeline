@@ -120,6 +120,27 @@ sync between people or machines — each reviewer copies their own list and
 sends it. Shared live comments would need a small backend; a Cloudflare
 Worker with KV is the least-effort route and the front end barely changes.
 
+## The lozenge
+
+The card does not grow as a rectangle. It blooms out of the rail's ring
+as the flat horizontal diamond from the church crest — hatched the same
+way — and that silhouette then fills out into the card.
+
+It is a real morph of the outline, not a rotated square: an 8-point
+polygon whose shoulders slide from the mid-points out to the corners.
+`k = 0` is the diamond, `k = 50` is exactly the border box. It carries on
+to 72 so the clip retreats past the edges and the 26px corner radius
+appears on its own — stopping at 50 would hold sharp corners and then pop
+them round in one frame.
+
+Two things the shape needs, both learned the hard way:
+
+- It blooms in the date's colour and cools to cream as it opens. Cream on
+  the cream paper measures 1.2:1, so a lozenge that started at its final
+  colour was simply not visible.
+- The black stroke arrives with the corners, not before. A 14px outline
+  clipped along a diagonal reads as a broken edge.
+
 ## The ruled paper
 
 Two tiled gradients, not a bitmap: nothing to download, crisp at 5760
