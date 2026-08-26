@@ -133,7 +133,23 @@ to 72 so the clip retreats past the edges and the 26px corner radius
 appears on its own — stopping at 50 would hold sharp corners and then pop
 them round in one frame.
 
-Two things the shape needs, both learned the hard way:
+The outline is an SVG polygon, not a border. A css border belongs to the
+rectangle, so the clip takes it away along every diagonal and leaves four
+stumps in the corners. Three details make the two read as one stroke:
+
+- The clip runs to 72 but the **outline stops at 50**. Past 50 the
+  shoulders sit outside the box; a clip ignores them, a stroke draws
+  them — as four diagonals poking out of the corners.
+- **No `viewBox`, no `non-scaling-stroke`.** With neither, the svg's user
+  space is 1:1 with its css size, which is already the stage's units, so
+  `stroke-width: 14` is 14 stage px and scales with the card's border.
+  Held at screen px instead, the two only match at 1:1 — meaning the
+  preview lies and the render is right.
+- The polygon is **inset by half the stroke**. An svg stroke straddles
+  its path, a css border sits wholly inside; without the inset the
+  silhouette jumps 7px at the handover.
+
+Two more things the shape needs, both learned the hard way:
 
 - It blooms in the date's colour and cools to cream as it opens. Cream on
   the cream paper measures 1.2:1, so a lozenge that started at its final

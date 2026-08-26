@@ -99,6 +99,8 @@ var SCENE_TIMELINE = (function () {
     r.expDivider = root.querySelector("#exp-divider");
     r.expLabelT  = root.querySelector("#exp-label-t");
     r.expPanel = root.querySelector("#exp-panel");
+    r.wrap     = root.querySelector("#tl-wrap");
+    r.frame    = root.querySelector("#exp-frame-poly");
 
   }
 
@@ -210,6 +212,21 @@ var SCENE_TIMELINE = (function () {
   }
 
   function accentFor(i) { return ACCENTS[i % ACCENTS.length]; }
+
+  /* the eight points of the morph. k = 0 is the lozenge, k = 50 is
+     exactly the border box, and past that the shoulders leave it.
+     given a width and height it returns pixels; given none, percentages
+     for the clip-path. `inset` pulls the ring in by half the stroke, so
+     the outline's OUTER edge lands where the card's border does — an svg
+     stroke straddles its path, a css border sits wholly inside. */
+  function shoulders(k, w, h, inset) {
+    w = w || 100; h = h || 100; inset = inset || 0;
+    var x0 = inset, x1 = w - inset, y0 = inset, y1 = h - inset;
+    var fx = function (p) { return x0 + (x1 - x0) * p / 100; };
+    var fy = function (p) { return y0 + (y1 - y0) * p / 100; };
+    return [[x0, fy(50-k)], [fx(50-k), y0], [fx(50+k), y0], [x1, fy(50-k)],
+            [x1, fy(50+k)], [fx(50+k), y1], [fx(50-k), y1], [x0, fy(50+k)]];
+  }
 
   /* archive photos are landscape; the frame is portrait, so 40% of
      every shot is cropped away. centred is only right by luck — the
@@ -397,29 +414,44 @@ var SCENE_TIMELINE = (function () {
     var fill  = A.easeInOutQuint(widen);
 
     var k = A.lerp(0, 72, fill);
-    r.exp.style.clipPath = fill >= 1 ? "none" : (
-      "polygon(0% " + (50-k) + "%, " + (50-k) + "% 0%, " + (50+k) + "% 0%, " +
-      "100% " + (50-k) + "%, 100% " + (50+k) + "%, " + (50+k) + "% 100%, " +
-      (50-k) + "% 100%, 0% " + (50+k) + "%)");
+    var poly = shoulders(k).map(function (p) {
+      return A.round(p[0],2) + "% " + A.round(p[1],2) + "%"; });
+    r.exp.style.clipPath = fill >= 1 ? "none" : "polygon(" + poly.join(", ") + ")";
 
-    /* the lozenge carries no outline in the crest, so the stroke arrives
-       with the corners rather than being clipped into nonsense */
-    r.exp.style.borderColor = "rgba(0,0,0," + A.round(A.clamp(k / 40), 3) + ")";
+    /* the outline is drawn in SVG, not as a border. a css border belongs
+       to the rectangle and the clip takes it away along every diagonal;
+       a polygon stroke follows the lozenge's own edges. the two swap
+       over the last stretch, where both shapes are the same rectangle
+       and the handover is invisible. */
+    /* the clip runs past 50 so it can retreat off the edges, but the
+       outline must STOP there. beyond 50 the shoulders sit outside the
+       box, and a clip simply ignores them while a stroke draws them —
+       as four diagonals poking out of the corners. */
+    /* no viewBox: with none, the svg's user space is 1:1 with its css
+       size, which is already the stage's own units. so stroke-width 14
+       is 14 stage px and scales exactly like the card's border. */
+    var frameH = A.lerp(DIAMOND_H, BOX_H, fill);
+    r.frame.setAttribute("points", shoulders(Math.min(k, 50), BOX_W, frameH, 7)
+      .map(function (p) { return A.round(p[0],1) + "," + A.round(p[1],1); }).join(" "));
+    var handover = A.clamp((k - 50) / 22);
+    r.frame.style.opacity = A.round(1 - handover, 3);
+    r.exp.style.borderColor = "rgba(0,0,0," + A.round(handover, 3) + ")";
 
     /* blooms in the date's colour — the same colour as the ring it grew
        out of — and cools to cream as it becomes the card */
     r.exp.style.backgroundColor = A.mix(accentFor(i), PANEL, A.easeOutCubic(fill));
 
-    r.exp.style.height = A.round(A.lerp(DIAMOND_H, BOX_H, fill), 1) + "px";
-    r.exp.style.width  = BOX_W + "px";
+    r.wrap.style.height = A.round(frameH, 1) + "px";
+    r.wrap.style.width  = BOX_W + "px";
 
     /* 8. at the end the whole card leaves upward, off the top.
        75-75 in After Effects terms: heavy ease at both ends. */
     var exitE = A.easeInOutQuint(exit);
     var exitY = -exitE * (r.root.clientHeight / 2 + BOX_H / 2 + 80);
 
-    r.exp.style.opacity = A.round(A.clamp(A.seg(ct, tSpin, 0.10) * 2), 3);
-    r.exp.style.transform =
+    r.wrap.style.opacity = A.round(A.clamp(A.seg(ct, tSpin, 0.10) * 2), 3);
+    r.exp.style.opacity = 1;
+    r.wrap.style.transform =
       "translate(-50%, -50%) translateY(" + A.round(exitY, 1) + "px)" +
       " scale(" + A.round(A.lerp(SQUARE / BOX_W, 1, bloom), 4) + ")";
 

@@ -377,10 +377,34 @@ html, body {
 /* the box is always 880 tall. it arrives square (880 wide), then
    widens to 1500. JS owns its transform, always in this order:
      translate(-50%,-50%) translateY(exit) scale(s) rotate(r)      */
-.expanded {
+/* the wrap owns position and movement; the card and its outline both
+   fill it, so they cannot drift apart */
+.expanded-wrap {
   position: absolute;
   left: 50%; top: 50%;
   width: 1500px; height: 880px;
+  transform-origin: center center;
+  opacity: 0;
+}
+
+.exp__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.exp__frame polygon {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 14;          /* the card's own border weight, in stage px */
+  stroke-linejoin: round;
+}
+
+.expanded {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
   border: 14px solid var(--ink);      /* twice the stroke, no shadow */
   border-radius: 26px;
   overflow: hidden;

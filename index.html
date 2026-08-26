@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Life Church — 30th Anniversary Timeline</title>
-<link rel="stylesheet" href="css/style.css?v=42">
+<link rel="stylesheet" href="css/style.css?v=46">
 </head>
 <body>
 
@@ -38,7 +38,11 @@
         <div class="rule" style="transform:scaleX(1)"></div>
         <div class="strip" id="tl-strip"></div>
 
-        <div class="expanded" id="tl-expanded">
+        <!-- the wrap carries the movement so the outline can sit OUTSIDE
+             the clip: clip-path cascades to children, so a stroke drawn
+             inside the card would have its outer half cut away. -->
+        <div class="expanded-wrap" id="tl-wrap">
+          <div class="expanded" id="tl-expanded">
           <div class="exp__photo" id="exp-photo"></div>
           <div class="exp__divider" id="exp-divider"></div>
           <div class="exp__panel" id="exp-panel">
@@ -55,6 +59,19 @@
             <!-- optional. pinned to the foot of the panel, never scrolls -->
             <div class="exp__stat" id="exp-stat"></div>
           </div>
+          </div>
+
+          <!-- the outline. percentages as coordinates, and a stroke that
+               refuses to scale with them, so 14px stays 14px on every
+               edge of the lozenge and of the rectangle alike. -->
+          <!-- no viewBox on purpose: the svg's user space is then 1:1 with
+               its css size, which is already the stage's units, so a 14
+               stroke is 14 stage px and scales with the card's border.
+               percentages plus non-scaling-stroke held the outline at 14
+               SCREEN px while the border shrank with the stage. -->
+          <svg class="exp__frame" id="exp-frame" aria-hidden="true">
+            <polygon id="exp-frame-poly" />
+          </svg>
         </div>
 
       </section>
@@ -106,12 +123,12 @@
     <span class="hud__keys">space play &middot; &larr;&rarr; beat &middot; &#8679;&larr;&rarr; 0.1s &middot; R reset &middot; 1/2/3 size &middot; 4/6/8 distance &middot; 0 fit &middot; &darr;&uarr; date &middot; H hide</span>
   </div>
 
-<script src="js/anim.js?v=42"></script>
-<script src="js/logo.js?v=42"></script>
-<script src="js/timeline.js?v=42"></script>
-<script src="js/ticker.js?v=42"></script>
-<script src="js/notes.js?v=42"></script>
-<script src="js/outro.js?v=42"></script>
-<script src="js/main.js?v=42"></script>
+<script src="js/anim.js?v=46"></script>
+<script src="js/logo.js?v=46"></script>
+<script src="js/timeline.js?v=46"></script>
+<script src="js/ticker.js?v=46"></script>
+<script src="js/notes.js?v=46"></script>
+<script src="js/outro.js?v=46"></script>
+<script src="js/main.js?v=46"></script>
 </body>
 </html>
