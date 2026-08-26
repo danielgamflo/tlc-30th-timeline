@@ -1,6 +1,6 @@
 # The Life Church — 30th Anniversary Timeline
 
-A 10-minute animated timeline of 40 dates, 1996–2026.
+A 10-minute animated timeline of 42 dates, 1996–2026.
 Static site: no build step, no dependencies, no server-side anything.
 
 ## Viewing
@@ -40,8 +40,8 @@ what lets the same code drive three things:
 
 Two clocks run: `clock` is real elapsed time, never rounded; `t` is that
 clock snapped to the 30fps grid, and it is the only one `render` sees.
-Dropped frames therefore cost picture, never running time — the piece is
-600.00s on any machine.
+Dropped frames therefore cost picture, never running time — the piece runs
+to the same second on any machine.
 
 ## Timing
 
@@ -100,8 +100,8 @@ index.html          markup for every scene
 css/style.css       the whole design system
 js/anim.js          easing + WCAG contrast maths
 js/logo.js          opening
-js/timeline.js      the 40 dates
-js/outro.js         closing — a clone of the logo markup, played backwards
+js/timeline.js      the dates
+js/outro.js         closing — clears the frame, no logo, for a seamless loop
 js/ticker.js        the two running bars
 js/notes.js         review comments, one per date (localStorage)
 js/main.js          clock, scenes, keys
