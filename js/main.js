@@ -18,7 +18,7 @@ var APP = (function () {
 
   var SCENES = [SCENE_LOGO, SCENE_TIMELINE, SCENE_OUTRO];
 
-  var stage, hud, hudMode, hudTime, hudScene, hudFmt;
+  var stage, hud, hudMode, hudTime, hudScene, hudFmt, hudFocus;
   var t = 0, clock = 0;
   var playing = false, lastNow = 0, format = "1920", captureMode = false;
   var total = 0, markers = [];
@@ -32,6 +32,7 @@ var APP = (function () {
     hudTime  = document.getElementById("hud-time");
     hudScene = document.getElementById("hud-scene");
     hudFmt   = document.getElementById("hud-fmt");
+    hudFocus = document.getElementById("hud-focus");
 
     for (var i = 0; i < SCENES.length; i++) {
       var s = SCENES[i];
@@ -275,6 +276,40 @@ var APP = (function () {
     if (k === "6") { setSim(6); return; }
     if (k === "8") { setSim(8); return; }
     if (k === "0") { setSim(0); return; }
+
+    /* ---- the focus tool ---------------------------------------
+       WASD walks the crop of whichever photo is on screen. The frame
+       is portrait and the archive is landscape, so ~40% of every shot
+       is thrown away and centred is right only by luck. Shift steps by
+       1 instead of 4, for the last bit. X copies the whole set. */
+    var f = FOCUS_KEYS[k];
+    if (f) {
+      e.preventDefault(); pause();
+      var step = e.shiftKey ? 1 : 4;
+      var res  = SCENE_TIMELINE.nudgeFocus(f[0] * step, f[1] * step);
+      showFocus(res);
+      return;
+    }
+    if (k === "x" || k === "X") { copyFocus(); return; }
+  }
+
+  var FOCUS_KEYS = {
+    a: [-1, 0], A: [-1, 0], d: [1, 0],  D: [1, 0],
+    w: [0, -1], W: [0, -1], s: [0, 1],  S: [0, 1]
+  };
+
+  function showFocus(res) {
+    if (!hudFocus) return;
+    if (!res) { hudFocus.textContent = "no photo on this date"; return; }
+    hudFocus.textContent = res.photo + "  (" + res.k + "/" + res.of + ")  "
+                         + res.focus;
+  }
+
+  function copyFocus() {
+    var text = SCENE_TIMELINE.focusDump();
+    if (navigator.clipboard) navigator.clipboard.writeText(text);
+    if (hudFocus) hudFocus.textContent = "focus for every date copied";
+    return text;
   }
 
   /* ---- boot -------------------------------------------------- */

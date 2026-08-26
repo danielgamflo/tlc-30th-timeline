@@ -190,6 +190,7 @@ var SCENE_TIMELINE = (function () {
 
       nodes.push({ el: node, dot: dot, square: square, stem: stem, card: card,
                    box: box, short: shortText, date: dateEl, year: yearEl,
+                   photo: photo,
                    top: top, color: color, accent: accent, last: null });
     }
     fitYears();
@@ -548,23 +549,89 @@ var SCENE_TIMELINE = (function () {
       return out;
     },
 
-    /* authoring aid: nudge the current date's focus and read the value
-       straight off the HUD to paste into the JSON. 40 photos are not
-       findable by guess-and-reload. */
+    /* ---- authoring aid: the focus tool -------------------------
+       Fifty photographs are not findable by guess-and-reload, and a
+       crop is not judgeable from a full-frame thumbnail — you have to
+       see the frame. WASD nudges the photo that is actually on screen
+       right now, writes it straight onto that <img>, and prints the
+       value; focusDump() hands back the whole set to paste into the
+       JSON. It edits the loaded data only — nothing is persisted, so
+       the render stays a pure function of time.               */
+
+    /* which of a date's cross-fading photos the eye is on: the most
+       opaque one. reading the DOM beats re-deriving the slot maths and
+       cannot drift away from what render() actually did. */
+    visiblePhoto: function () {
+      if (shownIndex < 0) return -1;
+      var imgs = r.expPhoto.getElementsByTagName("img");
+      var best = -1, top = -1;
+      for (var i = 0; i < imgs.length; i++) {
+        var o = parseFloat(imgs[i].style.opacity);
+        if (isNaN(o)) o = 1;
+        if (o >= top) { top = o; best = i; }
+      }
+      return best;
+    },
+
     nudgeFocus: function (dx, dy) {
       if (shownIndex < 0) return null;
       var d = data[shownIndex];
-      var cur = (typeof d.focus === "string" ? d.focus : "50% 50%").split(" ");
+      var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
+      if (!shots.length) return null;
+
+      var k = SCENE_TIMELINE.visiblePhoto();
+      if (k < 0) k = 0;
+
+      /* normalise to one value per photo so a nudge on date 5's third
+         shot cannot silently move the other two */
+      var focus = [];
+      for (var i = 0; i < shots.length; i++) focus.push(focusOf(d, i));
+
+      var cur = focus[k].split(" ");
       var x = A.clamp(parseFloat(cur[0]) + dx, 0, 100);
       var y = A.clamp(parseFloat(cur[1]) + dy, 0, 100);
-      d.focus = Math.round(x) + "% " + Math.round(y) + "%";
-      shownIndex = -1;                  /* force the card to redraw */
-      return { year: d.year, title: d.title, focus: d.focus };
+      focus[k] = Math.round(x) + "% " + Math.round(y) + "%";
+      d.focus = shots.length === 1 ? focus[0] : focus;
+
+      /* write it to the element rather than rebuilding the card: a
+         rebuild restarts the cross-fade and you lose the frame you
+         were judging. */
+      var img = r.expPhoto.getElementsByTagName("img")[k];
+      if (img) img.style.objectPosition = focus[k];
+
+      /* the small card on the rail shows the first shot, so it has to
+         follow along or the two disagree while you are working */
+      if (k === 0 && nodes[shownIndex] && nodes[shownIndex].photo) {
+        nodes[shownIndex].photo.style.objectPosition = focus[0];
+      }
+
+      return { year: d.year, photo: shots[k], k: k + 1,
+               of: shots.length, focus: focus[k] };
     },
+
     currentFocus: function () {
       if (shownIndex < 0) return null;
       var d = data[shownIndex];
-      return { year: d.year, focus: (typeof d.focus === "string" ? d.focus : null) };
+      var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
+      if (!shots.length) return { year: d.year, photo: null, focus: null };
+      var k = Math.max(SCENE_TIMELINE.visiblePhoto(), 0);
+      return { year: d.year, photo: shots[k], k: k + 1,
+               of: shots.length, focus: focusOf(d, k) };
+    },
+
+    /* every focus value in the piece, as the JSON wants it */
+    focusDump: function () {
+      var out = [];
+      for (var i = 0; i < data.length; i++) {
+        var d = data[i];
+        var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
+        if (!shots.length) continue;
+        var f = [];
+        for (var j = 0; j < shots.length; j++) f.push(focusOf(d, j));
+        out.push({ id: d.id, year: d.year,
+                   focus: shots.length === 1 ? f[0] : f });
+      }
+      return JSON.stringify(out, null, 1);
     },
     CYCLE: CYCLE
   };

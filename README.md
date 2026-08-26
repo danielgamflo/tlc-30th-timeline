@@ -26,6 +26,8 @@ Open `index.html` through any static server. `?dev` unlocks the working mode.
 | `0` | fit to window |
 | `↑` `↓` | jump a whole date — how you review without waiting 10 minutes |
 | `N` | leave a note on the date on screen |
+| `W` `A` `S` `D` | move the crop of the photo on screen (`⇧` for fine) |
+| `X` | copy every date's crop as JSON |
 | `F` | fullscreen · `H` toggle HUD |
 
 ## How it is built
@@ -76,18 +78,31 @@ All six live at the top of `js/timeline.js`.
 
 - `photos: [...]` instead of `photo` cross-fades several shots across the hold
 - `focus` moves the crop (the frame is portrait, archive photos are landscape,
-  so 40% of each is cropped — centred is only right by luck). Eight dates
-  carry a computed value; the rest sit at centre waiting for a human eye.
-  Edge-density guessing works on people lit against a dark stage and fails
-  on architecture, where the edges are in the parked cars, not the sign.
+  so 40% of each is cropped — centred is only right by luck)
 - `stat` / `source` are optional; without them the paragraph takes the room
 
 **Still outstanding:** every `paragraph` is still placeholder prose, not
 the church's copy — the review round returned the same text it was given.
 The real material is in the team's "possible things to include" notes,
 which is where the `stat` values will come from. Entries flagged
-`"draft": true` were added with no copy at all. 18 dates from 2017 on
-have no photograph.
+`"draft": true` were added with no copy at all. Sixteen dates still have
+no photograph; `tools/photo-map.json` records what the church sent and
+where each file went.
+
+## The focus tool
+
+The card's photo pane is 0.898 wide over tall. Every archive photo is
+landscape, so about 40% of each one is thrown away and `focus` decides
+which 40% — and you cannot judge that from a full-frame thumbnail, only
+from the crop.
+
+`W` `A` `S` `D` walk the crop of whichever photo is on screen right now,
+including the third shot of a four-shot cross-fade; `⇧` steps by 1
+instead of 4; the value prints in the HUD. `X` copies every date's focus
+as JSON to paste back into `data/timeline.json`.
+
+It edits the loaded data only — nothing is persisted, so `render(t)`
+stays a pure function of time and the headless export is unaffected.
 
 Editing only `data/timeline.json` still needs the `?v=` in `index.html`
 bumped: the data's cache-buster is read off the script tag, so data and
@@ -105,7 +120,8 @@ js/outro.js         closing — clears the frame, no logo, for a seamless loop
 js/ticker.js        the two running bars
 js/notes.js         review comments, one per date (localStorage)
 js/main.js          clock, scenes, keys
-assets/photos/      1500px, q65 derivatives. originals live in Footage/
+assets/photos/      1500px q72 derivatives
+tools/              photo pipeline + the map of what goes where
 assets/fonts/       PP Museum — licensed
 ```
 
@@ -181,10 +197,39 @@ similar frequencies interfere, and at a distance that reads as noise.
 
 ## Photographs
 
-Derivatives are rebuilt from the originals in `Footage/`, never
-re-compressed from an earlier derivative. Fourteen of the archive files
-had letterbox bars baked in. The detector crops a row only when it is
-**dark and uniform** — a synthetic bar has no pixel variance, a dark
-auditorium ceiling does, and going by darkness alone ate real content.
-No photo is cropped past 2:1, because beyond that the portrait frame
-starts destroying the composition rather than saving it.
+```bash
+python3 tools/build-photos.py            # rebuild assets/photos/
+python3 tools/build-photos.py --report   # inventory only, writes nothing
+```
+
+`tools/photo-map.json` is the source of truth: original → derivative, one
+line each. The church filed the originals by event folder, and where a
+folder name and a filename disagree about the year the **folder wins** —
+that is the church's own reading of what the picture is of.
+
+Derivatives are always rebuilt from the originals, never re-compressed
+from an earlier derivative: two passes of q72 on the same picture is
+visible at 5760 across even when it is invisible here. 1500px long edge,
+q72, progressive — the pane never shows a photo above ~750px, so that is
+a 2x buffer for the slow zoom.
+
+Four things the pipeline has to get right, each learned the hard way:
+
+- **Letterbox.** Archive material carries baked-in bars from VHS and 4:3
+  telecine. A row is cropped only when it is dark **and** uniform **and**
+  unlit — a synthetic bar has no variance and no highlights, while a dark
+  auditorium ceiling always has a lamp or a speaker edge in it. Darkness
+  plus variance alone still ate 368 rows off a shallow-focus studio shot;
+  the peak-brightness test is what finally separated them. Nothing is
+  cropped past 2:1.
+- **Orientation.** EXIF is applied and then stripped, because CSS
+  `object-fit` does not read it. One HEIC declares no orientation that
+  `sips` or PIL can see and decodes on its side, so its rotation is
+  stated outright in `FORCE_ROTATE`.
+- **Odd inputs.** HEIC and CR2 decode through `sips` — Apple's own
+  decoders, no third-party dependency. The 2000 "billboard" turned out to
+  be a 320×240 TV commercial, so one frame comes out of it via ffmpeg.
+- **Filenames.** macOS writes U+202F, not a space, before the "PM" in a
+  screenshot's name, and shows it as an ordinary space. A map typed by
+  hand never matches; the resolver folds every kind of whitespace before
+  comparing.

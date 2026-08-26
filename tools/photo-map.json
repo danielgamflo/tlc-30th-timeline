@@ -1,0 +1,112 @@
+{
+  "_comment": [
+    "source -> derivative. paths are relative to assets/30th Anniversary Timeline Photos/.",
+    "the church filed these by event folder; where a folder name and a file name",
+    "disagree about the year, the FOLDER wins - that is the church's own reading",
+    "of what the picture is of. loose files at the root keep their filename year.",
+    "'note' explains anything that is not obvious from the two names."
+  ],
+
+  "1996 Launch/1996 Ps John preview service.jpg":            "1996-preview-service.jpg",
+  "1996 Launch/1996.png":                                    "1996.jpg",
+  "1996 Launch/1997.png":                                    "1997.jpg",
+  "1996 Launch/1997 Homebuilders.jpg":                       "1997-homebuilders.jpg",
+  "1996 Launch/Ps John Homebuilders.jpg":                    "homebuilders-ps-john.jpg",
+  "1996 Launch/1998.JPG":                                    "1998.jpg",
+  "1996 Launch/1999 .png":                                   "1999.jpg",
+
+  "1999 Permanent Office Space/2000.jpg":                    "2000.jpg",
+  "1999 Permanent Office Space/89z7hSOg.jpeg":               "2000-baptism-b.jpg",
+
+  "2000 First Billboard/IMG_5645.MOV":                       "tv-spot.jpg",
+
+  "2002 A - First Service at GTP/GTP renovation.jpg":        "gtp-newspaper.jpg",
+  "2002 A - First Service at GTP/2001.JPG":                  "2001.jpg",
+  "2002 A - First Service at GTP/2002.JPG":                  "2002.jpg",
+  "2002 A - First Service at GTP/2004 Building Front.JPG":   "2004-building-front.jpg",
+  "2002 A - First Service at GTP/2004.jpg":                  "2004.jpg",
+  "2002 A - First Service at GTP/IMG_1577.JPG":              "kidslife-balloons.jpg",
+
+  "2003 VIP Outreach Bill and Norma.jpg":                    "2003-vip-bill-norma.jpg",
+  "2003 VIP Outreach Mark and Julie.jpg":                    "2003-vip-mark-julie.jpg",
+  "2003 VIP Outreach buses.jpg":                             "2003-vip-buses.jpg",
+  "2003.JPG":                                                "2003.jpg",
+
+  "2004 - Launched Axis/axiswed.JPG":                        "axis-wed.jpg",
+  "2004 - Launched Axis/IMG_7050.JPG":                       "axis-teens.jpg",
+
+  "2005 A - Launched Zoe/2009 Chick Nite.JPG":               "2009-chick-nite.jpg",
+  "2005 B - Launched First Year of internship/2005 First Class of Damascus Road.JPG": "2005-damascus-road.jpg",
+  "2005 B - Launched First Year of internship/468223048_10162941475054587_9191860633540407670_n.jpg": "damascus-road-class.jpg",
+  "2005.JPG":                                                "2005.jpg",
+
+  "2006 - Launched Vision Partners/2007 Vision Night.JPG":   "2007-vision-night.jpg",
+  "2006.JPG":                                                "2006.jpg",
+  "2007.JPG":                                                "2007.jpg",
+
+  "2008 A - First Make Room/2011.jpg":                       "2011.jpg",
+  "2008 A - First Make Room/IMG_1224.HEIC":                  "makeroom-tables-a.jpg",
+  "2008 A - First Make Room/IMG_8198.JPG":                   "makeroom-tables-b.jpg",
+  "2008 C - Launched Collierville Location/2008 YMCA launch sign.JPG": "2008-ymca-launch.jpg",
+  "2008 C - Launched Collierville Location/IMG_0411.JPG":    "collierville-stage.jpg",
+  "2008 Outreach Rally.JPG":                                 "2008-outreach-rally.jpg",
+  "2008 Outreach Shirts.JPG":                                "2008-outreach-shirts.jpg",
+  "2008 Outreach.JPG":                                       "2008-outreach.jpg",
+  "2008.png":                                                "2008.jpg",
+
+  "2009 - First Axis Conf/2009 Axis Conf Tribal Wars.JPG":   "2009-axis-tribal-wars.jpg",
+  "2009 - First Axis Conf/2009.JPG":                         "2009.jpg",
+  "2009 - First Axis Conf/Axis Conf GTP.JPG":                "axis-conf-gtp.jpg",
+  "2009 - First Axis Conf/IMG_7025.JPG":                     "axis-hands.jpg",
+  "2009 - First Axis Conf/IMG_9285.JPG":                     "axis-countdown-shirt.jpg",
+  "2009 Ps John GTP.JPG":                                    "2009-gtp.jpg",
+  "2010.JPG":                                                "2010.jpg",
+
+  "2011 - Launched Feed Memphis/467755241_10162912950894587_6628047718998954925_n.jpg": "serve-our-city.jpg",
+  "2012.jpg":                                                "2012.jpg",
+  "2013.jpg":                                                "2013.jpg",
+
+  "2014 A - Launched East Memphis at Paradiso/2015.jpg":     "2015.jpg",
+  "2014 A - Launched East Memphis at Paradiso/471858485_10163191145089587_3370435142301144151_n.jpg": "paradiso-feb9.jpg",
+  "2014 A - Launched East Memphis at Paradiso/468151643_10162920441999587_430435861007173487_n.jpg":  "paradiso-crowd.jpg",
+  "2014 C - Hosted First Zoe Conf/2014.jpg":                 "2014.jpg",
+  "2014 C - Hosted First Zoe Conf/2016.jpg":                 "2016.jpg",
+
+  "2015 B - Hosted first Sound of Christmas/122124SOC_EMSOCSOC_EMep-90.JPG": "sound-of-christmas.jpg",
+
+  "2016 - broke ground on HSL Auditorium/468537246_10163101653019587_1576519272855988296_n.jpg": "hsl-site-aerial.jpg",
+  "2016 - broke ground on HSL Auditorium/468573758_10163071502734587_3456830922896276395_n.jpg": "hsl-jobsite-sign.jpg",
+  "2016 - broke ground on HSL Auditorium/468364610_10162948939924587_5581172339767256442_n.jpg": "hsl-construction-aerial.jpg",
+  "2016 - broke ground on HSL Auditorium/E26A1462.CR2":      "hsl-groundbreaking-night.jpg",
+
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.10.24 PM.png": "hsl-site-cleared.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.11.03 PM.png": "hsl-build-concrete.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.11.27 PM.png": "hsl-build-aerial-walls.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.11.37 PM.png": "hsl-build-aerial-walls-b.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.11.15 PM.png": "hsl-build-aerial-roof.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.08.43 PM.png": "hsl-build-auditorium.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.08.27 PM.png": "hsl-build-glass.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.08.05 PM.png": "hsl-build-lobby.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Image 8-25-26 at 12.07 PM.jpg":            "hsl-build-exterior.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.13.19 PM.png": "hsl-exterior-done.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.15.03 PM.png": "hsl-welcome-home.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.15.15 PM.png": "hsl-opening-worship.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.15.31 PM.png": "hsl-opening-worship-b.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/VP Night .png":                            "hsl-vp-night.jpg",
+  "2017 - Houston Levee Auditorium Grand Opening/111321-HSLVision-CH-54.jpg":               "leadership-prayer-2021.jpg",
+
+  "2020 A - Launched The Life Church New York/20230329_ny_jc-0036.JPG":     "ny-dedication.jpg",
+  "2020 B - Leadership in B&W Podcast Launched/20221208_LIBW_JC-0008.HEIC": "libw-studio.jpg",
+  "2021 B - Celebrated 25 Years/8011F875-1C15-469B-993C-164B41B27D4F.JPG":  "25-years-onair.jpg",
+  "2023 B - Hosted First International Make Room/photo 2024-05-03, 10 00 11.JPG": "makeroom-johannesburg.jpg",
+
+  "Ps John Birthday.jpg":                                    "ps-john-birthday.jpg",
+  "Ps John Leslie Anna Kenya.jpg":                           "kenya-team.jpg",
+
+  "others/2008 Fresh Start_before FS book.jpg":              "2008-fresh-start.jpg",
+  "others/Axis GTP.JPG":                                     "axis-gtp.jpg",
+  "others/Redbirds Game Parker.jpg":                         "redbirds-game.jpg",
+  "others/?.jpg":                                            "church-signage.jpg",
+  "others/??.JPG":                                           "small-venue.jpg",
+  "others/????.jpg":                                         "panel-stage.jpg"
+}

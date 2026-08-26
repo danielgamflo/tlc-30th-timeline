@@ -4,3 +4,10 @@ node_modules
 out/
 *.mp4
 .impeccable/
+
+# the church's originals — 153MB of source material. the pipeline reads
+# them from here, the repo ships only assets/photos/. keep them on the
+# drive and in the church's own archive, not in a public repo.
+assets/30th Anniversary Timeline Photos/
+.claude/
+tools/photo-report.json

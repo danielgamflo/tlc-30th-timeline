@@ -767,6 +767,11 @@ body.capture .notes, body.capture #btn-note { display: none; }
 .hud__fmt { color: #8d8677; }
 .hud__keys { color: #6e6960; letter-spacing: .02em; }
 
+/* the focus tool's readout. empty until you press a key, so it costs
+   nothing when you are not cropping. */
+.hud__focus { color: var(--mustard); letter-spacing: .02em; }
+.hud__focus:not(:empty) { margin-left: .9em; }
+
 body.hud-off .hud { display: none; }
 
 /* opened on a phone, the stage would scale down to nothing. say so
