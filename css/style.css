@@ -644,8 +644,9 @@ body.capture .exp__cell[data-sel] { outline: none; }
 
 
 
-/* All caps, per the review. The titles were already Title Case, so
-   "capitalize the headers" can only have meant this. Caps set solid at
+/* All caps. The brief said "capitalize the headers", which was ambiguous
+   until you notice the titles were already Title Case — so it could only
+   have meant this. Read back to the client and confirmed. Caps set solid at
    46px run long, so the tracking comes back a touch and the leading
    tightens — uppercase has no descenders to separate the lines. */
 .exp__title {
