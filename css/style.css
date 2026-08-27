@@ -114,12 +114,14 @@
      value as --cream, which is what every card panel is made of, so the
      year pill's shadow falls on its own colour and cannot be seen. */
   --shade-fill: var(--khaki);
-  /* the stripe flips with it: paper-coloured lines vanish on khaki, so
-     the texture is ink now rather than light */
+  /* charcoal hatching on the khaki, at full strength — the shadow is a
+     hatched shape now, not a tinted one. Which is also what rescues it:
+     khaki alone measures 1.00:1 against the card panel it falls on, so
+     the outline and the hatch are the only things making it visible. */
   --shade-stripes: repeating-linear-gradient(
     var(--shade-angle),
-    rgba(39,35,28,.13) 0 var(--shade-line),
-    transparent        var(--shade-line) var(--shade-gap)
+    var(--ink)  0 var(--shade-line),
+    transparent var(--shade-line) var(--shade-gap)
   );
 
   /* Museum everywhere — light / regular / ultrabold + italics */
@@ -127,7 +129,7 @@
   --sans: var(--serif);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   height: 100%;
@@ -411,6 +413,7 @@ html, body {
   inset: 0;
   z-index: -1;
   transform: translate(var(--shade-x), var(--shade-y));
+  border: var(--stroke) solid var(--ink);
   border-radius: 14px;
   background-color: var(--shade-fill);
   background-image: var(--shade-stripes);
@@ -619,6 +622,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
   inset: 0;
   z-index: -1;
   transform: translate(calc(var(--shade-x) * 2.44), calc(var(--shade-y) * 2.44));
+  border: var(--stroke-pill) solid var(--ink);
   border-radius: 999px;
   background-color: var(--shade-fill);
   background-image: var(--shade-stripes);
