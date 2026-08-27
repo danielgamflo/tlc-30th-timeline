@@ -2,7 +2,12 @@
 ._*
 node_modules
 out/
+# rendered exports stay out of the repo — but the clips the piece PLAYS
+# are source, not output. This rule swallowed assets/video/ silently: the
+# poster .jpg shipped, the .mp4 did not, and the card 404'd only once it
+# was live.
 *.mp4
+!assets/video/*.mp4
 .impeccable/
 
 # the church's originals — 153MB of source material. the pipeline reads
