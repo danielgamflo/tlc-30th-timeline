@@ -52,11 +52,25 @@
   --stroke: 4px;
   --rule: 4px;
 
-  /* the fine vertical hatching that sits over every coloured ground */
+  /* The fine vertical hatching over every coloured ground.
+
+     --hatch-gap is the whole dial: it was 22px, it is now 5.5, four
+     times closer. The line stays 1px, so closing the gap four times also
+     lays down four times the ink — 4.5% of the area becomes 18%.
+     --hatch-ink is eased back from .07 so the panel gets denser without
+     getting four times darker; full compensation would be .0175, at
+     which the lines stop reading individually at all.
+
+     Do not take the gap much below 5px. Under about 3px the pattern is
+     finer than a screen pixel once the stage is scaled to fit a window,
+     and the preview beats and shimmers where the render — which runs at
+     1:1 — stays clean. At 5.5 there is headroom on both sides. */
+  --hatch-gap: 5.5px;
+  --hatch-ink: rgba(0,0,0,.05);
   --stripes: repeating-linear-gradient(
     90deg,
-    rgba(0,0,0,.07) 0 1px,
-    rgba(0,0,0,0)   1px 22px
+    var(--hatch-ink) 0 1px,
+    rgba(0,0,0,0)    1px var(--hatch-gap)
   );
 
   /* Museum everywhere — light / regular / ultrabold + italics */

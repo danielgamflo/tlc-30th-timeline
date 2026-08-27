@@ -345,8 +345,34 @@ rail sits. The rail lands *on* a grid line rather than crossing the paper
 at an arbitrary height, and because both are pinned to 50% it stays that
 way at 1080, 1920 and 5760 with no per-format adjustment.
 
-Keep the cell well clear of the cards' 22px hatching. Two patterns at
-similar frequencies interfere, and at a distance that reads as noise.
+Keep the cell well clear of the cards' hatching. Two patterns at similar
+frequencies interfere, and at a distance that reads as noise. The grid is
+48px and the hatch is 5.5px, which is far enough apart.
+
+## The hatching
+
+Two numbers at the top of `css/style.css`:
+
+```css
+--hatch-gap: 5.5px;             /* was 22px — four times closer */
+--hatch-ink: rgba(0,0,0,.05);   /* was .07 */
+```
+
+The line stays 1px, so closing the gap four times also lays down four
+times the ink: 4.5% of the area becomes 18%. The ink is eased back so the
+panel gets denser without getting four times darker — full compensation
+would be `.0175`, at which the lines stop reading individually at all.
+
+| | period | coverage | mean darkening |
+|---|---|---|---|
+| before | 22px | 4.5% | 0.32% |
+| now | 5.5px | 18.2% | 0.91% |
+
+**Do not take the gap much below 5px.** Under about 3px the pattern is
+finer than a screen pixel once the stage is scaled to fit a window, and
+the preview beats and shimmers where the render — which runs at 1:1 —
+stays clean. `window.__anim.capture(true)` forces the stage to 1:1, which
+is the honest way to judge this texture.
 
 ## Photographs
 
