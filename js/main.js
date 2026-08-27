@@ -370,19 +370,29 @@ var APP = (function () {
   function decodeAll(rows) {
     var seen = {}, waits = [];
     for (var i = 0; i < rows.length; i++) {
-      var f = rows[i].photo;
-      if (!f || seen[f]) continue;
-      seen[f] = true;
+      /* every shot on the date, not just the first. most dates carry a
+         "photos" array now, and reading only "photo" quietly left the
+         cross-fades out of the warm-up — which put the decode hitch
+         back exactly where this was built to remove it. */
+      var shots = rows[i].photos && rows[i].photos.length
+                ? rows[i].photos
+                : (rows[i].photo ? [rows[i].photo] : []);
 
-      var img = new Image();
-      img.src = "assets/photos/" + f;
-      warmed.push(img);
+      for (var j = 0; j < shots.length; j++) {
+        var f = shots[j];
+        if (!f || seen[f]) continue;
+        seen[f] = true;
 
-      var done = img.decode ? img.decode() : Promise.resolve();
-      waits.push(Promise.race([
-        done["catch"](function () {}),        /* a bad photo must not block */
-        new Promise(function (go) { setTimeout(go, 4000); })
-      ]));
+        var img = new Image();
+        img.src = "assets/photos/" + f;
+        warmed.push(img);
+
+        var done = img.decode ? img.decode() : Promise.resolve();
+        waits.push(Promise.race([
+          done["catch"](function () {}),      /* a bad photo must not block */
+          new Promise(function (go) { setTimeout(go, 4000); })
+        ]));
+      }
     }
     return Promise.all(waits).then(function () { return rows; });
   }
