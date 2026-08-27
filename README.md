@@ -27,6 +27,7 @@ Open `index.html` through any static server. `?dev` unlocks the working mode.
 | `↑` `↓` | jump a whole date — how you review without waiting 10 minutes |
 | `N` | leave a note on the date on screen |
 | `W` `A` `S` `D` | move the crop of the photo on screen (`⇧` for fine) |
+| click | on a split slide, pick which cell `WASD` moves |
 | `X` | copy every date's crop as JSON |
 | `F` | fullscreen · `H` toggle HUD |
 
@@ -79,6 +80,7 @@ All six live at the top of `js/timeline.js`.
 - `photos: [...]` instead of `photo` cross-fades several shots across the hold
 - `focus` moves the crop (the frame is portrait, archive photos are landscape,
   so 40% of each is cropped — centred is only right by luck)
+- a nested array is a split slide — two to four photos at once; see below
 - an `.mp4` in `photo` / `photos` is a clip; see below
 - `stat` / `source` are optional; without them the paragraph takes the room
 
@@ -89,6 +91,58 @@ which is where the `stat` values will come from. Entries flagged
 `"draft": true` were added with no copy at all. Seventeen dates still have
 no photograph; `tools/photo-map.json` records what the church sent and
 where each file went.
+
+## Split slides
+
+Much of what is still to come is scanned print and screen-grabs. A
+photograph with 500px of real detail in it, stretched across the 602×671
+pane, is enlarged 3× and looks like porridge. So a date's list is a list
+of **slides**, not of photographs, and a slide can hold a group:
+
+```json
+"photos": [ ["a.jpg","b.jpg","c.jpg","d.jpg"], "e.jpg", "f.jpg" ],
+"focus":  [ ["50% 50%","50% 50%","50% 50%","50% 50%"], "50% 50%", "38% 50%" ]
+```
+
+Three slides, six photographs, one card. A bare string behaves exactly as
+it always did, so nothing already written has to change. `focus` mirrors
+the shape: an array where the slide is a group.
+
+The arithmetic is the whole reason:
+
+| slide | cell | a 500px photo is |
+|---|---|---|
+| full bleed | 602×671 | enlarged 3.0× |
+| two, stacked | 602×328 | enlarged 1.2× |
+| three rows | 602×214 | enlarged 1.2×, cropped 2.8:1 |
+| four, 2×2 | 294×328 | **reduced** 0.6× |
+
+Two suits landscape archive material best — the cell is nearly 3:2. Four
+is the one that rescues genuinely small scans. Three exists for
+completeness; a 2.8:1 letterbox cuts heads off and is rarely what you
+want.
+
+Each cell clips its own photograph, so the slow drift cannot bleed one
+picture into the one beside it, and the drift is applied per cell — scaling
+the grid itself would pull the gutters apart. The gutter is the card's own
+14px stroke, so a division reads as part of the frame rather than as a gap.
+
+### Measuring what is really there
+
+```bash
+python3 tools/measure-detail.py          # everything in use
+python3 tools/measure-detail.py --all    # every derivative
+```
+
+File dimensions lie. Several of these arrived as screenshots of a picture
+that had already been blown up on someone's screen: 1500px across, with
+nothing in them above about 400. Shrink an image to a fraction of itself
+and blow it straight back up — if the result is indistinguishable, that
+fraction already held everything there was, and it is the real resolution.
+
+Twelve files in use are inflated by 2× or more. The worst are in the
+1996 Launch folder, where `1997.jpg` measures 1500px and carries 375.
+That date is now a four-up, which is exactly what the measurement is for.
 
 ## Moving footage
 
@@ -169,7 +223,7 @@ js/notes.js         review comments, one per date (localStorage)
 js/main.js          clock, scenes, keys
 assets/photos/      1500px q72 derivatives
 assets/video/       clips + their poster stills
-tools/              photo pipeline + the map of what goes where
+tools/              photo pipeline, the map of what goes where, detail measuring
 assets/fonts/       PP Museum — licensed
 ```
 
