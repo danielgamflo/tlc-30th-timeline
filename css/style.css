@@ -97,7 +97,7 @@
      original 4 and the 8 that read as too loose. The two move
      independently — raising the line darkens nothing, it only thickens,
      while closing the gap shows more paper and lightens the mass. */
-  --shade-line: 2px;
+  --shade-line: 1.5px;
   --shade-gap:  6px;
   --shade-stripes: repeating-linear-gradient(
     var(--shade-angle),
