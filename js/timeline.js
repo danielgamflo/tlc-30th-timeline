@@ -153,7 +153,9 @@ var SCENE_TIMELINE = (function () {
       box.className = "card__box";
 
       var photo;
-      var firstShot = (d.photos && d.photos.length) ? d.photos[0] : d.photo;
+      /* the rail's small card is 200px wide — it shows the very first
+         photograph, opening a split slide if that is what comes first */
+      var firstShot = flatten(slidesOf(d))[0];
       if (firstShot) {
         photo = document.createElement("img");
         photo.className = "card__photo";
@@ -235,11 +237,42 @@ var SCENE_TIMELINE = (function () {
        "focus": "30% 20%"            one value for the date
        "focus": ["30% 20%", "50% 40%"]   one per photo
      left out, it stays centred.                                   */
-  function focusOf(d, k) {
+  function focusOf(d, k, cell) {
     var f = d.focus;
     if (!f) return "50% 50%";
     if (typeof f === "string") return f;
-    return f[k] || f[0] || "50% 50%";
+    var v = f[k];
+    if (v === undefined) v = f[0];
+    /* a split slide carries one value per cell */
+    if (v instanceof Array) v = (cell === undefined ? v[0] : v[cell]);
+    return v || "50% 50%";
+  }
+
+  /* ---- slides -------------------------------------------------
+     A date's list is a list of SLIDES, not of photographs. A slide is
+     either one picture, or a group of two to four shown together in a
+     grid — which is how the scanned print and the screen-grabs get used
+     without being enlarged past what is actually in them.
+
+         "photos": [ ["a.jpg","b.jpg","c.jpg","d.jpg"], "e.jpg", "f.jpg" ]
+
+     is three slides and six photographs. A bare string behaves exactly
+     as it always did, so nothing already written has to change.      */
+
+  function slidesOf(d) {
+    if (d.photos && d.photos.length) return d.photos;
+    return d.photo ? [d.photo] : [];
+  }
+
+  /* every photograph on the date, groups opened out */
+  function flatten(slides) {
+    var out = [];
+    for (var i = 0; i < slides.length; i++) {
+      var s = slides[i];
+      if (s instanceof Array) out = out.concat(s);
+      else out.push(s);
+    }
+    return out;
   }
 
   /* ---- moving footage ----------------------------------------
@@ -268,6 +301,9 @@ var SCENE_TIMELINE = (function () {
      once per seek, so a video whose metadata arrives after that draw
      would otherwise sit on frame zero for good. */
   var lastCt = 0, lastPlaying = false;
+
+  /* which cell of a split slide the focus tool is aimed at */
+  var selCell = 0;
 
   function srcFor(name) {
     return (isVideo(name) ? "assets/video/" : "assets/photos/") + name;
@@ -355,12 +391,24 @@ var SCENE_TIMELINE = (function () {
     /* one photo or several — "photos": ["a.jpg","b.jpg"] cross-fades
        them across the hold, stacked, so the mask reveal still plays
        on the first one and the rest simply relieve it. */
-    var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
+    var shots = slidesOf(d);
     if (shots.length) {
       r.expPhoto.className = "exp__photo";
       var html = "";
       for (var s2 = 0; s2 < shots.length; s2++) {
-        if (isVideo(shots[s2])) {
+        if (shots[s2] instanceof Array) {
+          /* a split slide: two, three or four photographs at once, each
+             asked to carry a fraction of the enlargement a full-bleed
+             one would need */
+          var g = shots[s2], n = Math.min(g.length, 4);
+          html += '<div class="exp__split exp__split--' + n + '">';
+          for (var c = 0; c < n; c++) {
+            html += '<div class="exp__cell"><img src="' + srcFor(g[c]) +
+                    '" alt="" style="object-position:' +
+                    focusOf(d, s2, c) + '"></div>';
+          }
+          html += '</div>';
+        } else if (isVideo(shots[s2])) {
           /* muted in the markup on purpose: a browser refuses to
              autoplay anything audible until someone has interacted with
              the page, and a silent lobby loop that plays beats an
@@ -619,6 +667,12 @@ var SCENE_TIMELINE = (function () {
              contained clip crops away exactly what the black bars are
              there to protect. the clip's own motion is the motion. */
           driveVideo(el, ct - tHold, playing);
+        } else if (el.tagName === "DIV") {
+          /* a split slide: the drift belongs to each photograph inside
+             its own cell. scaling the grid itself would pull the
+             gutters apart and push the outer cells off the pane. */
+          var cells = el.getElementsByTagName("img");
+          for (var c2 = 0; c2 < cells.length; c2++) cells[c2].style.transform = zoom;
         } else {
           el.style.transform = zoom;
         }
@@ -684,78 +738,122 @@ var SCENE_TIMELINE = (function () {
        JSON. It edits the loaded data only — nothing is persisted, so
        the render stays a pure function of time.               */
 
-    /* which of a date's cross-fading photos the eye is on: the most
-       opaque one. reading the DOM beats re-deriving the slot maths and
-       cannot drift away from what render() actually did. */
-    visiblePhoto: function () {
+    /* which slide the eye is on: the most opaque one. reading the DOM
+       beats re-deriving the slot maths and cannot drift away from what
+       render() actually did. */
+    visibleSlide: function () {
       if (shownIndex < 0) return -1;
-      var imgs = r.expPhoto.getElementsByTagName("img");
+      var els = r.expPhoto.children;
       var best = -1, top = -1;
-      for (var i = 0; i < imgs.length; i++) {
-        var o = parseFloat(imgs[i].style.opacity);
+      for (var i = 0; i < els.length; i++) {
+        var o = parseFloat(els[i].style.opacity);
         if (isNaN(o)) o = 1;
         if (o >= top) { top = o; best = i; }
       }
       return best;
     },
 
+    /* on a split slide every cell is on screen at once, so the tool has
+       to be told which one. clicking a cell picks it; the pick is drawn
+       as an outline that never survives into a captured frame. */
+    selectCell: function (el) {
+      var prev = r.expPhoto.querySelectorAll("[data-sel]");
+      for (var i = 0; i < prev.length; i++) prev[i].removeAttribute("data-sel");
+      if (!el) { selCell = 0; return null; }
+      el.setAttribute("data-sel", "");
+      var cells = el.parentNode.children;
+      for (var j = 0; j < cells.length; j++) if (cells[j] === el) selCell = j;
+      return SCENE_TIMELINE.currentFocus();
+    },
+
     nudgeFocus: function (dx, dy) {
       if (shownIndex < 0) return null;
       var d = data[shownIndex];
-      var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
-      if (!shots.length) return null;
+      var slides = slidesOf(d);
+      if (!slides.length) return null;
 
-      var k = SCENE_TIMELINE.visiblePhoto();
+      var k = SCENE_TIMELINE.visibleSlide();
       if (k < 0) k = 0;
+      var group = slides[k] instanceof Array ? slides[k] : null;
+      var c = group ? Math.min(selCell, group.length - 1) : -1;
 
-      /* normalise to one value per photo so a nudge on date 5's third
-         shot cannot silently move the other two */
+      /* normalise to one value per photograph, so a nudge on the third
+         cell of a four-up cannot silently move the other three */
       var focus = [];
-      for (var i = 0; i < shots.length; i++) focus.push(focusOf(d, i));
+      for (var i = 0; i < slides.length; i++) {
+        if (slides[i] instanceof Array) {
+          var g = [];
+          for (var j = 0; j < slides[i].length; j++) g.push(focusOf(d, i, j));
+          focus.push(g);
+        } else {
+          focus.push(focusOf(d, i));
+        }
+      }
 
-      var cur = focus[k].split(" ");
+      var cur = (group ? focus[k][c] : focus[k]).split(" ");
       var x = A.clamp(parseFloat(cur[0]) + dx, 0, 100);
       var y = A.clamp(parseFloat(cur[1]) + dy, 0, 100);
-      focus[k] = Math.round(x) + "% " + Math.round(y) + "%";
-      d.focus = shots.length === 1 ? focus[0] : focus;
+      var val = Math.round(x) + "% " + Math.round(y) + "%";
+      if (group) focus[k][c] = val; else focus[k] = val;
+      d.focus = slides.length === 1 && !group ? focus[0] : focus;
 
       /* write it to the element rather than rebuilding the card: a
          rebuild restarts the cross-fade and you lose the frame you
          were judging. */
-      var img = r.expPhoto.getElementsByTagName("img")[k];
-      if (img) img.style.objectPosition = focus[k];
-
-      /* the small card on the rail shows the first shot, so it has to
-         follow along or the two disagree while you are working */
-      if (k === 0 && nodes[shownIndex] && nodes[shownIndex].photo) {
-        nodes[shownIndex].photo.style.objectPosition = focus[0];
+      var slideEl = r.expPhoto.children[k];
+      if (slideEl) {
+        var img = group ? slideEl.getElementsByTagName("img")[c]
+                        : (slideEl.tagName === "IMG" ? slideEl : null);
+        if (img) img.style.objectPosition = val;
       }
 
-      return { year: d.year, photo: shots[k], k: k + 1,
-               of: shots.length, focus: focus[k] };
+      /* the small card on the rail shows the first photograph, so it has
+         to follow along or the two disagree while you are working */
+      if (k === 0 && (!group || c === 0) &&
+          nodes[shownIndex] && nodes[shownIndex].photo) {
+        nodes[shownIndex].photo.style.objectPosition = val;
+      }
+
+      return { year: d.year, photo: group ? group[c] : slides[k],
+               k: k + 1, of: slides.length,
+               cell: group ? c + 1 : 0, cells: group ? group.length : 0,
+               focus: val };
     },
 
     currentFocus: function () {
       if (shownIndex < 0) return null;
       var d = data[shownIndex];
-      var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
-      if (!shots.length) return { year: d.year, photo: null, focus: null };
-      var k = Math.max(SCENE_TIMELINE.visiblePhoto(), 0);
-      return { year: d.year, photo: shots[k], k: k + 1,
-               of: shots.length, focus: focusOf(d, k) };
+      var slides = slidesOf(d);
+      if (!slides.length) return { year: d.year, photo: null, focus: null };
+      var k = Math.max(SCENE_TIMELINE.visibleSlide(), 0);
+      var group = slides[k] instanceof Array ? slides[k] : null;
+      var c = group ? Math.min(selCell, group.length - 1) : -1;
+      return { year: d.year, photo: group ? group[c] : slides[k],
+               k: k + 1, of: slides.length,
+               cell: group ? c + 1 : 0, cells: group ? group.length : 0,
+               focus: group ? focusOf(d, k, c) : focusOf(d, k) };
     },
 
-    /* every focus value in the piece, as the JSON wants it */
+    /* every focus value in the piece, shaped the way the JSON wants it —
+       one string per single slide, one array per split */
     focusDump: function () {
       var out = [];
       for (var i = 0; i < data.length; i++) {
         var d = data[i];
-        var shots = d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : []);
-        if (!shots.length) continue;
+        var slides = slidesOf(d);
+        if (!slides.length) continue;
         var f = [];
-        for (var j = 0; j < shots.length; j++) f.push(focusOf(d, j));
-        out.push({ id: d.id, year: d.year,
-                   focus: shots.length === 1 ? f[0] : f });
+        for (var j = 0; j < slides.length; j++) {
+          if (slides[j] instanceof Array) {
+            var g = [];
+            for (var c = 0; c < slides[j].length; c++) g.push(focusOf(d, j, c));
+            f.push(g);
+          } else {
+            f.push(focusOf(d, j));
+          }
+        }
+        var single = slides.length === 1 && !(slides[0] instanceof Array);
+        out.push({ id: d.id, year: d.year, focus: single ? f[0] : f });
       }
       return JSON.stringify(out, null, 1);
     },

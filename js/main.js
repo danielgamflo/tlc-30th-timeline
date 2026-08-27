@@ -303,9 +303,15 @@ var APP = (function () {
 
   function showFocus(res) {
     if (!hudFocus) return;
-    if (!res) { hudFocus.textContent = "no photo on this date"; return; }
-    hudFocus.textContent = res.photo + "  (" + res.k + "/" + res.of + ")  "
-                         + res.focus;
+    if (!res || !res.photo) {
+      hudFocus.textContent = res ? "no photo on this date" : "";
+      return;
+    }
+    /* on a split slide, say which cell — otherwise the readout looks
+       like it is describing the whole frame when it is not */
+    var where = "slide " + res.k + "/" + res.of
+              + (res.cells ? "  cell " + res.cell + "/" + res.cells : "");
+    hudFocus.textContent = res.photo + "  " + where + "  " + res.focus;
   }
 
   function copyFocus() {
@@ -339,6 +345,14 @@ var APP = (function () {
     }
     window.addEventListener("pointerdown", wakeSound, true);
     window.addEventListener("keydown", wakeSound, true);
+
+    /* On a split slide every photograph is on screen at once, so WASD
+       has to be told which one it is moving. Clicking a cell picks it. */
+    document.getElementById("exp-photo").addEventListener("click", function (e) {
+      var cell = e.target.closest && e.target.closest(".exp__cell");
+      if (!cell) return;
+      showFocus(SCENE_TIMELINE.selectCell(cell));
+    });
 
     var playIcon = document.getElementById("btn-play-i");
     function paintPlay() { playIcon.innerHTML = playing ? "&#10073;&#10073;" : "&#9654;"; }
@@ -388,13 +402,19 @@ var APP = (function () {
   function decodeAll(rows) {
     var seen = {}, waits = [];
     for (var i = 0; i < rows.length; i++) {
-      /* every shot on the date, not just the first. most dates carry a
-         "photos" array now, and reading only "photo" quietly left the
-         cross-fades out of the warm-up — which put the decode hitch
-         back exactly where this was built to remove it. */
-      var shots = rows[i].photos && rows[i].photos.length
-                ? rows[i].photos
-                : (rows[i].photo ? [rows[i].photo] : []);
+      /* every photograph on the date, not just the first — and a split
+         slide is a list inside the list, so it has to be opened out.
+         Most dates carry a "photos" array now, and reading only "photo"
+         quietly left the cross-fades out of the warm-up, which put the
+         decode hitch back exactly where this exists to remove it. */
+      var slides = rows[i].photos && rows[i].photos.length
+                 ? rows[i].photos
+                 : (rows[i].photo ? [rows[i].photo] : []);
+      var shots = [];
+      for (var g = 0; g < slides.length; g++) {
+        if (slides[g] instanceof Array) shots = shots.concat(slides[g]);
+        else shots.push(slides[g]);
+      }
 
       for (var j = 0; j < shots.length; j++) {
         var f = shots[j];

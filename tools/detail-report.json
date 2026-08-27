@@ -1,0 +1,590 @@
+[
+ {
+  "name": "1997.jpg",
+  "nominal": 1500,
+  "effective": 375,
+  "ratio": 0.25,
+  "where": ""
+ },
+ {
+  "name": "homebuilders-ps-john.jpg",
+  "nominal": 840,
+  "effective": 420,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "axis-countdown-shirt.jpg",
+  "nominal": 453,
+  "effective": 453,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "1996.jpg",
+  "nominal": 1500,
+  "effective": 500,
+  "ratio": 0.333,
+  "where": ""
+ },
+ {
+  "name": "1999.jpg",
+  "nominal": 1500,
+  "effective": 500,
+  "ratio": 0.333,
+  "where": ""
+ },
+ {
+  "name": "2006.jpg",
+  "nominal": 1500,
+  "effective": 500,
+  "ratio": 0.333,
+  "where": ""
+ },
+ {
+  "name": "hsl-site-cleared.jpg",
+  "nominal": 1500,
+  "effective": 500,
+  "ratio": 0.333,
+  "where": ""
+ },
+ {
+  "name": "2007-vision-night.jpg",
+  "nominal": 1053,
+  "effective": 526,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "redbirds-game.jpg",
+  "nominal": 896,
+  "effective": 597,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "25-years-onair.jpg",
+  "nominal": 1204,
+  "effective": 602,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "ps-john-birthday.jpg",
+  "nominal": 904,
+  "effective": 602,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "axis-teens.jpg",
+  "nominal": 604,
+  "effective": 604,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "kidslife-balloons.jpg",
+  "nominal": 604,
+  "effective": 604,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "1997-homebuilders.jpg",
+  "nominal": 920,
+  "effective": 613,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "2008-outreach.jpg",
+  "nominal": 640,
+  "effective": 640,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2008-outreach-shirts.jpg",
+  "nominal": 997,
+  "effective": 664,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "makeroom-johannesburg.jpg",
+  "nominal": 1000,
+  "effective": 666,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "sound-of-christmas.jpg",
+  "nominal": 1001,
+  "effective": 667,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "2012.jpg",
+  "nominal": 720,
+  "effective": 720,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "axis-hands.jpg",
+  "nominal": 720,
+  "effective": 720,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-lobby.jpg",
+  "nominal": 1447,
+  "effective": 723,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-auditorium.jpg",
+  "nominal": 1488,
+  "effective": 744,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "1996-preview-service.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "2003-vip-bill-norma.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "2016.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-exterior.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "hsl-opening-worship-b.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "hsl-opening-worship.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "hsl-welcome-home.jpg",
+  "nominal": 1500,
+  "effective": 750,
+  "ratio": 0.5,
+  "where": ""
+ },
+ {
+  "name": "2009-axis-tribal-wars.jpg",
+  "nominal": 800,
+  "effective": 800,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2009.jpg",
+  "nominal": 800,
+  "effective": 800,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "axis-conf-gtp.jpg",
+  "nominal": 800,
+  "effective": 800,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "axis-gtp.jpg",
+  "nominal": 800,
+  "effective": 800,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "small-venue.jpg",
+  "nominal": 800,
+  "effective": 800,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "kenya-team.jpg",
+  "nominal": 848,
+  "effective": 848,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "paradiso-feb9.jpg",
+  "nominal": 921,
+  "effective": 921,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-construction-aerial.jpg",
+  "nominal": 960,
+  "effective": 960,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-jobsite-sign.jpg",
+  "nominal": 960,
+  "effective": 960,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-site-aerial.jpg",
+  "nominal": 960,
+  "effective": 960,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "paradiso-crowd.jpg",
+  "nominal": 960,
+  "effective": 960,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-glass.jpg",
+  "nominal": 1453,
+  "effective": 968,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "2003-vip-buses.jpg",
+  "nominal": 1460,
+  "effective": 973,
+  "ratio": 0.666,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-aerial-walls-b.jpg",
+  "nominal": 1485,
+  "effective": 990,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-aerial-roof.jpg",
+  "nominal": 1497,
+  "effective": 998,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "1998.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2001.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2003-vip-mark-julie.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2003.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2008-fresh-start.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2008-outreach-rally.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2008-ymca-launch.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2009-chick-nite.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2009-gtp.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2010.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2011.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2013.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2014.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "2015.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "church-signage.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "collierville-stage.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-aerial-walls.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "hsl-build-concrete.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "hsl-exterior-done.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "panel-stage.jpg",
+  "nominal": 1500,
+  "effective": 1000,
+  "ratio": 0.667,
+  "where": ""
+ },
+ {
+  "name": "libw-studio.jpg",
+  "nominal": 1016,
+  "effective": 1016,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "axis-wed.jpg",
+  "nominal": 1024,
+  "effective": 1024,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "damascus-road-class.jpg",
+  "nominal": 1080,
+  "effective": 1080,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "gtp-newspaper.jpg",
+  "nominal": 1080,
+  "effective": 1080,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "makeroom-tables-a.jpg",
+  "nominal": 1125,
+  "effective": 1125,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "makeroom-tables-b.jpg",
+  "nominal": 1125,
+  "effective": 1125,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2008.jpg",
+  "nominal": 1251,
+  "effective": 1251,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-vp-night.jpg",
+  "nominal": 1459,
+  "effective": 1459,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2000-baptism-b.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2000.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2002.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2004-building-front.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2004.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2005-damascus-road.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2005.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "2007.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "hsl-groundbreaking-night.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "leadership-prayer-2021.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "ny-dedication.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ },
+ {
+  "name": "serve-our-city.jpg",
+  "nominal": 1500,
+  "effective": 1500,
+  "ratio": 1.0,
+  "where": ""
+ }
+]

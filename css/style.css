@@ -432,6 +432,42 @@ html, body {
    cross-fading over it hides the bars along with everything else. */
 .exp__photo video { width: 100%; height: 100%; object-fit: contain; display: block;
                     position: absolute; inset: 0; background: #000; }
+
+/* ---- split slides -----------------------------------------------
+   Much of the archive is scanned print and screen-grabs: pictures with
+   only a few hundred pixels of real detail in them, which fall apart
+   when one is stretched across the whole pane. Splitting a slide into
+   two, three or four means each photograph is shown at a QUARTER of the
+   area, so it is asked to carry a quarter of the enlargement.
+
+   A split is one slide in the cross-fade, not a replacement for it: a
+   card can run a four-up, then a full-bleed photo, then another — six
+   pictures on one date without any of them being over-enlarged.
+
+   The gutter is the card's own 14px stroke, so the division reads as
+   part of the frame rather than as a gap between images.
+   ------------------------------------------------------------------ */
+.exp__split {
+  position: absolute; inset: 0;
+  display: grid;
+  gap: 14px;
+  background: var(--ink);
+}
+.exp__split--2 { grid-template-rows: repeat(2, 1fr); }
+.exp__split--3 { grid-template-rows: repeat(3, 1fr); }
+.exp__split--4 { grid-template-columns: repeat(2, 1fr);
+                 grid-template-rows: repeat(2, 1fr); }
+
+/* each cell clips its own photo, so the slow drift cannot bleed a
+   picture into the one beside it */
+.exp__cell { position: relative; overflow: hidden; }
+.exp__cell img { position: absolute; inset: 0; width: 100%; height: 100%;
+                 object-fit: cover; display: block; }
+
+/* the focus tool's selection. dev only — .capture never shows it, so it
+   can never land in a rendered frame. */
+.exp__cell[data-sel] { outline: 5px solid var(--mustard); outline-offset: -5px; }
+body.capture .exp__cell[data-sel] { outline: none; }
 .exp__photo--empty { background: var(--khaki); }
 .exp__photo--empty::after {
   content: attr(data-year);
