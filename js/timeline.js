@@ -68,6 +68,11 @@ var SCENE_TIMELINE = (function () {
      the 26px corner radius appears rather than popping round          */
   var RETREAT = 44;
 
+  /* must equal --stroke-lg in the stylesheet. the polygon is inset by
+     half of it, because an svg stroke straddles its path while a css
+     border sits wholly inside. */
+  var STROKE_LG = 7;
+
   var SPACING = 300;      /* px between dates on the strip */
   var CARD_W = 200;       /* must match css .card__box width */
   var YEAR_FILL = 0.86;   /* share of the box the year spans */
@@ -283,8 +288,21 @@ var SCENE_TIMELINE = (function () {
   function axes(u, inset) {
     var a0 = LOZ_H / 2 - inset;                      /* lozenge, vertical   */
     var b0 = LOZ_W / 2 - inset;                      /* lozenge, horizontal */
-    var r1 = (BOX_H / 2 - inset) * Math.SQRT2;       /* square, to a corner */
-    return [A.lerp(a0, r1, u), A.lerp(b0, r1, u)];
+    var hh = BOX_H / 2 - inset;
+    var r1 = hh * Math.SQRT2;                        /* square, to a corner */
+
+    /* The vertical axis is capped at hh / cos(phi), which is the envelope
+       that keeps the shape inscribed in the box — at phi = 45 it equals
+       r1 exactly, so the cap costs nothing at either end.
+
+       Without it the silhouette overshoots. The two axes interpolate
+       linearly while the trigonometry does not, so the height climbs past
+       its own final value around four fifths of the way through the turn
+       — measured, it peaked at 880.4 and settled back to 873, which put
+       the stroke a few px outside the card it belongs to for about a
+       tenth of a second. */
+    var a = Math.min(A.lerp(a0, r1, u), hh / Math.cos(u * Math.PI / 4));
+    return [a, A.lerp(b0, r1, u)];
   }
 
   function facets(u, stretch, w, h, inset, out) {
@@ -680,12 +698,12 @@ var SCENE_TIMELINE = (function () {
        both are the same rectangle and the handover is invisible.
 
        no viewBox: with none, the svg's user space is 1:1 with its css
-       size, which is already the stage's own units. so stroke-width 14
+       size, which is already the stage's own units. so stroke-width 7
        is 14 stage px and scales exactly like the card's border. */
     /* the outline never retreats — past the border box a clip simply
        ignores the points while a stroke would draw them, as four spurs
        poking out of the corners. It stops at the box and hands over. */
-    r.frame.setAttribute("points", facets(turn, stretch, BOX_W, BOX_H, 7, 0)
+    r.frame.setAttribute("points", facets(turn, stretch, BOX_W, BOX_H, STROKE_LG / 2, 0)
       .map(function (p) { return A.round(p[0],1) + "," + A.round(p[1],1); }).join(" "));
     r.frame.style.opacity = A.round(1 - over, 3);
     r.exp.style.borderColor = "rgba(39,35,28," + A.round(over, 3) + ")";

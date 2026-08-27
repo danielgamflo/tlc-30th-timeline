@@ -52,8 +52,19 @@
   --bar:    var(--ink);
 
   /* structure */
-  --stroke: 4px;
+  --stroke: 4px;               /* the small cards on the rail */
   --rule: 4px;
+
+  /* The expanded card's outline, halved from 14 in review. It is quoted
+     in four places that must agree — the svg stroke, the css border they
+     hand over between, the divider that separates photo from panel, and
+     the gutter of a split slide — so it is one number now.
+
+     js/timeline.js insets the polygon by HALF of this: an svg stroke
+     straddles its path where a css border sits wholly inside, and
+     without that inset the silhouette jumps at the handover. */
+  --stroke-lg: 7px;
+  --stroke-pill: 3px;          /* the year pill, halved from 6 to match */
 
   /* The fine vertical hatching over every coloured ground.
 
@@ -467,7 +478,7 @@ html, body {
 .exp__frame polygon {
   fill: none;
   stroke: var(--ink);
-  stroke-width: 14;          /* the card's own border weight, in stage px */
+  stroke-width: 7;           /* must equal --stroke-lg, in stage px */
   stroke-linejoin: round;
 }
 
@@ -475,7 +486,7 @@ html, body {
   position: absolute;
   inset: 0;
   width: 100%; height: 100%;
-  border: 14px solid var(--ink);      /* twice the stroke, no shadow */
+  border: var(--stroke-lg) solid var(--ink);   /* no shadow on this one */
   border-radius: 26px;
   overflow: hidden;
   background-color: var(--mustard);
@@ -514,13 +525,13 @@ html, body {
    card can run a four-up, then a full-bleed photo, then another — six
    pictures on one date without any of them being over-enlarged.
 
-   The gutter is the card's own 14px stroke, so the division reads as
+   The gutter is the card's own stroke, so the division reads as
    part of the frame rather than as a gap between images.
    ------------------------------------------------------------------ */
 .exp__split {
   position: absolute; inset: 0;
   display: grid;
-  gap: 14px;
+  gap: var(--stroke-lg);
   background: var(--ink);
 }
 .exp__split--2 { grid-template-rows: repeat(2, 1fr); }
@@ -553,8 +564,8 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .exp__divider {
   position: absolute;
   left: 52%; top: 0; bottom: 0;
-  width: 14px;                  /* matches the card's stroke */
-  margin-left: -7px;
+  width: var(--stroke-lg);      /* matches the card's stroke */
+  margin-left: calc(var(--stroke-lg) / -2);
   background: var(--ink);
   transform: scaleY(0);
   transform-origin: center center;
@@ -611,7 +622,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
   display: block;
   padding: 6px 40px 12px;
   background: var(--sage);
-  border: 6px solid var(--ink);
+  border: var(--stroke-pill) solid var(--ink);
   border-radius: 999px;
   font-family: var(--serif);
   font-weight: 800;
@@ -713,7 +724,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .stage[data-format="1080"] .exp__photo {
   width: 100%; height: 44%;
   border-right: 0;
-  border-bottom: 14px solid var(--ink);
+  border-bottom: var(--stroke-lg) solid var(--ink);
 }
 .stage[data-format="1080"] .exp__panel { padding: 36px 44px 40px; }
 .stage[data-format="1080"] .exp__year { font-size: 74px; margin: 8px 0 48px; }
