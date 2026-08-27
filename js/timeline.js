@@ -203,7 +203,13 @@ var SCENE_TIMELINE = (function () {
       var short = document.createElement("div");
       short.className = "card__short";
       short.style.background = color;
-      short.style.color = A.inkOn(color, INK, PAPER);
+      /* charcoal on every ground, per review — no longer measured and
+         chosen. Worth knowing what that costs: charcoal reads 5.70:1 on
+         the mustard and 3.58:1 on the orange, both fine for text this
+         size and weight, but only 2.65:1 on the olive, under the 3:1
+         floor. Lightening the olive to #91924E — same hue, same
+         saturation — would take it to 4.78:1. */
+      short.style.color = INK;
       var shortText = document.createElement("span");
       shortText.className = "card__short__t";
       shortText.textContent = d.short;
@@ -469,7 +475,7 @@ var SCENE_TIMELINE = (function () {
        cream paper is 1.2:1 and the shape simply is not there. */
     r.expPanel.style.color = INK;
     r.expYear.style.background = accent;
-    r.expYear.style.color = A.inkOn(accent, INK, PAPER);
+    r.expYear.style.color = INK;
     r.expYear.style.borderColor = INK;
     r.expStat.style.borderLeftColor = accent;
     r.expLabelT.textContent = d.label || "";
