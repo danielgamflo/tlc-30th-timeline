@@ -37,7 +37,10 @@
   --sage:   #9FB0A3;
   --cream:  #D7D0C5;   /* every card panel, always */
   --khaki:  #D7D0C5;   /* kept: older rules still name it */
-  --ink:    #000000;
+  /* Charcoal, not black. Every stroke, every letter, every bar. The
+     running bars were already a warm near-black, so they now simply
+     share the token instead of carrying their own. */
+  --ink:    #27231c;
   --paper:  #F4F0E6;
   --line:   #B3A996;   /* the rail itself is a warm grey, never black */
 
@@ -46,7 +49,7 @@
   --grid:        rgba(221, 205, 165, .5);
   --grid-cell:   48px;
   --grid-weight: 2px;
-  --bar:    #2C2721;   /* the running bars: warm near-black, not pure */
+  --bar:    var(--ink);
 
   /* structure */
   --stroke: 4px;
@@ -66,11 +69,23 @@
      and the preview beats and shimmers where the render — which runs at
      1:1 — stays clean. At 5.5 there is headroom on both sides. */
   --hatch-gap: 5.5px;
-  --hatch-ink: rgba(0,0,0,.05);
+  --hatch-ink: rgba(39,35,28,.05);
   --stripes: repeating-linear-gradient(
     90deg,
     var(--hatch-ink) 0 1px,
-    rgba(0,0,0,0)    1px var(--hatch-gap)
+    transparent      1px var(--hatch-gap)
+  );
+
+  /* The projected shadow's pinstripe. Coarser than the card hatching,
+     because a shadow band is only 9px wide and a 5.5px pattern would
+     put one and a half lines in it. Ink on TRANSPARENT, not lines over
+     a solid fill: the ruled paper showing between the stripes is what
+     makes it read as a texture rather than as a lighter shadow. */
+  --shade-gap: 3px;
+  --shade-stripes: repeating-linear-gradient(
+    90deg,
+    var(--ink)  0 1px,
+    transparent 1px var(--shade-gap)
   );
 
   /* Museum everywhere — light / regular / ultrabold + italics */
@@ -122,6 +137,8 @@ html, body {
   background-position: center calc(50% - var(--grid-weight) / 2);
   overflow: hidden;
   transform-origin: center center;
+  /* nothing inside may fall back to the browser's pure black */
+  color: var(--ink);
 }
 
 /* paper grain — static, deterministic */
@@ -345,17 +362,30 @@ html, body {
 .card__box {
   order: 1;
   width: 200px;
+  position: relative;
   border: var(--stroke) solid var(--ink);
   border-radius: 14px;
-  overflow: hidden;
   background: var(--paper);
-  box-shadow:
-    -1px 1px 0 var(--ink),
-    -3px 3px 0 var(--ink),
-    -5px 5px 0 var(--ink),
-    -7px 7px 0 var(--ink),
-    -9px 9px 0 var(--ink);
 }
+
+/* The projected shadow, as a striped copy of the card sitting behind it.
+   One copy at the full offset, not the old stack of nine: stacking
+   translucent stripes would darken where they overlap and the texture
+   would curdle. What stays visible is the same L along the left and
+   the bottom. */
+.card__box::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--stroke) * -1);   /* the border box, not the padding box */
+  z-index: -1;
+  transform: translate(-9px, 9px);
+  border-radius: 14px;
+  background: var(--shade-stripes);
+}
+
+/* the box no longer clips, so its children carry the inner radius */
+.card__photo  { border-radius: 10px 10px 0 0; }
+.card__short  { border-radius: 0 0 10px 10px; }
 
 .card__photo {
   width: 100%;
@@ -517,6 +547,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .exp__label {
   height: 38px;
   overflow: hidden;
+  text-align: center;          /* the top text is centred, the body is not */
   font-family: var(--serif);
   font-weight: 800;
   font-size: 32px;
@@ -526,38 +557,15 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .exp__label span { display: block; }
 
 .exp__year {
-  align-self: flex-start;
-  /* the long shadow hangs 22px below the pill's own box, so the gap
-     has to clear that before it starts being air */
+  align-self: center;            /* the top text is centred now */
+  position: relative;
+  /* the shadow hangs 22px below the pill's own box, so the gap has to
+     clear that before it starts being air */
   margin: 10px 0 56px;
   padding: 6px 40px 12px;
   background: var(--sage);
   border: 6px solid var(--ink);
   border-radius: 999px;
-  /* projected, not blurred — a solid copy offset down-left */
-  box-shadow:
-    -1px 1px 0 var(--ink),
-    -2px 2px 0 var(--ink),
-    -3px 3px 0 var(--ink),
-    -4px 4px 0 var(--ink),
-    -5px 5px 0 var(--ink),
-    -6px 6px 0 var(--ink),
-    -7px 7px 0 var(--ink),
-    -8px 8px 0 var(--ink),
-    -9px 9px 0 var(--ink),
-    -10px 10px 0 var(--ink),
-    -11px 11px 0 var(--ink),
-    -12px 12px 0 var(--ink),
-    -13px 13px 0 var(--ink),
-    -14px 14px 0 var(--ink),
-    -15px 15px 0 var(--ink),
-    -16px 16px 0 var(--ink),
-    -17px 17px 0 var(--ink),
-    -18px 18px 0 var(--ink),
-    -19px 19px 0 var(--ink),
-    -20px 20px 0 var(--ink),
-    -21px 21px 0 var(--ink),
-    -22px 22px 0 var(--ink);
   font-family: var(--serif);
   font-weight: 800;
   font-size: 92px;
@@ -566,11 +574,31 @@ body.capture .exp__cell[data-sel] { outline: none; }
   white-space: nowrap;
 }
 
+/* projected, not blurred — and striped rather than solid. One copy at
+   the full 22px offset instead of the old stack: stacked translucent
+   copies would darken where they overlap and the pinstripe would curdle
+   into a smear. */
+.exp__year::before {
+  content: "";
+  position: absolute;
+  inset: -6px;                   /* the border box */
+  z-index: -1;
+  transform: translate(-22px, 22px);
+  border-radius: 999px;
+  background: var(--shade-stripes);
+}
+
+/* All caps, per the review. The titles were already Title Case, so
+   "capitalize the headers" can only have meant this. Caps set solid at
+   46px run long, so the tracking comes back a touch and the leading
+   tightens — uppercase has no descenders to separate the lines. */
 .exp__title {
   font-family: var(--serif);
   font-weight: 800;
   font-size: 46px;
-  line-height: 1.14;
+  line-height: 1.06;
+  letter-spacing: .005em;
+  text-transform: uppercase;
   color: inherit;
   margin-bottom: 22px;
 }
@@ -598,6 +626,26 @@ body.capture .exp__cell[data-sel] { outline: none; }
   padding: 4px 0 0 20px;
   border-left: 6px solid var(--ink);
   flex: none;
+}
+/* the kicker — "Key Stat", "Fun Fact". It names what the line below it
+   IS, so it is set small, upright and tracked out, against the italic
+   weight of the stat itself: two different jobs, two different voices.
+
+   Black, not the date's accent. Measured on the cream panel the accents
+   run 1.49:1 (sage) to 3.85:1 (olive) and every one of them fails as
+   text — the colour belongs to the rule beside it, which is a mark and
+   not something anyone has to read. Held back to .62 so it signposts
+   without competing with the line it introduces. */
+.exp__stat i {
+  display: block;
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  opacity: .62;
+  margin-bottom: 7px;
 }
 .exp__stat b {
   display: block;

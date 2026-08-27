@@ -81,12 +81,15 @@ var SCENE_TIMELINE = (function () {
   var yearTravel = 0;        /* measured once: one pill-length, right to left */
 
   var PAPER = "#F4F0E6";
+  var INK   = "#27231c";   /* must match --ink */
 
   /* the brand's five. colour lives in the accents now, never under the
      body copy: one date owns one colour, and its ring on the rail, its
      year pill, its card band and its stat rule are all that colour.
-     mustard leads so the logo's seed hands straight to the first ring. */
-  var ACCENTS = ["#CB9216", "#BB6024", "#666737", "#9FB0A3"];
+     mustard leads so the logo's seed hands straight to the first ring.
+     The sage came out in review — three now, not four, so the rotation
+     lands on a different colour for most dates than it used to. */
+  var ACCENTS = ["#CB9216", "#BB6024", "#666737"];
 
   /* and cream is the fifth: every panel, always. black on it reads
      11:1, which is why the paragraphs got easier to read at distance
@@ -194,7 +197,7 @@ var SCENE_TIMELINE = (function () {
       var short = document.createElement("div");
       short.className = "card__short";
       short.style.background = color;
-      short.style.color = A.inkOn(color, "#000000", PAPER);
+      short.style.color = A.inkOn(color, INK, PAPER);
       var shortText = document.createElement("span");
       shortText.className = "card__short__t";
       shortText.textContent = d.short;
@@ -438,10 +441,10 @@ var SCENE_TIMELINE = (function () {
        the background itself is written per frame in render(), because
        the lozenge has to bloom in the date's colour — cream on the
        cream paper is 1.2:1 and the shape simply is not there. */
-    r.expPanel.style.color = "#000000";
+    r.expPanel.style.color = INK;
     r.expYear.style.background = accent;
-    r.expYear.style.color = A.inkOn(accent, "#000000", PAPER);
-    r.expYear.style.borderColor = "#000000";
+    r.expYear.style.color = A.inkOn(accent, INK, PAPER);
+    r.expYear.style.borderColor = INK;
     r.expStat.style.borderLeftColor = accent;
     r.expLabelT.textContent = d.label || "";
     r.expYear.textContent  = d.year;
@@ -450,7 +453,10 @@ var SCENE_TIMELINE = (function () {
 
     if (d.stat) {
       r.expStat.style.display = "block";
+      /* "tag" names what the line is — Key Stat, Fun Fact — and is
+         optional: without it the footer behaves exactly as it did. */
       r.expStat.innerHTML =
+        (d.tag ? "<i>" + esc(d.tag) + "</i>" : "") +
         "<b>" + esc(d.stat) + "</b>" +
         (d.source ? "<span>" + esc(d.source) + "</span>" : "");
     } else {
@@ -674,7 +680,7 @@ var SCENE_TIMELINE = (function () {
     r.frame.setAttribute("points", facets(turn, stretch, BOX_W, BOX_H, 7, 0)
       .map(function (p) { return A.round(p[0],1) + "," + A.round(p[1],1); }).join(" "));
     r.frame.style.opacity = A.round(1 - over, 3);
-    r.exp.style.borderColor = "rgba(0,0,0," + A.round(over, 3) + ")";
+    r.exp.style.borderColor = "rgba(39,35,28," + A.round(over, 3) + ")";
 
     /* blooms in the date's colour — the same colour as the ring it grew
        out of — and cools to cream as it becomes the card */
