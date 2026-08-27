@@ -92,11 +92,16 @@
   --shade-x: 9px;
   --shade-y: 9px;
   --shade-angle: 45deg;
-  --shade-gap: 4px;
+  /* the stripe itself: weight, then the period it repeats on. Both
+     doubled from 1/4 — heavier lines further apart, at the same ink
+     coverage, so the shadow keeps its weight and only its rhythm
+     coarsens. */
+  --shade-line: 2px;
+  --shade-gap:  8px;
   --shade-stripes: repeating-linear-gradient(
     var(--shade-angle),
-    rgba(244,240,230,.18) 0 1px,
-    transparent           1px var(--shade-gap)
+    rgba(244,240,230,.20) 0 var(--shade-line),
+    transparent           var(--shade-line) var(--shade-gap)
   );
 
   /* Museum everywhere — light / regular / ultrabold + italics */
