@@ -18,9 +18,9 @@ var SCENE_TIMELINE = (function () {
   /* ---- tuning ------------------------------------------------
      the shape of one date:
        APPEAR   the small card is born from the dot
-       SPIN     the box grows out of the marker turning 120deg -> 0,
-                and lands SQUARE
-       WIDEN    the square opens out to 16:9
+       SPIN     the diamond blooms out of the marker, then turns 45deg
+                to the left and lands as a SQUARE
+       WIDEN    the square stretches sideways into the rectangle
        HOLD     on screen. contents arrive over its first ~2.3s,
                 then the photo drifts while it is read
        EXIT     the whole card leaves upward, off the top
@@ -45,7 +45,21 @@ var SCENE_TIMELINE = (function () {
 
   var BOX_W = 1500;       /* final width                                 */
   var BOX_H = 880;        /* final height                                */
-  var DIAMOND_H = 600;    /* 1500 x 600 = the crest's lozenge, 2.5:1     */
+  /* how much of SPIN the diamond takes to arrive; the rest is the turn.
+     three readable beats inside one phase, so the running time does not
+     move: the diamond appears, it turns, then it stretches.          */
+  var TURN_AT = 0.42;
+
+  /* the turn's curve. Quint — the 90-90 the stretch uses — is far too
+     steep for 45 degrees in half a second: it holds still for two tenths,
+     puts 30 of the 45 degrees into the next tenth, and reads as a snap
+     rather than a turn. Cubic, the 75-75, spreads it 1.5 / 10.5 / 22 /
+     9.6 / 1.2 and still settles hard at both ends. One word to change. */
+  var TURN_EASE = A.easeInOutCubic;
+
+  /* how far past the border box the clip retreats at the very end, so
+     the 26px corner radius appears rather than popping round          */
+  var RETREAT = 44;
 
   var SPACING = 300;      /* px between dates on the strip */
   var CARD_W = 200;       /* must match css .card__box width */
@@ -216,19 +230,55 @@ var SCENE_TIMELINE = (function () {
 
   function accentFor(i) { return ACCENTS[i % ACCENTS.length]; }
 
-  /* the eight points of the morph. k = 0 is the lozenge, k = 50 is
-     exactly the border box, and past that the shoulders leave it.
-     given a width and height it returns pixels; given none, percentages
-     for the clip-path. `inset` pulls the ring in by half the stroke, so
-     the outline's OUTER edge lands where the card's border does — an svg
-     stroke straddles its path, a css border sits wholly inside. */
-  function shoulders(k, w, h, inset) {
-    w = w || 100; h = h || 100; inset = inset || 0;
-    var x0 = inset, x1 = w - inset, y0 = inset, y1 = h - inset;
-    var fx = function (p) { return x0 + (x1 - x0) * p / 100; };
-    var fy = function (p) { return y0 + (y1 - y0) * p / 100; };
-    return [[x0, fy(50-k)], [fx(50-k), y0], [fx(50+k), y0], [x1, fy(50-k)],
-            [x1, fy(50+k)], [fx(50+k), y1], [fx(50-k), y1], [x0, fy(50+k)]];
+  /* ---- the card's outline ------------------------------------
+     Four points, numbered the way the shape is read:
+
+         1 up      2 right      3 bottom      4 left
+
+     At phi = 0 that is the diamond. Turning it 45 degrees to the LEFT
+     carries 1 to the top-left corner, 2 to the top-right, 3 to the
+     bottom-right and 4 to the bottom-left — so it lands as a square,
+     and the stretch that follows is exactly what it looks like: 1 and 4
+     travel left while 2 and 3 travel right.
+
+     The radius grows as it turns —
+
+         R = halfHeight / cos(phi)
+
+     — which keeps the shape inscribed in one unchanging h-by-h box the
+     whole way round. It begins as the diamond touching all four sides
+     of that box and ends AS the box, so the silhouette is never taller
+     than the card's own final height and nothing can reach the running
+     bars mid-turn. A plain rotation would swell to h * sqrt(2) at 45
+     degrees, which at this size overruns the frame.
+
+     `inset` pulls the ring in by half the stroke, so the outline's
+     OUTER edge lands where the card's border does — an svg stroke
+     straddles its path, a css border sits wholly inside. `out` pushes
+     the points back off the edges at the very end, so the clip retreats
+     and lets the corner radius appear on its own.                 */
+  function facets(phi, stretch, w, h, inset, out) {
+    inset = inset || 0; out = out || 0;
+    var cx = w / 2, cy = h / 2;
+    var hh = (h - inset * 2) / 2;
+    var R  = hh / Math.cos(phi);
+    var dx = stretch * ((w - inset * 2) - (h - inset * 2)) / 2;
+
+    var s = Math.sin(phi), c = Math.cos(phi);
+    /* the four directions, turned counter-clockwise by phi */
+    var p = [[-s, -c], [c, -s], [s, c], [-c, s]];
+    var shift = [-1, 1, 1, -1];          /* 1 and 4 left, 2 and 3 right */
+
+    return p.map(function (v, i) {
+      var x = v[0] * R + shift[i] * dx;
+      var y = v[1] * R;
+      /* push each point further out along its own quadrant */
+      if (out) {
+        x += (x < 0 ? -out : out);
+        y += (y < 0 ? -out : out);
+      }
+      return [cx + x, cy + y];
+    });
   }
 
   /* archive photos are landscape; the frame is portrait, so 40% of
@@ -553,48 +603,67 @@ var SCENE_TIMELINE = (function () {
 
     /* ---- the expanded card ---------------------------------- */
 
-    /* 1 + 2. it blooms out of the marker as the crest's lozenge — the
-       flat horizontal diamond from the badge, hatched the same way —
-       and that silhouette then fills out into the card.
+    /* 1 + 2. THREE INSTANCES, in order:
 
-       this is a real morph of the outline, not a rotated square: an
-       8-point polygon whose shoulders slide from the mid-points out to
-       the corners. k=0 is the diamond, k=50 is exactly the border box,
-       and it keeps going to 72 so the clip retreats past the edges and
-       lets the 26px corner radius appear on its own. stopping at 50
-       would hold sharp corners and then pop them round. */
-    var bloom = A.easeOutQuint(A.seg(ct, tSpin, SPIN));
-    var fill  = A.easeInOutQuint(widen);
+         one   the diamond appears — four points, 1 up, 2 right,
+               3 bottom, 4 left
+         two   it turns 45 degrees to the LEFT and becomes a square
+               whose side is the card's final height
+         three the square stretches: points 1 and 4 travel left,
+               points 2 and 3 travel right, and it is the rectangle
 
-    var k = A.lerp(0, 72, fill);
-    var poly = shoulders(k).map(function (p) {
-      return A.round(p[0],2) + "% " + A.round(p[1],2) + "%"; });
+       Turning carries 1 to the top-left corner and 4 to the bottom-left,
+       which is exactly why those two are the pair that goes left in the
+       stretch — the numbering survives all three instances. */
+    /* ONE — the diamond arrives, blooming out of the marker's ring in
+       the date's own colour. */
+    var bloom = A.easeOutQuint(A.seg(ct, tSpin, SPIN * TURN_AT));
+
+    /* TWO — it turns 45 degrees to the left and lands as a square whose
+       side is the card's final height. */
+    var turn = TURN_EASE(
+      A.seg(ct, tSpin + SPIN * TURN_AT, SPIN * (1 - TURN_AT)));
+    var phi = turn * Math.PI / 4;
+
+    /* THREE — the square stretches into the rectangle: points 1 and 4
+       travel left, 2 and 3 travel right. `open` passes 1 at the border
+       box and carries on so the clip can retreat off the edges and let
+       the 26px corner radius appear on its own — stopping dead at the
+       box would hold sharp corners and then pop them round in a frame. */
+    var fill    = A.easeInOutQuint(widen);
+    var open    = fill * 1.44;
+    var stretch = Math.min(open, 1);
+    var over    = A.clamp((open - 1) / 0.44);
+
+    var poly = facets(phi, stretch, BOX_W, BOX_H, 0, over * RETREAT)
+      .map(function (p) {
+        return A.round(p[0],1) + "px " + A.round(p[1],1) + "px"; });
     r.exp.style.clipPath = fill >= 1 ? "none" : "polygon(" + poly.join(", ") + ")";
 
     /* the outline is drawn in SVG, not as a border. a css border belongs
-       to the rectangle and the clip takes it away along every diagonal;
-       a polygon stroke follows the lozenge's own edges. the two swap
-       over the last stretch, where both shapes are the same rectangle
-       and the handover is invisible. */
-    /* the clip runs past 50 so it can retreat off the edges, but the
-       outline must STOP there. beyond 50 the shoulders sit outside the
-       box, and a clip simply ignores them while a stroke draws them —
-       as four diagonals poking out of the corners. */
-    /* no viewBox: with none, the svg's user space is 1:1 with its css
+       to the rectangle, so the clip takes it away along every diagonal
+       while the diamond and the square are on screen; a polygon stroke
+       follows the shape's own edges. the two swap over at the end, where
+       both are the same rectangle and the handover is invisible.
+
+       no viewBox: with none, the svg's user space is 1:1 with its css
        size, which is already the stage's own units. so stroke-width 14
        is 14 stage px and scales exactly like the card's border. */
-    var frameH = A.lerp(DIAMOND_H, BOX_H, fill);
-    r.frame.setAttribute("points", shoulders(Math.min(k, 50), BOX_W, frameH, 7)
+    /* the outline never retreats — past the border box a clip simply
+       ignores the points while a stroke would draw them, as four spurs
+       poking out of the corners. It stops at the box and hands over. */
+    r.frame.setAttribute("points", facets(phi, stretch, BOX_W, BOX_H, 7, 0)
       .map(function (p) { return A.round(p[0],1) + "," + A.round(p[1],1); }).join(" "));
-    var handover = A.clamp((k - 50) / 22);
-    r.frame.style.opacity = A.round(1 - handover, 3);
-    r.exp.style.borderColor = "rgba(0,0,0," + A.round(handover, 3) + ")";
+    r.frame.style.opacity = A.round(1 - over, 3);
+    r.exp.style.borderColor = "rgba(0,0,0," + A.round(over, 3) + ")";
 
     /* blooms in the date's colour — the same colour as the ring it grew
        out of — and cools to cream as it becomes the card */
     r.exp.style.backgroundColor = A.mix(accentFor(i), PANEL, A.easeOutCubic(fill));
 
-    r.wrap.style.height = A.round(frameH, 1) + "px";
+    /* the wrap no longer resizes: the shape is inscribed in the card's
+       own box the whole way through, so the box can simply be the box */
+    r.wrap.style.height = BOX_H + "px";
     r.wrap.style.width  = BOX_W + "px";
 
     /* 8. at the end the whole card leaves upward, off the top.
@@ -606,7 +675,7 @@ var SCENE_TIMELINE = (function () {
     r.exp.style.opacity = 1;
     r.wrap.style.transform =
       "translate(-50%, -50%) translateY(" + A.round(exitY, 1) + "px)" +
-      " scale(" + A.round(A.lerp(SQUARE / BOX_W, 1, bloom), 4) + ")";
+      " scale(" + A.round(A.lerp(SQUARE / BOX_H, 1, bloom), 4) + ")";
 
     /* 4a. the divider builds out of its own centre toward both edges */
     var line = A.ease(ct, tWiden + 0.20, 0.40, A.easeOutQuint);

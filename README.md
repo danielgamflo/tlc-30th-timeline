@@ -238,26 +238,65 @@ sync between people or machines — each reviewer copies their own list and
 sends it. Shared live comments would need a small backend; a Cloudflare
 Worker with KV is the least-effort route and the front end barely changes.
 
-## The lozenge
+## The shape
 
-The card does not grow as a rectangle. It blooms out of the rail's ring
-as the flat horizontal diamond from the church crest — hatched the same
-way — and that silhouette then fills out into the card.
+The card does not grow as a rectangle. It arrives in three instances:
 
-It is a real morph of the outline, not a rotated square: an 8-point
-polygon whose shoulders slide from the mid-points out to the corners.
-`k = 0` is the diamond, `k = 50` is exactly the border box. It carries on
-to 72 so the clip retreats past the edges and the 26px corner radius
-appears on its own — stopping at 50 would hold sharp corners and then pop
-them round in one frame.
+```
+one    the diamond appears     1 up   2 right   3 bottom   4 left
+two    it turns 45° LEFT       1 → top-left, 2 → top-right,
+                               3 → bottom-right, 4 → bottom-left
+three  it stretches            1 and 4 go left, 2 and 3 go right
+```
 
-The outline is an SVG polygon, not a border. A css border belongs to the
-rectangle, so the clip takes it away along every diagonal and leaves four
-stumps in the corners. Three details make the two read as one stroke:
+The numbering survives all three, and that is the point: turning the
+diamond to the left carries point 1 to the top-left corner and point 4
+to the bottom-left, which is exactly why those two are the pair that
+travels left in the stretch. The square it lands on is **880 × 880** —
+its side is the rectangle's own height.
 
-- The clip runs to 72 but the **outline stops at 50**. Past 50 the
-  shoulders sit outside the box; a clip ignores them, a stroke draws
-  them — as four diagonals poking out of the corners.
+### Why the turn grows
+
+A plain rotation would swell the silhouette to 880 × √2 = 1244 at
+45°, which overruns a 1080 frame and would reach the running bars. So
+the radius grows as it turns:
+
+```
+R = halfHeight / cos(phi)
+```
+
+which keeps the shape inscribed in one unchanging 880 box the whole way
+round. It begins as the diamond touching all four sides of that box and
+ends *as* the box. Swept across all 42 dates, 61 frames each, the tallest
+silhouette measures 866px — 880 less the 14px stroke — and never more.
+
+### The turn's curve
+
+`TURN_EASE`, one word at the top of `js/timeline.js`. Quint — the 90-90
+the stretch uses — is far too steep for 45° in half a second: it holds
+still for two tenths, puts 30 of the 45 degrees into the next tenth, and
+reads as a snap rather than a turn.
+
+| tenth of a second | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| quint | 0.2° | 7.7° | **30.5°** | 6.4° | 0.2° |
+| cubic | 1.5° | 10.5° | 22.2° | 9.6° | 1.2° |
+
+Cubic, the 75-75, is the default.
+
+### The outline
+
+It is an SVG polygon, not a border. A css border belongs to the
+rectangle, so the clip takes it away along every diagonal while the
+diamond and the square are on screen; a polygon stroke follows the
+shape's own edges. Three details make the two read as one stroke:
+
+- The clip carries past the border box (`open` runs to 1.44) so it
+  retreats off the edges and lets the 26px corner radius appear on its
+  own. Stopping dead at the box would hold sharp corners and then pop
+  them round in a single frame. The **outline stops at the box** — past
+  it a clip ignores the points while a stroke draws them, as four spurs
+  poking out of the corners.
 - **No `viewBox`, no `non-scaling-stroke`.** With neither, the svg's user
   space is 1:1 with its css size, which is already the stage's units, so
   `stroke-width: 14` is 14 stage px and scales with the card's border.
@@ -270,7 +309,7 @@ stumps in the corners. Three details make the two read as one stroke:
 Two more things the shape needs, both learned the hard way:
 
 - It blooms in the date's colour and cools to cream as it opens. Cream on
-  the cream paper measures 1.2:1, so a lozenge that started at its final
+  the cream paper measures 1.2:1, so a shape that started at its final
   colour was simply not visible.
 - The black stroke arrives with the corners, not before. A 14px outline
   clipped along a diagonal reads as a broken edge.
