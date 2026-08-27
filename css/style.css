@@ -110,10 +110,16 @@
      while closing the gap shows more paper and lightens the mass. */
   --shade-line: 1.5px;
   --shade-gap:  6px;
+  /* the shadow's own colour. khaki, per review — note this is the same
+     value as --cream, which is what every card panel is made of, so the
+     year pill's shadow falls on its own colour and cannot be seen. */
+  --shade-fill: var(--khaki);
+  /* the stripe flips with it: paper-coloured lines vanish on khaki, so
+     the texture is ink now rather than light */
   --shade-stripes: repeating-linear-gradient(
     var(--shade-angle),
-    rgba(244,240,230,.20) 0 var(--shade-line),
-    transparent           var(--shade-line) var(--shade-gap)
+    rgba(39,35,28,.13) 0 var(--shade-line),
+    transparent        var(--shade-line) var(--shade-gap)
   );
 
   /* Museum everywhere — light / regular / ultrabold + italics */
@@ -406,7 +412,7 @@ html, body {
   z-index: -1;
   transform: translate(var(--shade-x), var(--shade-y));
   border-radius: 14px;
-  background-color: var(--ink);
+  background-color: var(--shade-fill);
   background-image: var(--shade-stripes);
 }
 
@@ -614,7 +620,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
   z-index: -1;
   transform: translate(calc(var(--shade-x) * 2.44), calc(var(--shade-y) * 2.44));
   border-radius: 999px;
-  background-color: var(--ink);
+  background-color: var(--shade-fill);
   background-image: var(--shade-stripes);
 }
 
