@@ -86,7 +86,7 @@ All six live at the top of `js/timeline.js`.
 the church's copy — the review round returned the same text it was given.
 The real material is in the team's "possible things to include" notes,
 which is where the `stat` values will come from. Entries flagged
-`"draft": true` were added with no copy at all. Sixteen dates still have
+`"draft": true` were added with no copy at all. Seventeen dates still have
 no photograph; `tools/photo-map.json` records what the church sent and
 where each file went.
 
