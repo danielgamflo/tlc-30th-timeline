@@ -50,6 +50,13 @@ var SCENE_TIMELINE = (function () {
      move: the diamond appears, it turns, then it stretches.          */
   var TURN_AT = 0.42;
 
+  /* the flat diamond it starts as — the crest's lozenge, 2.5:1.
+     Wider than the 880 square it turns into, so the shape narrows
+     through the turn and opens out again in the stretch. Push LOZ_W
+     past 1200 and that pinch becomes the loudest thing in the move. */
+  var LOZ_W = 1200;
+  var LOZ_H = 480;
+
   /* the turn's curve. Quint — the 90-90 the stretch uses — is far too
      steep for 45 degrees in half a second: it holds still for two tenths,
      puts 30 of the 45 degrees into the next tenth, and reads as a snap
@@ -257,21 +264,34 @@ var SCENE_TIMELINE = (function () {
      straddles its path, a css border sits wholly inside. `out` pushes
      the points back off the edges at the very end, so the clip retreats
      and lets the corner radius appear on its own.                 */
-  function facets(phi, stretch, w, h, inset, out) {
+  /* the two half-axes at turn progress u: vertical for points 1 and 3,
+     horizontal for 2 and 4. At u = 0 they are the crest's flat lozenge —
+     wide and squat, 1 and 3 pulled in toward the centre, 2 and 4 pushed
+     out to the sides. At u = 1 both reach the square's centre-to-corner
+     distance, and equal axes are what make it a square. */
+  function axes(u, inset) {
+    var a0 = LOZ_H / 2 - inset;                      /* lozenge, vertical   */
+    var b0 = LOZ_W / 2 - inset;                      /* lozenge, horizontal */
+    var r1 = (BOX_H / 2 - inset) * Math.SQRT2;       /* square, to a corner */
+    return [A.lerp(a0, r1, u), A.lerp(b0, r1, u)];
+  }
+
+  function facets(u, stretch, w, h, inset, out) {
     inset = inset || 0; out = out || 0;
+    var phi = u * Math.PI / 4;
+    var ab = axes(u, inset), a = ab[0], b = ab[1];
     var cx = w / 2, cy = h / 2;
-    var hh = (h - inset * 2) / 2;
-    var R  = hh / Math.cos(phi);
     var dx = stretch * ((w - inset * 2) - (h - inset * 2)) / 2;
 
     var s = Math.sin(phi), c = Math.cos(phi);
     /* the four directions, turned counter-clockwise by phi */
-    var p = [[-s, -c], [c, -s], [s, c], [-c, s]];
+    var p     = [[-s, -c], [c, -s], [s, c], [-c, s]];
+    var rad   = [a, b, a, b];            /* 1 and 3 short, 2 and 4 long */
     var shift = [-1, 1, 1, -1];          /* 1 and 4 left, 2 and 3 right */
 
     return p.map(function (v, i) {
-      var x = v[0] * R + shift[i] * dx;
-      var y = v[1] * R;
+      var x = v[0] * rad[i] + shift[i] * dx;
+      var y = v[1] * rad[i];
       /* push each point further out along its own quadrant */
       if (out) {
         x += (x < 0 ? -out : out);
@@ -623,7 +643,6 @@ var SCENE_TIMELINE = (function () {
        side is the card's final height. */
     var turn = TURN_EASE(
       A.seg(ct, tSpin + SPIN * TURN_AT, SPIN * (1 - TURN_AT)));
-    var phi = turn * Math.PI / 4;
 
     /* THREE — the square stretches into the rectangle: points 1 and 4
        travel left, 2 and 3 travel right. `open` passes 1 at the border
@@ -635,7 +654,7 @@ var SCENE_TIMELINE = (function () {
     var stretch = Math.min(open, 1);
     var over    = A.clamp((open - 1) / 0.44);
 
-    var poly = facets(phi, stretch, BOX_W, BOX_H, 0, over * RETREAT)
+    var poly = facets(turn, stretch, BOX_W, BOX_H, 0, over * RETREAT)
       .map(function (p) {
         return A.round(p[0],1) + "px " + A.round(p[1],1) + "px"; });
     r.exp.style.clipPath = fill >= 1 ? "none" : "polygon(" + poly.join(", ") + ")";
@@ -652,7 +671,7 @@ var SCENE_TIMELINE = (function () {
     /* the outline never retreats — past the border box a clip simply
        ignores the points while a stroke would draw them, as four spurs
        poking out of the corners. It stops at the box and hands over. */
-    r.frame.setAttribute("points", facets(phi, stretch, BOX_W, BOX_H, 7, 0)
+    r.frame.setAttribute("points", facets(turn, stretch, BOX_W, BOX_H, 7, 0)
       .map(function (p) { return A.round(p[0],1) + "," + A.round(p[1],1); }).join(" "));
     r.frame.style.opacity = A.round(1 - over, 3);
     r.exp.style.borderColor = "rgba(0,0,0," + A.round(over, 3) + ")";
@@ -675,7 +694,7 @@ var SCENE_TIMELINE = (function () {
     r.exp.style.opacity = 1;
     r.wrap.style.transform =
       "translate(-50%, -50%) translateY(" + A.round(exitY, 1) + "px)" +
-      " scale(" + A.round(A.lerp(SQUARE / BOX_H, 1, bloom), 4) + ")";
+      " scale(" + A.round(A.lerp(SQUARE / LOZ_H, 1, bloom), 4) + ")";
 
     /* 4a. the divider builds out of its own centre toward both edges */
     var line = A.ease(ct, tWiden + 0.20, 0.40, A.easeOutQuint);

@@ -243,32 +243,44 @@ Worker with KV is the least-effort route and the front end barely changes.
 The card does not grow as a rectangle. It arrives in three instances:
 
 ```
-one    the diamond appears     1 up   2 right   3 bottom   4 left
-two    it turns 45° LEFT       1 → top-left, 2 → top-right,
-                               3 → bottom-right, 4 → bottom-left
-three  it stretches            1 and 4 go left, 2 and 3 go right
+one    the flat lozenge appears  1 up   2 right   3 bottom   4 left
+                                 1 and 3 pulled in toward the centre,
+                                 2 and 4 pushed out to the sides
+two    it turns 45° LEFT         1 → top-left, 2 → top-right,
+                                 3 → bottom-right, 4 → bottom-left
+three  it stretches              1 and 4 go left, 2 and 3 go right
 ```
 
+It starts as the crest's lozenge — squat and wide, `LOZ_W × LOZ_H`,
+2.5:1. Points 1 and 3 sit on the short axis, 2 and 4 on the long one,
+and the turn brings the two axes to the same length: **equal axes are
+what make it a square.**
+
 The numbering survives all three, and that is the point: turning the
-diamond to the left carries point 1 to the top-left corner and point 4
+lozenge to the left carries point 1 to the top-left corner and point 4
 to the bottom-left, which is exactly why those two are the pair that
 travels left in the stretch. The square it lands on is **880 × 880** —
 its side is the rectangle's own height.
 
-### Why the turn grows
+### The pinch
 
-A plain rotation would swell the silhouette to 880 × √2 = 1244 at
-45°, which overruns a 1080 frame and would reach the running bars. So
-the radius grows as it turns:
+The lozenge is wider than the square it becomes, so the shape narrows
+through the turn and opens out again in the stretch:
 
-```
-R = halfHeight / cos(phi)
-```
+| | width |
+|---|---|
+| lozenge | 1200 |
+| mid-turn | 1087 |
+| square | 880 |
+| rectangle | 1500 |
 
-which keeps the shape inscribed in one unchanging 880 box the whole way
-round. It begins as the diamond touching all four sides of that box and
-ends *as* the box. Swept across all 42 dates, 61 frames each, the tallest
-silhouette measures 866px — 880 less the 14px stroke — and never more.
+At `LOZ_W = 1200` that dip reads as the shape gathering itself. Push it
+to 1500 — the crest's exact proportion — and the pinch becomes the
+loudest thing in the move. It is one number.
+
+Nothing overruns the frame: swept across all 42 dates at 61 frames each,
+the tallest silhouette measures 866px — 880 less the 14px stroke — and
+never more.
 
 ### The turn's curve
 
