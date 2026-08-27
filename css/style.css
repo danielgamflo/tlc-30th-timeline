@@ -560,11 +560,17 @@ body.capture .exp__cell[data-sel] { outline: none; }
   transform-origin: center center;
 }
 
+/* Everything in the panel is centred — label, pill, title, paragraph.
+   The key stat is the one exception, kept as it was: it is anchored by
+   the accent rule down its left edge, and that rule only reads as a
+   margin note if the line beside it starts where the rule does. */
 .exp__panel {
   flex: 1;
   padding: 46px 50px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   overflow: hidden;
   background: transparent;      /* the striped ground belongs to .expanded */
 }
@@ -572,8 +578,8 @@ body.capture .exp__cell[data-sel] { outline: none; }
 /* a window the date rises out of, from behind the year pill */
 .exp__label {
   height: 38px;
+  width: 100%;
   overflow: hidden;
-  text-align: center;          /* the top text is centred, the body is not */
   font-family: var(--serif);
   font-weight: 800;
   font-size: 32px;
@@ -622,6 +628,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
    46px run long, so the tracking comes back a touch and the leading
    tightens — uppercase has no descenders to separate the lines. */
 .exp__title {
+  width: 100%;
   font-family: var(--serif);
   font-weight: 800;
   font-size: 46px;
@@ -635,6 +642,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
 /* the clipped window the paragraph scrolls inside */
 .exp__body {
   flex: 1;
+  width: 100%;                 /* align-items:center would otherwise shrink it */
   position: relative;
   overflow: hidden;
 }
@@ -651,6 +659,8 @@ body.capture .exp__cell[data-sel] { outline: none; }
 /* optional — sits at the foot of the panel when a date has one,
    and simply gives its room back to the paragraph when it doesn't */
 .exp__stat {
+  width: 100%;
+  text-align: left;            /* the one thing left alone, as asked */
   margin-top: auto;
   padding: 4px 0 0 20px;
   border-left: 6px solid var(--ink);
