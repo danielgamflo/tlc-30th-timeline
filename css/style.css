@@ -92,12 +92,13 @@
   --shade-x: 9px;
   --shade-y: 9px;
   --shade-angle: 45deg;
-  /* the stripe itself: weight, then the period it repeats on. Both
-     doubled from 1/4 — heavier lines further apart, at the same ink
-     coverage, so the shadow keeps its weight and only its rhythm
-     coarsens. */
+  /* the stripe itself: weight, then the period it repeats on. The line
+     doubled from 1px and stayed there; the period landed between the
+     original 4 and the 8 that read as too loose. The two move
+     independently — raising the line darkens nothing, it only thickens,
+     while closing the gap shows more paper and lightens the mass. */
   --shade-line: 2px;
-  --shade-gap:  8px;
+  --shade-gap:  6px;
   --shade-stripes: repeating-linear-gradient(
     var(--shade-angle),
     rgba(244,240,230,.20) 0 var(--shade-line),
