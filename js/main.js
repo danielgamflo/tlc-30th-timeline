@@ -86,7 +86,10 @@ var APP = (function () {
       var local = t - s.start;
       var visible = local >= 0 && local < s.duration;
       s.el.style.display = visible ? "block" : "none";
-      if (visible) s.render(local);
+      /* `playing` is for video clips only: running one on its own clock
+         beats seeking it 30 times a second, but a paused piece — a step,
+         a scrub, the headless capture — must seek exactly. */
+      if (visible) s.render(local, playing && !captureMode);
     }
     TICKER.render(t, total);   /* the bars run on absolute time, not scene time */
     paintHud();
@@ -323,6 +326,20 @@ var APP = (function () {
     window.addEventListener("resize", fit);
     window.addEventListener("keydown", keys);
 
+    /* A browser will not autoplay audible media before someone has
+       interacted with the page, so clips start silent and the sound
+       comes up at the first real gesture — never at load, which would
+       simply fail and leave them muted for good. A lobby screen nobody
+       touches therefore plays silent, which is the right default for a
+       lobby; the exported MP4 carries the audio either way. */
+    function wakeSound() {
+      SCENE_TIMELINE.sound(true);
+      window.removeEventListener("pointerdown", wakeSound, true);
+      window.removeEventListener("keydown", wakeSound, true);
+    }
+    window.addEventListener("pointerdown", wakeSound, true);
+    window.addEventListener("keydown", wakeSound, true);
+
     var playIcon = document.getElementById("btn-play-i");
     function paintPlay() { playIcon.innerHTML = playing ? "&#10073;&#10073;" : "&#9654;"; }
     onPlayStateChange = paintPlay;
@@ -355,7 +372,8 @@ var APP = (function () {
         captureMode = on !== false;
         document.body.classList.toggle("capture", captureMode);
         fit();
-      }
+      },
+      sound: function (on) { return SCENE_TIMELINE.sound(on); }
     };
   }
 
@@ -382,6 +400,23 @@ var APP = (function () {
         var f = shots[j];
         if (!f || seen[f]) continue;
         seen[f] = true;
+
+        /* a clip has to be buffered rather than decoded, and it must be
+           ready before its card arrives or the first second plays black */
+        if (/\.(mp4|webm|mov)$/i.test(f)) {
+          var vid = document.createElement("video");
+          vid.preload = "auto";
+          vid.muted = true;
+          vid.src = "assets/video/" + f;
+          warmed.push(vid);
+          waits.push(new Promise(function (go) {
+            vid.addEventListener("canplaythrough", go, { once: true });
+            vid.addEventListener("error", go, { once: true });
+            setTimeout(go, 6000);
+          }));
+          vid.load();
+          continue;
+        }
 
         var img = new Image();
         img.src = "assets/photos/" + f;

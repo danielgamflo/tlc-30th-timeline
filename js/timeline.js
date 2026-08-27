@@ -157,7 +157,7 @@ var SCENE_TIMELINE = (function () {
       if (firstShot) {
         photo = document.createElement("img");
         photo.className = "card__photo";
-        photo.src = "assets/photos/" + firstShot;
+        photo.src = stillFor(firstShot);
         photo.style.objectPosition = focusOf(d, 0);
         photo.alt = "";
       } else {
@@ -242,6 +242,78 @@ var SCENE_TIMELINE = (function () {
     return f[k] || f[0] || "50% 50%";
   }
 
+  /* ---- moving footage ----------------------------------------
+     a card can hold a clip as well as stills. video lives in its own
+     folder so the two are never confused, and it is shown WHOLE:
+     `contain` plus solid black, rather than losing a third of the
+     picture to the portrait crop the way a photograph does.        */
+
+  function isVideo(name) { return /\.(mp4|webm|mov)$/i.test(name); }
+
+  /* the clip's own fade in and out are baked into the file, so nothing
+     here has to ramp a volume — this only decides whether the track is
+     audible at all. */
+  var soundOn = false;
+
+  function unmuteAll() {
+    var vs = r.expPhoto ? r.expPhoto.getElementsByTagName("video") : [];
+    for (var i = 0; i < vs.length; i++) vs[i].muted = !soundOn;
+  }
+
+  /* where the hold begins inside a cycle. a constant, which is what
+     lets a clip catch up on its own once its metadata lands. */
+  var HOLD_AT = APPEAR + SPIN + WIDEN;
+
+  /* the last frame render() was asked for. a paused piece draws exactly
+     once per seek, so a video whose metadata arrives after that draw
+     would otherwise sit on frame zero for good. */
+  var lastCt = 0, lastPlaying = false;
+
+  function srcFor(name) {
+    return (isVideo(name) ? "assets/video/" : "assets/photos/") + name;
+  }
+
+  /* every clip ships a still of itself beside it, same name, .jpg. The
+     small card on the rail is 200px wide and there are forty of them —
+     it gets the still, not a second video element. */
+  function stillFor(name) {
+    return isVideo(name)
+      ? "assets/video/" + name.replace(/\.[^.]+$/, ".jpg")
+      : "assets/photos/" + name;
+  }
+
+  /* the clip is a pure function of time like everything else:
+         video time = time since this card's hold began.
+     while the piece is PLAYING the element runs on its own clock and is
+     only corrected once it has drifted, because seeking every frame
+     stutters badly. while it is PAUSED — stepping, scrubbing, or being
+     captured for the export — it is seeked exactly, and that is what
+     keeps the render frame-exact. */
+  function driveVideo(v, local, playing) {
+    var dur = v.duration;
+    if (!dur || dur !== dur) return;          /* metadata not in yet */
+
+    if (local < 0 || local >= dur) {
+      if (!v.paused) v.pause();
+      /* before the hold it waits on frame one; after it, on the last
+         frame, so the card exits on a held image and not on black */
+      var park = local < 0 ? 0 : Math.max(0, dur - 1 / 30);
+      if (Math.abs(v.currentTime - park) > 0.02) v.currentTime = park;
+      return;
+    }
+
+    if (playing) {
+      if (v.paused) {
+        var p = v.play();
+        if (p && p["catch"]) p["catch"](function () {});
+      }
+      if (Math.abs(v.currentTime - local) > 0.25) v.currentTime = local;
+    } else {
+      if (!v.paused) v.pause();
+      if (Math.abs(v.currentTime - local) > 1 / 60) v.currentTime = local;
+    }
+  }
+
   function esc(s) {
     return String(s === null || s === undefined ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -288,10 +360,36 @@ var SCENE_TIMELINE = (function () {
       r.expPhoto.className = "exp__photo";
       var html = "";
       for (var s2 = 0; s2 < shots.length; s2++) {
-        html += '<img src="assets/photos/' + shots[s2] + '" alt="" ' +
-                'style="object-position:' + focusOf(d, s2) + '">';
+        if (isVideo(shots[s2])) {
+          /* muted in the markup on purpose: a browser refuses to
+             autoplay anything audible until someone has interacted with
+             the page, and a silent lobby loop that plays beats an
+             audible one that never starts. APP unmutes on the first
+             real gesture, and the exported MP4 carries the audio
+             whatever the browser decided here. */
+          html += '<video src="' + srcFor(shots[s2]) + '" ' +
+                  'poster="' + stillFor(shots[s2]) + '" ' +
+                  'muted playsinline preload="auto"></video>';
+        } else {
+          html += '<img src="' + srcFor(shots[s2]) + '" alt="" ' +
+                  'style="object-position:' + focusOf(d, s2) + '">';
+        }
       }
       r.expPhoto.innerHTML = html;
+
+      var vids = r.expPhoto.getElementsByTagName("video");
+      for (var v2 = 0; v2 < vids.length; v2++) {
+        vids[v2].muted = !soundOn;
+        /* these elements are brand new, so their metadata arrives after
+           this frame has already been drawn — and a paused piece draws
+           only once per seek. without this the clip would sit on frame
+           zero until something else happened to force a redraw. */
+        (function (v) {
+          v.addEventListener("loadedmetadata", function () {
+            driveVideo(v, lastCt - HOLD_AT, lastPlaying);
+          }, { once: true });
+        })(vids[v2]);
+      }
     } else {
       r.expPhoto.className = "exp__photo exp__photo--empty";
       r.expPhoto.setAttribute("data-year", d.year);
@@ -311,12 +409,18 @@ var SCENE_TIMELINE = (function () {
 
   /* ---- frame -------------------------------------------------- */
 
-  function render(t) {
+  /* `playing` only reaches the video clips, and only to choose between
+     letting one run on its own clock and seeking it exactly. every
+     other value below still comes from t alone. */
+  function render(t, playing) {
     if (!built) return;
 
     var i = Math.floor(t / CYCLE);
     if (i >= data.length) i = data.length - 1;
     var ct = t - i * CYCLE;                     /* time inside this date */
+
+    lastCt = ct;
+    lastPlaying = !!playing;
 
     /* phase boundaries */
     var tSpin    = APPEAR;
@@ -493,22 +597,31 @@ var SCENE_TIMELINE = (function () {
     /* 5. the photo settles, then drifts almost imperceptibly while it
        is read. a dead-still frame on an LED wall reads as a frozen
        player. set DRIFT to 1 to stop it. */
-    var imgs = r.expPhoto.getElementsByTagName("img");
-    if (imgs.length) {
+    var shots = r.expPhoto.children;
+    if (shots.length) {
       var settle = A.lerp(1.06, 1, A.easeOutQuint(A.seg(ct, tWiden + 0.45, 0.80)));
       var drift = A.lerp(1, DRIFT, A.ease(ct, tHold + 0.9, HOLD - 0.9, A.linear));
       var zoom = "scale(" + A.round(settle * drift, 4) + ")";
 
-      /* several photos on one date cross-fade across the hold */
-      var slot = (HOLD - 1.2) / imgs.length;
-      for (var k = 0; k < imgs.length; k++) {
+      /* several shots on one date cross-fade across the hold */
+      var slot = (HOLD - 1.2) / shots.length;
+      for (var k = 0; k < shots.length; k++) {
+        var el = shots[k];
         var o = 1;
-        if (imgs.length > 1) {
+        if (shots.length > 1) {
           var from = tHold + 0.9 + k * slot;
           o = (k === 0) ? 1 : A.ease(ct, from, 0.9, A.easeInOutCubic);
         }
-        imgs[k].style.opacity = A.round(o, 3);
-        imgs[k].style.transform = zoom;
+        el.style.opacity = A.round(o, 3);
+
+        if (el.tagName === "VIDEO") {
+          /* no settle, no drift: both are a scale, and a scale on a
+             contained clip crops away exactly what the black bars are
+             there to protect. the clip's own motion is the motion. */
+          driveVideo(el, ct - tHold, playing);
+        } else {
+          el.style.transform = zoom;
+        }
       }
     }
 
@@ -539,6 +652,19 @@ var SCENE_TIMELINE = (function () {
     setData: setData,
     render: render,
     invalidate: invalidate,
+
+    /* clips carry their own fade in and out, baked into the file, so
+       there is no volume to ramp here — only whether the track is
+       audible at all. Browsers refuse to autoplay audible media before
+       someone has interacted with the page, so this starts off and APP
+       turns it on at the first real gesture. The exported MP4 carries
+       the audio regardless of what the browser allowed on screen. */
+    sound: function (on) {
+      soundOn = (on !== false);
+      unmuteAll();
+      return soundOn;
+    },
+    get soundOn() { return soundOn; },
 
     /* the start of every date's cycle, in scene-local seconds. the
        viewer jumps between these, not between animation beats — a

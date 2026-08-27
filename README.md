@@ -79,6 +79,7 @@ All six live at the top of `js/timeline.js`.
 - `photos: [...]` instead of `photo` cross-fades several shots across the hold
 - `focus` moves the crop (the frame is portrait, archive photos are landscape,
   so 40% of each is cropped — centred is only right by luck)
+- an `.mp4` in `photo` / `photos` is a clip; see below
 - `stat` / `source` are optional; without them the paragraph takes the room
 
 **Still outstanding:** every `paragraph` is still placeholder prose, not
@@ -88,6 +89,52 @@ which is where the `stat` values will come from. Entries flagged
 `"draft": true` were added with no copy at all. Sixteen dates still have
 no photograph; `tools/photo-map.json` records what the church sent and
 where each file went.
+
+## Moving footage
+
+A card can hold a clip instead of a photograph. Name an `.mp4` in `photo`
+or `photos`, put the file in `assets/video/`, and put a still of it beside
+it under the same name with a `.jpg` — that still is the poster and is what
+the small card on the rail shows, because there are forty of those and none
+of them needs a second video element.
+
+It stays a pure function of time, which is the whole reason this works:
+
+```
+video time = time since this card's hold began
+```
+
+Only the choice of *how* to enforce that depends on the transport. While
+the piece is **playing**, the element runs on its own clock and is nudged
+only once it has drifted more than 0.25s — seeking thirty times a second
+stutters badly. While it is **paused** — stepping, scrubbing, or being
+captured for the export — it is seeked exactly, and that is what keeps the
+render frame-exact. Outside the hold the clip parks: on frame one before,
+on the last frame after, so the card exits on a held image and never on
+black.
+
+A clip is shown **whole**. `object-fit: contain` on solid black, not
+`cover`: the frame is portrait and footage is landscape, so covering would
+throw away a third of the picture. The black belongs to the video element
+itself, so a still cross-fading over it hides the bars along with
+everything else. Videos also skip the settle-and-drift scale that
+photographs get — that scale is exactly what the bars exist to prevent.
+
+What a clip has to be:
+
+| | |
+|---|---|
+| **length** | 8s or less. The hold is 9.5s and the contents arrive over the first 1.5s |
+| **format** | H.264 MP4, `+faststart` |
+| **audio** | fade in and out **baked into the file** — nothing ramps a volume at runtime |
+
+Sound is off until someone touches the page. A browser refuses to autoplay
+audible media before a real gesture, so clips are muted in the markup and
+the first pointer or key press turns them up (`__anim.sound(false)` puts it
+back). A lobby screen nobody touches therefore plays silent, which is the
+right default for a lobby — and the exported MP4 carries the audio either
+way, because that is muxed from the source file rather than captured off
+the screen.
 
 ## The focus tool
 
@@ -121,6 +168,7 @@ js/ticker.js        the two running bars
 js/notes.js         review comments, one per date (localStorage)
 js/main.js          clock, scenes, keys
 assets/photos/      1500px q72 derivatives
+assets/video/       clips + their poster stills
 tools/              photo pipeline + the map of what goes where
 assets/fonts/       PP Museum — licensed
 ```

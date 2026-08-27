@@ -425,6 +425,13 @@ html, body {
 }
 .exp__photo img { width: 100%; height: 100%; object-fit: cover; display: block;
                   position: absolute; inset: 0; }
+
+/* A clip is shown WHOLE — contain, not cover. The frame is portrait and
+   footage is landscape, so cover would throw away a third of the picture;
+   the black it sits in belongs to the video element itself, so a still
+   cross-fading over it hides the bars along with everything else. */
+.exp__photo video { width: 100%; height: 100%; object-fit: contain; display: block;
+                    position: absolute; inset: 0; background: #000; }
 .exp__photo--empty { background: var(--khaki); }
 .exp__photo--empty::after {
   content: attr(data-year);
