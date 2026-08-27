@@ -115,6 +115,7 @@ var SCENE_TIMELINE = (function () {
     r.expPhoto = root.querySelector("#exp-photo");
     r.expLabel = root.querySelector("#exp-label");
     r.expYear  = root.querySelector("#exp-year");
+    r.expYearWrap = root.querySelector("#exp-yearwrap");
     r.expTitle = root.querySelector("#exp-title");
     r.expBody  = root.querySelector("#exp-body");
     r.expInner = root.querySelector("#exp-bodyinner");
@@ -205,8 +206,15 @@ var SCENE_TIMELINE = (function () {
 
       box.appendChild(photo);
       box.appendChild(short);
+      /* the shadow rides on a wrapper, not on the box: the box is
+         scaled as it grows in, and a transformed element cannot have
+         anything painted behind its own background. */
+      var boxWrap = document.createElement("div");
+      boxWrap.className = "card__boxwrap";
+      boxWrap.appendChild(box);
+
       card.appendChild(dateEl);
-      card.appendChild(box);
+      card.appendChild(boxWrap);
       /* stem first so the ring paints over it — the line runs behind
          the marker, it does not cross it */
       node.appendChild(stem);
@@ -215,7 +223,7 @@ var SCENE_TIMELINE = (function () {
       r.strip.appendChild(node);
 
       nodes.push({ el: node, dot: dot, square: square, stem: stem, card: card,
-                   box: box, short: shortText, date: dateEl, year: yearEl,
+                   box: boxWrap, short: shortText, date: dateEl, year: yearEl,
                    photo: photo,
                    top: top, color: color, accent: accent, last: null });
     }
@@ -521,7 +529,7 @@ var SCENE_TIMELINE = (function () {
     }
 
     /* the year travels one pill-length, so measure this pill */
-    r.expYear.style.transform = "none";
+    r.expYearWrap.style.transform = "none";
     yearTravel = r.expYear.offsetWidth || 380;
 
     if (window.NOTES) NOTES.setDate(d);
@@ -714,9 +722,9 @@ var SCENE_TIMELINE = (function () {
        90-90 curve, and does not show at all until halfway — then it
        arrives on a hard cut, no fade. it sets off mid-widen. */
     var yTrav = A.easeInOutQuint(A.seg(ct, tWiden + 0.15, 0.55));
-    r.expYear.style.transform =
+    r.expYearWrap.style.transform =
       "translateX(" + A.round(A.lerp(yearTravel, 0, yTrav), 1) + "px)";
-    r.expYear.style.opacity = yTrav >= 0.5 ? 1 : 0;
+    r.expYearWrap.style.opacity = yTrav >= 0.5 ? 1 : 0;
 
     /* 7. the date rises out from behind the top of the year pill */
     var dMask = A.easeOutQuint(A.seg(ct, tWiden + 0.55, 0.45));

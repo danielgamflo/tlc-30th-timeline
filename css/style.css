@@ -76,16 +76,27 @@
     transparent      1px var(--hatch-gap)
   );
 
-  /* The projected shadow's pinstripe. Coarser than the card hatching,
-     because a shadow band is only 9px wide and a 5.5px pattern would
-     put one and a half lines in it. Ink on TRANSPARENT, not lines over
-     a solid fill: the ruled paper showing between the stripes is what
-     makes it read as a texture rather than as a lighter shadow. */
-  --shade-gap: 3px;
+  /* The projected shadow stays SOLID and hard. The texture goes ON it,
+     as paper bleeding through — ink on transparent turned the shadow
+     into a comb of loose lines instead of a mass.
+
+     45deg, so the bands run along the "\" diagonal. That is the same
+     axis the shadow is thrown along (down and to the right), so the
+     stripes read as the streak of the projection rather than as a
+     pattern laid on top of it.
+
+     --shade-x / --shade-y are the throw. The base site the church built
+     casts to the RIGHT, so these are positive; flip their sign and the
+     whole piece throws the other way, but then --shade-angle wants to
+     become 135deg to keep running along the throw. */
+  --shade-x: 9px;
+  --shade-y: 9px;
+  --shade-angle: 45deg;
+  --shade-gap: 4px;
   --shade-stripes: repeating-linear-gradient(
-    90deg,
-    var(--ink)  0 1px,
-    transparent 1px var(--shade-gap)
+    var(--shade-angle),
+    rgba(244,240,230,.18) 0 1px,
+    transparent           1px var(--shade-gap)
   );
 
   /* Museum everywhere — light / regular / ultrabold + italics */
@@ -356,32 +367,41 @@ html, body {
 /* only the box scales on entry — it grows away from the rule while
    the date block below it stays at true size. transform does not
    affect layout, so nothing else moves. */
-.node--top    .card__box { transform-origin: center bottom; }
-.node--bottom .card__box { transform-origin: center top; }
+/* the box grows out of the marker, so it scales from the edge nearest
+   the rail. that lives on the wrapper now, because the wrapper is what
+   carries the scale. */
+.node--top    .card__boxwrap { transform-origin: center bottom; }
+.node--bottom .card__boxwrap { transform-origin: center top; }
+
+/* The wrapper carries the growth AND the shadow; the box inside carries
+   the fill. A transformed element forms its own stacking context, and
+   inside one nothing can be painted behind that element's background —
+   so the shadow can never be a child of the thing casting it. */
+.card__boxwrap {
+  order: 1;
+  position: relative;
+  width: 200px;
+}
+.card__boxwrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translate(var(--shade-x), var(--shade-y));
+  border-radius: 14px;
+  background-color: var(--ink);
+  background-image: var(--shade-stripes);
+}
 
 .card__box {
-  order: 1;
-  width: 200px;
+  width: 100%;
   position: relative;
   border: var(--stroke) solid var(--ink);
   border-radius: 14px;
   background: var(--paper);
 }
 
-/* The projected shadow, as a striped copy of the card sitting behind it.
-   One copy at the full offset, not the old stack of nine: stacking
-   translucent stripes would darken where they overlap and the texture
-   would curdle. What stays visible is the same L along the left and
-   the bottom. */
-.card__box::before {
-  content: "";
-  position: absolute;
-  inset: calc(var(--stroke) * -1);   /* the border box, not the padding box */
-  z-index: -1;
-  transform: translate(-9px, 9px);
-  border-radius: 14px;
-  background: var(--shade-stripes);
-}
+
 
 /* the box no longer clips, so its children carry the inner radius */
 .card__photo  { border-radius: 10px 10px 0 0; }
@@ -556,12 +576,27 @@ body.capture .exp__cell[data-sel] { outline: none; }
 }
 .exp__label span { display: block; }
 
-.exp__year {
+.exp__yearwrap {
   align-self: center;            /* the top text is centred now */
   position: relative;
-  /* the shadow hangs 22px below the pill's own box, so the gap has to
-     clear that before it starts being air */
+  width: fit-content;
+  /* the shadow hangs 22px below and 22px right of the pill, so the gap
+     underneath has to clear that before it starts being air */
   margin: 10px 0 56px;
+}
+.exp__yearwrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: translate(calc(var(--shade-x) * 2.44), calc(var(--shade-y) * 2.44));
+  border-radius: 999px;
+  background-color: var(--ink);
+  background-image: var(--shade-stripes);
+}
+
+.exp__year {
+  display: block;
   padding: 6px 40px 12px;
   background: var(--sage);
   border: 6px solid var(--ink);
@@ -574,19 +609,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
   white-space: nowrap;
 }
 
-/* projected, not blurred — and striped rather than solid. One copy at
-   the full 22px offset instead of the old stack: stacked translucent
-   copies would darken where they overlap and the pinstripe would curdle
-   into a smear. */
-.exp__year::before {
-  content: "";
-  position: absolute;
-  inset: -6px;                   /* the border box */
-  z-index: -1;
-  transform: translate(-22px, 22px);
-  border-radius: 999px;
-  background: var(--shade-stripes);
-}
+
 
 /* All caps, per the review. The titles were already Title Case, so
    "capitalize the headers" can only have meant this. Caps set solid at
