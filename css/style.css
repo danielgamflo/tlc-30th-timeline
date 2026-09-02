@@ -51,9 +51,12 @@
   --grid-weight: 2px;
   --bar:    var(--ink);
 
-  /* structure */
-  --stroke: 4px;               /* the small cards on the rail */
-  --rule: 4px;
+  /* structure. Every outline is the same thin weight now — Ps Leslie
+     asked for the pill's line everywhere, and the pill was 3. They stay
+     three separate names because the card, its shadow and the pill are
+     set from different places and may diverge again. */
+  --stroke: 3px;               /* the small cards on the rail */
+  --rule: 4px;                 /* the rail itself — warm grey, not black */
 
   /* The expanded card's outline, halved from 14 in review. It is quoted
      in four places that must agree — the svg stroke, the css border they
@@ -63,7 +66,7 @@
      js/timeline.js insets the polygon by HALF of this: an svg stroke
      straddles its path where a css border sits wholly inside, and
      without that inset the silhouette jumps at the handover. */
-  --stroke-lg: 7px;
+  --stroke-lg: 3px;
   --stroke-pill: 3px;          /* the year pill, halved from 6 to match */
 
   /* The fine vertical hatching over every coloured ground.
@@ -449,14 +452,18 @@ html, body {
   color: rgba(0,0,0,.22);
 }
 
-.card__short__t { display: block; }
+.card__short__t { display: block; text-transform: uppercase; }
 
 .card__short {
   background-image: var(--stripes);
   padding: 11px 12px 13px;
   font-family: var(--serif);
   font-weight: 800;
-  font-size: 20px;
+  /* 18, not 20: the band is 170px of usable width and caps are wider,
+     so a single long word was overrunning it. "GROUNDBREAKING" is 14
+     letters — the two labels that used it are reworded, and the two
+     points back gives the next long word somewhere to go. */
+  font-size: 18px;
   line-height: 1.06;
   color: var(--ink);
   text-align: left;
@@ -487,7 +494,7 @@ html, body {
 .exp__frame polygon {
   fill: none;
   stroke: var(--ink);
-  stroke-width: 7;           /* must equal --stroke-lg, in stage px */
+  stroke-width: 3;           /* must equal --stroke-lg, in stage px */
   stroke-linejoin: round;
 }
 

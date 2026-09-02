@@ -71,7 +71,7 @@ var SCENE_TIMELINE = (function () {
   /* must equal --stroke-lg in the stylesheet. the polygon is inset by
      half of it, because an svg stroke straddles its path while a css
      border sits wholly inside. */
-  var STROKE_LG = 7;
+  var STROKE_LG = 3;
 
   var SPACING = 300;      /* px between dates on the strip */
   var CARD_W = 200;       /* must match css .card__box width */
