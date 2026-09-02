@@ -655,9 +655,18 @@ body.capture .exp__cell[data-sel] { outline: none; }
    until you notice the titles were already Title Case — so it could only
    have meant this. Read back to the client and confirmed. Caps set solid at
    46px run long, so the tracking comes back a touch and the leading
-   tightens — uppercase has no descenders to separate the lines. */
+   tightens — uppercase has no descenders to separate the lines.
+
+   One size for every title — there is no per-card fitting anywhere, and
+   there should not be. What DID vary was the block's height: a one-line
+   title and a three-line one pushed the paragraph to different places,
+   a 98px swing across the 42. So the block always reserves three lines
+   and the paragraph starts at the same height on every card. Titles run
+   1, 2 or 3 lines and none reaches 4; if a future one does, this is the
+   number to raise. */
 .exp__title {
   width: 100%;
+  min-height: calc(3 * 1.06em);
   font-family: var(--serif);
   font-weight: 800;
   font-size: 46px;
