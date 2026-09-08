@@ -1,0 +1,284 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Pick, process and place the 8-Sept material.
+
+Selection follows the doc's photo notes where they exist ("start with
+Ps John preview, collage w/ next 3, then original team on its own") and
+a plain rule where they do not: the marked COVER opens, then up to four
+more gathered into one grid, then singles. Six photographs is the
+ceiling — the hold is 9.5s and past six nothing is on screen long enough
+to register.
+"""
+import os, re, json, subprocess, tempfile, shutil, unicodedata
+import numpy as np
+from PIL import Image, ImageOps
+
+P    = "/Volumes/Danny SSD/THE LIFE CHURCH/MEMPHIS/2026/30th Aniversary Timeline/Working/Web Proyect"
+SRC  = os.path.join(P, "assets", "30th Anniversary Timeline - 8Sept")
+OLD  = os.path.join(P, "assets", "30th Anniversary Timeline Photos")
+SCAN = "/private/tmp/claude-501/-Users-danielgamboaflores/e20d5133-fc1a-4f0b-b5a5-dd9f9eec3536/scratchpad/scans"
+OUT  = os.path.join(P, "assets", "photos")
+
+LONG_EDGE, QUALITY = 1500, 72
+
+# ---- what each date shows, in order. a list inside the list is a grid.
+# "@name" is one of the print pieces lifted out of a PDF; "~name" is
+# rescued from the old folder, where the only copy lives.
+PLAN = {
+ 1:  ["1996 Launch/1996 Ps John preview service-COVER.jpg",
+      ["1996 Launch/1996.png", "1996 Launch/1997 Homebuilders.jpg",
+       "1996 Launch/1997.png", "1996 Launch/Screenshot 2026-09-03 at 3.20.59 PM.png"],
+      "@1996-Launch__original-team.jpg",
+      "1996 Launch/Screenshot 2026-09-03 at 3.28.38 PM.png"],
+ 2:  ["1998 Mission Trip/Screenshot 2026-09-03 at 3.20.44 PM-COVER.png",
+      ["1998 Mission Trip/Brazil Missions Team- Kelly Mayberry Emma Pier.tiff",
+       "1998 Mission Trip/Brazil Missions3- Kelly Mayberry Emma Pier.tiff",
+       "1998 Mission Trip/Mexico Missions 2000.jpg",
+       "1998 Mission Trip/Screenshot 2026-09-03 at 3.21.19 PM.png"]],
+ 40: ["1999 Permanent Office Space/Ps John Homebuilders-COVER.jpg",
+      "1999 Permanent Office Space/2000.jpg",
+      ["@raiz__Kids-Life-Publication.jpg",
+       "@raiz__mailer.jpg",
+       "@raiz__1999-publication.jpg",
+       "1999 Permanent Office Space/Screenshot 2026-09-03 at 3.33.10 PM.png"]],
+ 3:  ["@2000-First-Billboard__billboard.jpg",
+      ["@raiz__2004-mailer-front.jpg", "@raiz__2004-mailer-back.jpg"]],
+ 4:  ["@2001-5th-Anniversary__2001-New-campaign-cover.jpg",
+      ["2001 5th Anniversary/Picnic.jpg",
+       "2001 5th Anniversary/Zach VB Church Picnic 2001- Kelly Mayberry Emma Pier.tiff",
+       "2001 5th Anniversary/Ps John Birthday.jpg",
+       "2001 5th Anniversary/2001.JPG"],
+      "@2001-5th-Anniversary__2001-Missions-Trifold.jpg",
+      "@2001-5th-Anniversary__2001--21-days-of-prayer-and-fasting.jpg"],
+ 5:  ["2002 A - First Service at GTP/2004.jpg",
+      "2002 A - First Service at GTP/GTP renovation.jpg",
+      ["2002 A - First Service at GTP/2004 Building Front.JPG",
+       "2002 A - First Service at GTP/IMG_2554 - mayberrystories Emma Pier.jpeg",
+       "2002 A - First Service at GTP/IMG_1577.JPG",
+       "@raiz__mailer.jpg"]],
+ 6:  ["@2002-B---Hosted-Reinhard-Bonnke__Miracle-Service-Invite.jpg",
+      "@2002-B---Hosted-Reinhard-Bonnke__Reinhard-Bonnke-Invite.jpg"],
+ 41: ["2004 - Launched Axis/axiswed.JPG",
+      ["2004 - Launched Axis/IMG_7050.JPG", "2004 - Launched Axis/axis boys.jpg",
+       "2004 - Launched Axis/axis room.jpg", "2004 - Launched Axis/axis 2012.jpg"],
+      "2004 - Launched Axis/Photo_2026-08-16_200551 - Melissa Horn Emma Pier.jpeg"],
+ 8:  ["2005 B - Launched First Year of internship/2005 First Class of Damascus Road-COVER.JPG",
+      ["2005 B - Launched First Year of internship/468223048_10162941475054587_9191860633540407670_n.jpg",
+       "2005 B - Launched First Year of internship/IMG_0707.JPG"]],
+ 9:  ["2005 C - Katrina/Katrina relief trip to Biloxi, Mississippi - COVER.jpeg",
+      ["2005 C - Katrina/Katrina relief trip - Melissa Horn Emma Pier.jpeg",
+       "2005 C - Katrina/Katrina relief1.jpg",
+       "2005 C - Katrina/Photo_2026-08-16_200140 - Melissa Horn Emma Pier.jpeg"]],
+ 12: ["~2009 Ps John GTP.JPG", "~2008.png"],
+ 11: ["2008 A - First Make Room/2011.jpg", "2008 A - First Make Room/IMG_8198.JPG"],
+ 13: ["2008 C - Launched Collierville Location/2008 YMCA launch sign.JPG",
+      ["2008 C - Launched Collierville Location/IMG_0411.JPG",
+       "2008 C - Launched Collierville Location/IMG_0708.JPG"]],
+ 14: ["2009 - First Axis Conf/2009-COVER.JPG",
+      ["2009 - First Axis Conf/2009 Axis Conf Tribal Wars.JPG",
+       "2009 - First Axis Conf/Axis Conf GTP.JPG",
+       "2009 - First Axis Conf/IMG_7025.JPG",
+       "2009 - First Axis Conf/IMG_9285.JPG"]],
+ 15: ["2011 - Launched Feed Memphis/467755241_10162912950894587_6628047718998954925_n.jpg"],
+ 16: ["2014 A - Launched East Memphis at Paradiso/471858485_10163191145089587_3370435142301144151_n.jpg",
+      "2014 A - Launched East Memphis at Paradiso/2015.jpg",
+      "2014 A - Launched East Memphis at Paradiso/468151643_10162920441999587_430435861007173487_n.jpg"],
+ 18: ["2014 C - Hosted First Zoe Conf/2016.jpg", "2014 C - Hosted First Zoe Conf/2014.jpg"],
+ 20: ["2015 B - Hosted first Sound of Christmas/122124SOC_EMSOCSOC_EMep-90.JPG",
+      ["2015 B - Hosted first Sound of Christmas/SOC Ps John & Leslie.jpg",
+       "2015 B - Hosted first Sound of Christmas/SOC older.jpg",
+       "2015 B - Hosted first Sound of Christmas/SOC older 2.jpg",
+       "2015 B - Hosted first Sound of Christmas/soc 2026.jpg"]],
+ 21: ["2016 - broke ground on HSL Auditorium/E26A1462.CR2",
+      ["2016 - broke ground on HSL Auditorium/468537246_10163101653019587_1576519272855988296_n.jpg",
+       "2016 - broke ground on HSL Auditorium/468573758_10163071502734587_3456830922896276395_n.jpg",
+       "2016 - broke ground on HSL Auditorium/468364610_10162948939924587_5581172339767256442_n.jpg"]],
+ 22: ["2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.15.03 PM.png",
+      ["2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.11.03 PM.png",
+       "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.08.27 PM.png",
+       "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.11.27 PM.png",
+       "2017 - Houston Levee Auditorium Grand Opening/Screenshot 2026-08-25 at 12.13.19 PM.png"],
+      "2017 - Houston Levee Auditorium Grand Opening/VP Night .png",
+      "2017 - Houston Levee Auditorium Grand Opening/Joyce Meyer service.jpg"],
+ 24: [["2019 Record 21 Mission Trips/Cuba_Missions-SM-23.jpg",
+       "2019 Record 21 Mission Trips/DeLDfHyYTsq0VR%fiIdtmA.jpg",
+       "2019 Record 21 Mission Trips/IMG_0044.JPG",
+       "2019 Record 21 Mission Trips/IMG_0634.JPG"],
+      "2019 Record 21 Mission Trips/1O9A0200.jpg",
+      "2019 Record 21 Mission Trips/Cuba_Missions-SM-49.jpg"],
+ 25: ["2020 A - Launched The Life Church New York/20230329_ny_jc-0036.JPG"],
+ 42: ["2020 B - Leadership in B&W Podcast Launched/20221208_LIBW_JC-0008.HEIC"],
+ 26: ["2021 A - Launched MA Location/_DSC4059.jpg",
+      ["2021 A - Launched MA Location/20250411-20250411-DR-MA03744.jpg",
+       "2021 A - Launched MA Location/20250411-20250411-DR-MA03758.jpg",
+       "2021 A - Launched MA Location/20250411-20250411-LG-NY5094.jpg"]],
+ 27: ["2021 B - Celebrated 25 Years/8011F875-1C15-469B-993C-164B41B27D4F.JPG"],
+ 29: ["2022 B - Axis Conf Sells Out/mondaypm-ch-29 drop box.JPG",
+      ["2022 B - Axis Conf Sells Out/thursdaypm-ch-20 drop box.JPG",
+       "2022 B - Axis Conf Sells Out/wednesdaypm_brynn-52 brynn vanblaricom.JPG",
+       "2022 B - Axis Conf Sells Out/0D07ED76-31E0-4586-90B4-5F1261EB56AB.JPG",
+       "2022 B - Axis Conf Sells Out/AD37EEF1-398B-4038-B806-742D7CAD0341.JPG"]],
+ 32: ["2024 A - Hosted First Revival Nights/IMG_0217.jpeg",
+      ["2024 A - Hosted First Revival Nights/IMG_0209.jpeg",
+       "2024 B - Launched South Africa Location/012424_REVIVAL_ep-77 EUNICE.jpg",
+       "2024 B - Launched South Africa Location/012424_REVIVAL_ep-80 EUNICE.jpg",
+       "2024 A - Hosted First Revival Nights/RN-1920x1080.png"]],
+ 30: ["2023 A - Launched DC Metro Location/031923-JB-41.jpg",
+      ["2023 A - Launched DC Metro Location/031923-JB-35.jpg",
+       "2023 A - Launched DC Metro Location/031923-JB-49.jpg"]],
+ 31: ["2023 B - Hosted First International Make Room/photo 2024-05-03, 10 00 11.JPG"],
+ 33: ["2024 B - Launched South Africa Location/DSC02519.JPG",
+      ["2024 B - Launched South Africa Location/DSC02355.JPG",
+       "2024 B - Launched South Africa Location/DSC02613.JPG",
+       "2024 B - Launched South Africa Location/0E6B3014.JPG",
+       "2024 B - Launched South Africa Location/0E6B3491.JPG"]],
+ 34: ["2024 C - Launched First Prison Location/062324-SCDC-CH-4.jpg",
+      ["2024 C - Launched First Prison Location/062324-SCDC-CH-8.jpg",
+       "2024 C - Launched First Prison Location/SCDC-1.png",
+       "2024 C - Launched First Prison Location/SCDC-2.png"]],
+ 35: ["2024 D - Axis Worship Debut/overflow cover.jpg",
+      ["2024 D - Axis Worship Debut/AxisConf24-WEDPM-23.jpg",
+       "2024 D - Axis Worship Debut/AxisConf24-WEDPM-24.jpg",
+       "2024 D - Axis Worship Debut/Axis Worship PFP.JPG"]],
+ 36: ["2024 E - Launched Nashville Location/060924_NASH_CH-25.jpg",
+      ["2024 E - Launched Nashville Location/NASH-SIGNPHOTO.png",
+       "2024 E - Launched Nashville Location/_NASH_CB_2.jpg"]],
+ 37: ["2025 - Launched 2nd Prison Location 201 Poplar/PRISON-2.jpg",
+      ["2025 - Launched 2nd Prison Location 201 Poplar/PRISON-4.jpg",
+       "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-5.jpg",
+       "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-6.jpg",
+       "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-8.jpg"]],
+ 38: ["2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-50.jpg",
+      ["2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-12.jpg",
+       "2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-89.jpg",
+       "2026 - Ground Breaking on Global Hub/260806 Ground Breaking 1.jpg",
+       "2026 - Ground Breaking on Global Hub/Sb1OXoLg.jpeg"]],
+ 39: ["2026 - Launched Bible School/08.30.26_LLBS_CS-53.jpg",
+      ["2026 - Launched Bible School/08.30.26_LLBS_CS-50.jpg",
+       "2026 - Launched Bible School/08.30.26_LLBS_CS-60.jpg",
+       "2026 - Launched Bible School/08.30.26_LLBS_CS-61.jpg",
+       "2026 - Launched Bible School/08.30.26_LLBS_CS-62.jpg"]],
+}
+
+DARK, UNIFORM, CEILING, MAX_ASPECT = 30, 5.0, 60, 2.0
+
+
+def loose(n):
+    """macOS writes U+202F before the "PM" in a screenshot's name and shows
+    it as a plain space, so a path typed by hand never matches."""
+    return re.sub(r"[\s\u00a0\u202f\u2007\u2060\u200b]+", " ",
+                  unicodedata.normalize("NFC", n)).strip().lower()
+
+
+def resolve(ref):
+    if ref.startswith("@"): return os.path.join(SCAN, ref[1:])
+    root = OLD if ref.startswith("~") else SRC
+    rel  = ref[1:] if ref.startswith("~") else ref
+    p = os.path.join(root, rel)
+    if os.path.exists(p): return p
+    d, want = os.path.split(os.path.join(root, rel))
+    if os.path.isdir(d):
+        for f in os.listdir(d):
+            if loose(f) == loose(want): return os.path.join(d, f)
+    return p
+
+
+def slug(ref):
+    base = os.path.splitext(os.path.basename(ref))[0]
+    base = re.sub(r"-?COVER", "", base, flags=re.I)
+    base = re.sub(r"\s*-\s*(Kelly Mayberry|Emma Pier|Melissa Horn|Josie De Souza|"
+                  r"mayberrystories|Kristi Sciacchetano|brynn vanblaricom|drop box).*", "", base, flags=re.I)
+    base = re.sub(r"[^A-Za-z0-9]+", "-", base).strip("-").lower()
+    return (base[:44] or "photo") + ".jpg"
+
+
+def decode(path):
+    ext = os.path.splitext(path)[1].lower()
+    if ext in (".heic", ".cr2", ".tiff", ".tif"):
+        t = tempfile.mktemp(suffix=".jpg")
+        subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "95",
+                        path, "--out", t], capture_output=True, check=True)
+        im = Image.open(t); im.load(); os.unlink(t)
+        return im.convert("RGB")
+    im = Image.open(path)
+    im = ImageOps.exif_transpose(im)
+    return im.convert("RGB")
+
+
+def bar(rows, limit):
+    n = 0
+    for i in range(limit):
+        m, s, pk = rows[i]
+        if m < DARK and s < UNIFORM and pk < CEILING: n += 1
+        else: break
+    return n
+
+
+def strip_letterbox(im):
+    a = np.asarray(im.convert("L"), dtype=np.float32)
+    h, w = a.shape
+    prof = lambda arr: list(zip(arr.mean(axis=1), arr.std(axis=1), arr.max(axis=1)))
+    r, c = prof(a), prof(a.T)
+    lv, lh = int(h * .30), int(w * .30)
+    t, b = bar(r, lv), bar(r[::-1], lv)
+    l, rr = bar(c, lh), bar(c[::-1], lh)
+    if not (t or b or l or rr): return im
+    nw, nh = w - l - rr, h - t - b
+    if nw < 200 or nh < 200: return im
+    if max(nw/nh, nh/nw) > MAX_ASPECT and max(w/h, h/w) <= MAX_ASPECT: return im
+    return im.crop((l, t, l + nw, t + nh))
+
+
+def main():
+    if os.path.isdir(OUT): shutil.rmtree(OUT)
+    os.makedirs(OUT)
+    names, total, missing = {}, 0, []
+    for did, slides in PLAN.items():
+        for s in slides:
+            for ref in (s if isinstance(s, list) else [s]):
+                p = resolve(ref)
+                if not os.path.exists(p): missing.append(ref); continue
+                if ref in names: continue
+                n = slug(ref)
+                i = 2
+                while n in names.values(): n = slug(ref)[:-4] + "-%d.jpg" % i; i += 1
+                im = strip_letterbox(decode(p))
+                if max(im.size) > LONG_EDGE: im.thumbnail((LONG_EDGE, LONG_EDGE), Image.LANCZOS)
+                im.save(os.path.join(OUT, n), "JPEG", quality=QUALITY,
+                        optimize=True, progressive=True)
+                names[ref] = n
+                total += os.path.getsize(os.path.join(OUT, n))
+
+    rows = json.load(open(os.path.join(P, "data", "timeline.json")))
+    for r in rows:
+        plan = PLAN.get(r["id"])
+        for k in ("photo", "photos", "focus"): r.pop(k, None)
+        if not plan: continue
+        out = []
+        for s in plan:
+            if isinstance(s, list):
+                g = [names[x] for x in s if x in names]
+                if g: out.append(g if len(g) > 1 else g[0])
+            elif s in names:
+                out.append(names[s])
+        if not out: continue
+        if len(out) == 1 and isinstance(out[0], str):
+            r["photo"] = out[0]; r["focus"] = "50% 50%"
+        else:
+            r["photos"] = out
+            r["focus"] = [["50% 50%"] * len(x) if isinstance(x, list) else "50% 50%" for x in out]
+
+    with open(os.path.join(P, "data", "timeline.json"), "w") as f:
+        f.write("[\n" + ",\n".join("  " + json.dumps(x, ensure_ascii=False) for x in rows) + "\n]\n")
+
+    bare = [r["id"] for r in rows if not (r.get("photo") or r.get("photos"))]
+    print("%d derivados, %.1f MB" % (len(names), total / 1024 / 1024))
+    print("fechas con imagen: %d de %d" % (len(rows) - len(bare), len(rows)))
+    print("sin imagen: %s" % bare)
+    if missing:
+        print("\nNO ENCONTRADOS:")
+        for m in missing: print("   ", m)
+
+
+if __name__ == "__main__":
+    main()
