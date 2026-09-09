@@ -628,13 +628,13 @@ body.capture .exp__cell[data-sel] { outline: none; }
 
 /* a window the date rises out of, from behind the year pill */
 .exp__label {
-  height: 38px;
+  height: 34px;
   width: 100%;
   overflow: hidden;
   font-family: var(--serif);
   font-weight: 800;
-  font-size: 32px;
-  line-height: 38px;
+  font-size: 28px;
+  line-height: 34px;
   color: inherit;
 }
 .exp__label span { display: block; }
@@ -645,7 +645,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
   width: fit-content;
   /* the shadow hangs 22px below and 22px right of the pill, so the gap
      underneath has to clear that before it starts being air */
-  margin: 10px 0 56px;
+  margin: 8px 0 38px;
 }
 .exp__yearwrap::before {
   content: "";
@@ -661,13 +661,13 @@ body.capture .exp__cell[data-sel] { outline: none; }
 
 .exp__year {
   display: block;
-  padding: 6px 40px 12px;
+  padding: 5px 34px 10px;
   background: var(--sage);
   border: var(--stroke-pill) solid var(--ink);
   border-radius: 999px;
   font-family: var(--serif);
   font-weight: 800;
-  font-size: 92px;
+  font-size: 76px;
   line-height: 1;
   color: var(--ink);
   white-space: nowrap;
@@ -691,12 +691,12 @@ body.capture .exp__cell[data-sel] { outline: none; }
   width: 100%;
   font-family: var(--serif);
   font-weight: 800;
-  font-size: 46px;
+  font-size: 40px;
   line-height: 1.06;
   letter-spacing: .005em;
   text-transform: uppercase;
   color: inherit;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 /* the clipped window the paragraph scrolls inside */
@@ -724,8 +724,8 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .exp__para {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 27px;
-  line-height: 1.30;
+  font-size: 25px;
+  line-height: 1.32;
   color: inherit;
 }
 
@@ -739,6 +739,14 @@ body.capture .exp__cell[data-sel] { outline: none; }
   border-left: 6px solid var(--ink);
   flex: none;
 }
+/* a date with several notes stacks them and cross-fades between them.
+   Every note goes in the same grid cell, so they sit on top of one
+   another AND the block takes the height of the tallest — the browser
+   works that out at layout time, which is the whole point: measuring it
+   in JS gave a stale answer, taken before the card had its final width,
+   and the foot of the panel jumped when the real height arrived. */
+.exp__stat--deck { display: grid; }
+.exp__stat--deck .exp__fact { grid-area: 1 / 1; }
 /* the kicker — "Key Stat", "Fun Fact". It names what the line below it
    IS, so it is set small, upright and tracked out, against the italic
    weight of the stat itself: two different jobs, two different voices.
@@ -753,7 +761,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
   font-family: var(--serif);
   font-style: normal;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 17px;
   letter-spacing: .10em;
   text-transform: uppercase;
   opacity: .62;
@@ -764,15 +772,15 @@ body.capture .exp__cell[data-sel] { outline: none; }
   font-family: var(--serif);
   font-weight: 800;
   font-style: italic;
-  font-size: 32px;
-  line-height: 1.16;
+  font-size: 29px;
+  line-height: 1.18;
 }
 .exp__stat span {
   display: block;
   margin-top: 7px;
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 20px;
+  font-size: 18px;
   opacity: .72;
 }
 

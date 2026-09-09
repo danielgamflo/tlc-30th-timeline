@@ -33,39 +33,42 @@ var SCENE_TIMELINE = (function () {
   var EXIT     = 2.40;
   var ADVANCE  = 0.95;
 
-  /* the running time follows the content: dates x CYCLE + 9.5 + 2.5.
-     42 dates -> 10:29. nothing anywhere assumes a count, so adding or
-     dropping a date is a line of JSON and the piece just gets longer
-     or shorter.
-
-     if it ever has to land on a fixed length instead, HOLD is the dial:
-         HOLD = (TARGET - 12) / dates - 5.20
-     at 600s and 42 dates that is 8.80, i.e. 0.7s less reading each. */
+  /* HOLD is no longer the hold — computeHolds gives every date its own,
+     out of what that date has to say. It survives as the fallback for an
+     index with no computed hold, and as the shape of a typical cycle.
+     Nothing anywhere assumes a date count: adding or dropping one is a
+     line of JSON and the piece gets longer or shorter by itself. */
   var CYCLE = APPEAR + SPIN + WIDEN + HOLD + EXIT + ADVANCE;
 
   /* Everything but the hold is the same on every date — the card takes
      the same time to arrive and to leave whatever it carries. */
   var FIXED = APPEAR + SPIN + WIDEN + EXIT + ADVANCE;
 
-  /* HOLD above is now the AVERAGE, not the value. Each date's share of
-     the total hold is proportional to what it has to show: the words to
-     read plus a beat for each slide. A 22-word card no longer sits on
-     screen exactly as long as a 74-word one, which was never a decision,
-     just the absence of one.
+  /* Each date holds for as long as its own content needs, and the running
+     time is whatever those forty add up to.
 
-     The budget does not grow — long cards borrow from short ones — so
-     the running time is unchanged to the frame. Redistribution cannot
-     create reading time and does not pretend to: the copy still needs
-     about 1.6x the hold that exists. What it buys is a rhythm that
-     follows the content instead of ignoring it.
+     It used to be the other way round: HOLD was an average, the total was
+     fixed at ten minutes, and long cards borrowed from short ones. That
+     shared the shortage out fairly but it could not remove it — the copy
+     wanted about 1.6x the hold that existed, so on most dates the reader
+     ran out of time. Parker watched it and said so.
 
-     WPM is the reading speed assumed, at a distance. FLOOR and CEIL stop
-     the extremes: without them the shortest card drops under five
-     seconds, which reads as a stumble. */
+     So the budget is gone. A date's hold is the time to read its words
+     plus a beat to look at each of its slides plus LEAD, which is the
+     moment the eye spends arriving and finding the start of the line.
+
+     Change the running time by changing what a reader is assumed to need,
+     not by squeezing everyone equally:
+       WPM    reading speed. 200 is comfortable silent reading.
+       SLIDE  seconds a photograph wants, over and above the words.
+       LEAD   the beat before reading starts.
+     FLOOR and CEIL only stop the extremes — without a floor the shortest
+     card drops under five seconds and reads as a stumble. */
   var WPM   = 200;
-  var SLIDE = 1.6;      /* seconds a slide wants, beyond the reading */
-  var FLOOR = 6.2;
-  var CEIL  = 15.5;
+  var SLIDE = 2.0;
+  var LEAD  = 0.8;
+  var FLOOR = 8.0;
+  var CEIL  = 34.0;
 
   var holds = [], starts = [], span = 0;
 
@@ -168,31 +171,13 @@ var SCENE_TIMELINE = (function () {
 
   /* the hold each date gets, and where each one starts. run once. */
   function computeHolds() {
-    var budget = HOLD * data.length, w = [], i;
-    for (i = 0; i < data.length; i++) {
+    holds = [];
+    for (var i = 0; i < data.length; i++) {
       var d = data[i];
       var words = (d.paragraph || "").split(/\s+/).filter(Boolean).length;
       var slides = slidesOf(d).length;
-      w.push(words / WPM * 60 + slides * SLIDE);
-    }
-    var total = w.reduce(function (a, b) { return a + b; }, 0) || 1;
-
-    /* share out, clamp, then hand the clamping's change back to the
-       unclamped ones so the total still comes out exactly right */
-    holds = w.map(function (x) { return budget * x / total; });
-    for (var pass = 0; pass < 8; pass++) {
-      var free = [], spent = 0;
-      for (i = 0; i < holds.length; i++) {
-        if (holds[i] < FLOOR)      { holds[i] = FLOOR; spent += FLOOR; }
-        else if (holds[i] > CEIL)  { holds[i] = CEIL;  spent += CEIL;  }
-        else { free.push(i); spent += holds[i]; }
-      }
-      var slack = budget - spent;
-      if (Math.abs(slack) < 1e-6 || !free.length) break;
-      var sum = free.reduce(function (a, k) { return a + holds[k]; }, 0) || 1;
-      for (var j = 0; j < free.length; j++) {
-        holds[free[j]] += slack * holds[free[j]] / sum;
-      }
+      var want = LEAD + words / WPM * 60 + slides * SLIDE;
+      holds.push(A.clamp(want, FLOOR, CEIL));
     }
 
     starts = []; span = 0;
@@ -434,6 +419,16 @@ var SCENE_TIMELINE = (function () {
     return d.photo ? [d.photo] : [];
   }
 
+  /* the foot of the panel can carry more than one note. Give a date
+         "facts": [{tag, stat, source}, {tag, stat, source}]
+     and they rotate across the hold the way the photographs do. The
+     single tag/stat/source is the one-note shorthand and is untouched,
+     which is what all but one of the forty dates still use. */
+  function factsOf(d) {
+    if (d.facts && d.facts.length) return d.facts;
+    return d.stat ? [{ tag: d.tag, stat: d.stat, source: d.source }] : [];
+  }
+
   /* every photograph on the date, groups opened out */
   function flatten(slides) {
     var out = [];
@@ -548,14 +543,28 @@ var SCENE_TIMELINE = (function () {
     r.expTitle.textContent = d.title;
     r.expPara.textContent  = d.paragraph;
 
-    if (d.stat) {
-      r.expStat.style.display = "block";
+    var notes = factsOf(d);
+    if (notes.length) {
+      /* "" and not "block": a deck of several notes is display:grid, and
+         an inline block here would quietly beat that rule */
+      r.expStat.style.display = "";
       /* "tag" names what the line is — Key Stat, Fun Fact — and is
          optional: without it the footer behaves exactly as it did. */
-      r.expStat.innerHTML =
-        (d.tag ? "<i>" + esc(d.tag) + "</i>" : "") +
-        "<b>" + esc(d.stat) + "</b>" +
-        (d.source ? "<span>" + esc(d.source) + "</span>" : "");
+      var nh = "";
+      for (var n2 = 0; n2 < notes.length; n2++) {
+        nh += '<div class="exp__fact">' +
+              (notes[n2].tag ? "<i>" + esc(notes[n2].tag) + "</i>" : "") +
+              "<b>" + esc(notes[n2].stat) + "</b>" +
+              (notes[n2].source ? "<span>" + esc(notes[n2].source) + "</span>" : "") +
+              "</div>";
+      }
+      r.expStat.innerHTML = nh;
+
+      /* one note is simply in the flow and behaves exactly as before.
+         Several become a deck — stacked in one grid cell by the CSS,
+         which also gives the block the height of its tallest note. */
+      r.expStat.className =
+        notes.length > 1 ? "exp__stat exp__stat--deck" : "exp__stat";
     } else {
       r.expStat.style.display = "none";
       r.expStat.innerHTML = "";
@@ -871,6 +880,18 @@ var SCENE_TIMELINE = (function () {
         } else {
           el.style.transform = zoom;
         }
+      }
+    }
+
+    /* several notes at the foot cross-fade across the hold, on the same
+       clock as the photographs above them. The first is simply there;
+       each of the rest arrives over the one before and stays. */
+    var notes = r.expStat.children;
+    if (notes.length > 1) {
+      var nslot = (HOLD - 1.2) / notes.length;
+      for (var n4 = 0; n4 < notes.length; n4++) {
+        notes[n4].style.opacity = (n4 === 0) ? 1 :
+          A.round(A.ease(ct, tHold + 0.9 + n4 * nslot, 0.9, A.easeInOutCubic), 3);
       }
     }
 
