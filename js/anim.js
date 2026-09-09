@@ -18,6 +18,20 @@ var A = (function () {
 
   function lerp(a, b, t) { return a + (b - a) * t; }
 
+  /* the scans keep arriving and get written over the file that is already
+     there, so a photo's URL never changes even when its bytes do — and a
+     browser goes on serving yesterday's copy. The photos ride the same
+     ?v= as the code, read off our own script tag so there is still only
+     one number to bump before publishing. */
+  var stamp = (function () {
+    var s = document.currentScript ||
+            document.querySelector('script[src*="anim.js"]');
+    var m = s && /\?v=([^&]+)/.exec(s.getAttribute("src") || "");
+    return m ? "?v=" + m[1] : "";
+  })();
+
+  function asset(path) { return path + stamp; }
+
   /* progress 0..1 of a beat that starts at `start` and lasts `dur` */
   function seg(t, start, dur) {
     if (dur <= 0) return t >= start ? 1 : 0;
@@ -110,6 +124,7 @@ var A = (function () {
 
   return {
     clamp: clamp, lerp: lerp, seg: seg, ease: ease, tween: tween, round: round,
+    asset: asset, stamp: stamp,
     luminance: luminance, contrast: contrast, inkOn: inkOn, mix: mix,
     linear: linear,
     easeOutCubic: easeOutCubic,

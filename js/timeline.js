@@ -476,16 +476,16 @@ var SCENE_TIMELINE = (function () {
   var selCell = 0;
 
   function srcFor(name) {
-    return (isVideo(name) ? "assets/video/" : "assets/photos/") + name;
+    return A.asset((isVideo(name) ? "assets/video/" : "assets/photos/") + name);
   }
 
   /* every clip ships a still of itself beside it, same name, .jpg. The
      small card on the rail is 200px wide and there are forty of them —
      it gets the still, not a second video element. */
   function stillFor(name) {
-    return isVideo(name)
+    return A.asset(isVideo(name)
       ? "assets/video/" + name.replace(/\.[^.]+$/, ".jpg")
-      : "assets/photos/" + name;
+      : "assets/photos/" + name);
   }
 
   /* the clip is a pure function of time like everything else:

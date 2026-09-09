@@ -427,7 +427,7 @@ var APP = (function () {
           var vid = document.createElement("video");
           vid.preload = "auto";
           vid.muted = true;
-          vid.src = "assets/video/" + f;
+          vid.src = A.asset("assets/video/" + f);
           warmed.push(vid);
           waits.push(new Promise(function (go) {
             vid.addEventListener("canplaythrough", go, { once: true });
@@ -439,7 +439,7 @@ var APP = (function () {
         }
 
         var img = new Image();
-        img.src = "assets/photos/" + f;
+        img.src = A.asset("assets/photos/" + f);
         warmed.push(img);
 
         var done = img.decode ? img.decode() : Promise.resolve();
