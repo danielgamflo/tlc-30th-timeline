@@ -724,8 +724,8 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .exp__para {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 29px;
-  line-height: 1.45;
+  font-size: 27px;
+  line-height: 1.30;
   color: inherit;
 }
 
@@ -753,26 +753,26 @@ body.capture .exp__cell[data-sel] { outline: none; }
   font-family: var(--serif);
   font-style: normal;
   font-weight: 800;
-  font-size: 19px;
+  font-size: 18px;
   letter-spacing: .10em;
   text-transform: uppercase;
   opacity: .62;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 }
 .exp__stat b {
   display: block;
   font-family: var(--serif);
   font-weight: 800;
   font-style: italic;
-  font-size: 34px;
-  line-height: 1.2;
+  font-size: 32px;
+  line-height: 1.16;
 }
 .exp__stat span {
   display: block;
-  margin-top: 8px;
+  margin-top: 7px;
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 22px;
+  font-size: 20px;
   opacity: .72;
 }
 
