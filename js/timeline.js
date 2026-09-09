@@ -43,6 +43,32 @@ var SCENE_TIMELINE = (function () {
      at 600s and 42 dates that is 8.80, i.e. 0.7s less reading each. */
   var CYCLE = APPEAR + SPIN + WIDEN + HOLD + EXIT + ADVANCE;
 
+  /* Everything but the hold is the same on every date — the card takes
+     the same time to arrive and to leave whatever it carries. */
+  var FIXED = APPEAR + SPIN + WIDEN + EXIT + ADVANCE;
+
+  /* HOLD above is now the AVERAGE, not the value. Each date's share of
+     the total hold is proportional to what it has to show: the words to
+     read plus a beat for each slide. A 22-word card no longer sits on
+     screen exactly as long as a 74-word one, which was never a decision,
+     just the absence of one.
+
+     The budget does not grow — long cards borrow from short ones — so
+     the running time is unchanged to the frame. Redistribution cannot
+     create reading time and does not pretend to: the copy still needs
+     about 1.6x the hold that exists. What it buys is a rhythm that
+     follows the content instead of ignoring it.
+
+     WPM is the reading speed assumed, at a distance. FLOOR and CEIL stop
+     the extremes: without them the shortest card drops under five
+     seconds, which reads as a stumble. */
+  var WPM   = 200;
+  var SLIDE = 1.6;      /* seconds a slide wants, beyond the reading */
+  var FLOOR = 6.2;
+  var CEIL  = 15.5;
+
+  var holds = [], starts = [], span = 0;
+
   var BOX_W = 1500;       /* final width                                 */
   var BOX_H = 880;        /* final height                                */
   /* how much of SPIN the diamond takes to arrive; the rest is the turn.
@@ -136,8 +162,47 @@ var SCENE_TIMELINE = (function () {
 
   function setData(rows) {
     data = rows;
+    computeHolds();
     buildStrip();
   }
+
+  /* the hold each date gets, and where each one starts. run once. */
+  function computeHolds() {
+    var budget = HOLD * data.length, w = [], i;
+    for (i = 0; i < data.length; i++) {
+      var d = data[i];
+      var words = (d.paragraph || "").split(/\s+/).filter(Boolean).length;
+      var slides = slidesOf(d).length;
+      w.push(words / WPM * 60 + slides * SLIDE);
+    }
+    var total = w.reduce(function (a, b) { return a + b; }, 0) || 1;
+
+    /* share out, clamp, then hand the clamping's change back to the
+       unclamped ones so the total still comes out exactly right */
+    holds = w.map(function (x) { return budget * x / total; });
+    for (var pass = 0; pass < 8; pass++) {
+      var free = [], spent = 0;
+      for (i = 0; i < holds.length; i++) {
+        if (holds[i] < FLOOR)      { holds[i] = FLOOR; spent += FLOOR; }
+        else if (holds[i] > CEIL)  { holds[i] = CEIL;  spent += CEIL;  }
+        else { free.push(i); spent += holds[i]; }
+      }
+      var slack = budget - spent;
+      if (Math.abs(slack) < 1e-6 || !free.length) break;
+      var sum = free.reduce(function (a, k) { return a + holds[k]; }, 0) || 1;
+      for (var j = 0; j < free.length; j++) {
+        holds[free[j]] += slack * holds[free[j]] / sum;
+      }
+    }
+
+    starts = []; span = 0;
+    for (i = 0; i < data.length; i++) {
+      starts.push(span);
+      span += FIXED + holds[i];
+    }
+  }
+
+  function holdAt(i) { return holds[i] !== undefined ? holds[i] : HOLD; }
 
   function buildStrip() {
     r.strip.innerHTML = "";
@@ -571,9 +636,13 @@ var SCENE_TIMELINE = (function () {
   function render(t, playing) {
     if (!built) return;
 
-    var i = Math.floor(t / CYCLE);
+    /* the dates are no longer the same length, so the index is a lookup
+       rather than a division */
+    var i = 0;
+    while (i + 1 < starts.length && t >= starts[i + 1]) i++;
     if (i >= data.length) i = data.length - 1;
-    var ct = t - i * CYCLE;                     /* time inside this date */
+    var ct = t - starts[i];                     /* time inside this date */
+    var HOLD = holdAt(i);                       /* shadows the average */
 
     lastCt = ct;
     lastPlaying = !!playing;
@@ -820,14 +889,15 @@ var SCENE_TIMELINE = (function () {
   return {
     name: "timeline",
     selector: "#scene-timeline",
-    get duration() { return data.length * CYCLE; },
+    get duration() { return span; },
     get markers() {
       var m = [];
       for (var i = 0; i < data.length; i++) {
-        m.push(A.round(i * CYCLE, 3));                           /* card born  */
-        m.push(A.round(i * CYCLE + APPEAR, 3));                  /* box spins  */
-        m.push(A.round(i * CYCLE + APPEAR + SPIN, 3));           /* widens     */
-        m.push(A.round(i * CYCLE + APPEAR + SPIN + WIDEN + HOLD, 3)); /* exits */
+        var s0 = starts[i];
+        m.push(A.round(s0, 3));                                  /* card born  */
+        m.push(A.round(s0 + APPEAR, 3));                         /* box spins  */
+        m.push(A.round(s0 + APPEAR + SPIN, 3));                  /* widens     */
+        m.push(A.round(s0 + APPEAR + SPIN + WIDEN + holdAt(i), 3)); /* exits   */
       }
       return m;
     },
@@ -854,7 +924,7 @@ var SCENE_TIMELINE = (function () {
        10-minute piece is not reviewable one frame at a time. */
     get dateStarts() {
       var out = [];
-      for (var i = 0; i < data.length; i++) out.push(i * CYCLE);
+      for (var i = 0; i < data.length; i++) out.push(starts[i]);
       return out;
     },
 
@@ -986,6 +1056,7 @@ var SCENE_TIMELINE = (function () {
       }
       return JSON.stringify(out, null, 1);
     },
-    CYCLE: CYCLE
+    CYCLE: CYCLE,
+    get holds() { return holds.slice(); }
   };
 })();
