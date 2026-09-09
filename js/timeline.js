@@ -809,7 +809,10 @@ var SCENE_TIMELINE = (function () {
     var creep = 0;
     if (overflowPx > 0) {
       var pc = A.seg(ct, tHold + 2.6, HOLD - 3.6);   /* settle, read, settle */
-      creep = -overflowPx * A.easeInOutCubic(pc);
+      /* linear, per review: an eased rise reads as the text hesitating
+         at both ends. constant speed reads as a scroll. the softness now
+         comes from the window's fade, not from the curve. */
+      creep = -overflowPx * pc;
     }
     r.expInner.style.transform = "translateY(" + A.round(creep, 2) + "px)";
   }

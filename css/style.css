@@ -664,9 +664,17 @@ body.capture .exp__cell[data-sel] { outline: none; }
    and the paragraph starts at the same height on every card. Titles run
    1, 2 or 3 lines and none reaches 4; if a future one does, this is the
    number to raise. */
+/* The block always reserves three lines so the paragraph starts at the
+   same height on every card. The title sits at the BOTTOM of it, not the
+   top: a one-line title then leaves its slack ABOVE, against the pill,
+   where it reads as air — left below, it read as a hole between the
+   title and the paragraph it belongs to. */
 .exp__title {
   width: 100%;
   min-height: calc(3 * 1.06em);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   font-family: var(--serif);
   font-weight: 800;
   font-size: 46px;
@@ -678,11 +686,24 @@ body.capture .exp__cell[data-sel] { outline: none; }
 }
 
 /* the clipped window the paragraph scrolls inside */
+/* The paragraph creeps upward inside this window. Its bottom edge used
+   to be a hard cut, which read as a mistake rather than as more text
+   below; it fades over the last --body-fade instead.
+
+   The fade is INSIDE the window: the text still stops exactly where the
+   hard edge used to be, it just thins out over the last --body-fade
+   instead of being guillotined. Do NOT also shrink the window for it —
+   that only steals reading height and makes the overflow worse. */
 .exp__body {
+  --body-fade: 46px;
   flex: 1;
   width: 100%;                 /* align-items:center would otherwise shrink it */
   position: relative;
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom,
+          #000 0, #000 calc(100% - var(--body-fade)), transparent 100%);
+          mask-image: linear-gradient(to bottom,
+          #000 0, #000 calc(100% - var(--body-fade)), transparent 100%);
 }
 .exp__bodyinner { position: absolute; left: 0; top: 0; right: 0; }
 
