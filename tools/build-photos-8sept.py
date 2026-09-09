@@ -25,23 +25,24 @@ LONG_EDGE, QUALITY = 1500, 72
 # "@name" is one of the print pieces lifted out of a PDF; "~name" is
 # rescued from the old folder, where the only copy lives.
 PLAN = {
- 1:  ["1996 Launch/1996 Ps John preview service-COVER.jpg",
+ 1:  ["1996 Launch/1996-Ps-John-preview-service-COVER.jpg",
       ["1996 Launch/1996.png", "1996 Launch/1997 Homebuilders.jpg",
-       "1996 Launch/1997.png", "1996 Launch/Screenshot 2026-09-03 at 3.20.59 PM.png"],
+       "1996 Launch/1997.png"],
       "@1996-Launch__original-team.jpg",
-      "1996 Launch/Screenshot 2026-09-03 at 3.28.38 PM.png"],
- 2:  ["1998 Mission Trip/Screenshot 2026-09-03 at 3.20.44 PM-COVER.png",
-      ["1998 Mission Trip/Brazil Missions Team- Kelly Mayberry Emma Pier.tiff",
-       "1998 Mission Trip/Brazil Missions3- Kelly Mayberry Emma Pier.tiff",
+      ["1996 Launch/meeting in the home 01.png",
+       "1996 Launch/meeting in the home 02.png",
+       "1996 Launch/meeting in the home 03.png"]],
+ 2:  ["1998 Mission Trip/COVER.jpg",
+      ["1998 Mission Trip/Brazil-Missions-Team-1.jpg",
+       "1998 Mission Trip/Brazil-Missions-Team-2.jpg",
        "1998 Mission Trip/Mexico Missions 2000.jpg",
        "1998 Mission Trip/Screenshot 2026-09-03 at 3.21.19 PM.png"]],
  40: ["1999 Permanent Office Space/Ps John Homebuilders-COVER.jpg",
-      "1999 Permanent Office Space/2000.jpg",
-      ["@raiz__Kids-Life-Publication.jpg",
-       "@raiz__mailer.jpg",
-       "@raiz__1999-publication.jpg",
-       "1999 Permanent Office Space/Screenshot 2026-09-03 at 3.33.10 PM.png"]],
- 3:  ["@2000-First-Billboard__billboard.jpg",
+      "1999 Permanent Office Space/Baptism.jpg",
+      ["1999 Permanent Office Space/Mailer.jpg",
+       "1999 Permanent Office Space/Kids-Life-Publication",
+       "1999 Permanent Office Space/Screenshot-2026-09-03-at-3.3310 PM.jpg"]],
+ 3:  ["2000 First Billboard/billboard.jpg",
       ["@raiz__2004-mailer-front.jpg", "@raiz__2004-mailer-back.jpg"]],
  4:  ["@2001-5th-Anniversary__2001-New-campaign-cover.jpg",
       ["2001 5th Anniversary/Picnic.jpg",
@@ -183,13 +184,29 @@ def resolve(ref):
     return p
 
 
+# scans and printed pieces: shown entire rather than cropped to fill
+PRINT = ("@", "mailer", "publication", "billboard", "trifold", "invite",
+         "card", "campaign", "prayer", "original-team", "journey", "offering")
+
+
+def is_print(ref):
+    low = os.path.basename(ref).lower()
+    return ref.startswith("@") or any(k in low for k in PRINT[1:])
+
+
 def slug(ref):
     base = os.path.splitext(os.path.basename(ref))[0]
     base = re.sub(r"-?COVER", "", base, flags=re.I)
     base = re.sub(r"\s*-\s*(Kelly Mayberry|Emma Pier|Melissa Horn|Josie De Souza|"
                   r"mayberrystories|Kristi Sciacchetano|brynn vanblaricom|drop box).*", "", base, flags=re.I)
     base = re.sub(r"[^A-Za-z0-9]+", "-", base).strip("-").lower()
-    return (base[:44] or "photo") + ".jpg"
+    # a file called plainly "COVER.jpg" has nothing left once the marker
+    # comes off, so it borrows the name of the folder it was filed in
+    if not base:
+        base = re.sub(r"[^A-Za-z0-9]+", "-",
+                      os.path.basename(os.path.dirname(ref))).strip("-").lower()
+    base = (base[:38] or "photo")
+    return base + ("-whole.jpg" if is_print(ref) else ".jpg")
 
 
 def decode(path):
