@@ -163,6 +163,38 @@ PLAN = {
 
 DARK, UNIFORM, CEILING, MAX_ASPECT = 30, 5.0, 60, 2.0
 
+# a scanned page's white, and how much ink a line needs to be content
+PAGE_PAD, INK_FRAC = 6, 0.012
+
+
+def trim_page(im):
+    """Cut the scanner's white margin off a printed piece.
+
+    The same bounding box the PDFs went through, applied here too: the
+    pieces that arrive already exported as JPGs never saw it, and their
+    page white sitting against the card's cream is what reads as wrong.
+    White is measured from the sheet's own corners, because a scan's
+    white is never 255 and drifts with the lamp."""
+    a = np.asarray(im.convert("L"), dtype=np.float32)
+    h, w = a.shape
+    k = max(8, min(h, w) // 40)
+    corners = np.concatenate([a[:k, :k].ravel(), a[:k, -k:].ravel(),
+                              a[-k:, :k].ravel(), a[-k:, -k:].ravel()])
+    white = np.percentile(corners, 60)
+    if white < 200:                      # not a white page at all
+        return im
+    ink = a < white - 18
+    rows, cols = ink.mean(axis=1) > INK_FRAC, ink.mean(axis=0) > INK_FRAC
+    if not rows.any() or not cols.any():
+        return im
+    y0, y1 = np.where(rows)[0][[0, -1]]
+    x0, x1 = np.where(cols)[0][[0, -1]]
+    box = (max(0, x0 - PAGE_PAD), max(0, y0 - PAGE_PAD),
+           min(w, x1 + 1 + PAGE_PAD), min(h, y1 + 1 + PAGE_PAD))
+    if (box[2]-box[0]) < 80 or (box[3]-box[1]) < 80:
+        return im
+    return im.crop(box)
+
 
 def loose(n):
     """macOS writes U+202F before the "PM" in a screenshot's name and shows
@@ -259,7 +291,8 @@ def main():
                 n = slug(ref)
                 i = 2
                 while n in names.values(): n = slug(ref)[:-4] + "-%d.jpg" % i; i += 1
-                im = strip_letterbox(decode(p))
+                im = decode(p)
+                im = trim_page(im) if is_print(ref) else strip_letterbox(im)
                 if max(im.size) > LONG_EDGE: im.thumbnail((LONG_EDGE, LONG_EDGE), Image.LANCZOS)
                 im.save(os.path.join(OUT, n), "JPEG", quality=QUALITY,
                         optimize=True, progressive=True)

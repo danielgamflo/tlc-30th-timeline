@@ -572,9 +572,18 @@ html, body {
 /* A printed piece is a document, not a photograph: cropping a mailer to
    fill the frame throws away the half that carries the words. Anything
    built from a scan is named "-whole" and is shown entire, on the card's
-   own ground, the same way a clip is. */
+   own ground, the same way a clip is.
+
+   It MUST carry that ground itself. The slides cross-fade by stacking —
+   each one arrives over the last and stays — which only works while every
+   slide covers the frame. A contained image does not, so without a
+   background of its own the slide underneath shows straight through it
+   and the two read as one double-exposed mess. */
 .exp__photo img[src*="-whole"],
-.exp__cell  img[src*="-whole"] { object-fit: contain; }
+.exp__cell  img[src*="-whole"] {
+  object-fit: contain;
+  background: var(--cream);
+}
 
 /* the focus tool's selection. dev only — .capture never shows it, so it
    can never land in a rendered frame. */
@@ -668,28 +677,18 @@ body.capture .exp__cell[data-sel] { outline: none; }
 
 /* All caps. The brief said "capitalize the headers", which was ambiguous
    until you notice the titles were already Title Case — so it could only
-   have meant this. Read back to the client and confirmed. Caps set solid at
-   46px run long, so the tracking comes back a touch and the leading
-   tightens — uppercase has no descenders to separate the lines.
+   have meant this. Read back to the client and confirmed. Caps set solid
+   at 46px run long, so the tracking comes back a touch and the leading
+   tightens: uppercase has no descenders to separate the lines.
 
-   One size for every title — there is no per-card fitting anywhere, and
-   there should not be. What DID vary was the block's height: a one-line
-   title and a three-line one pushed the paragraph to different places,
-   a 98px swing across the 42. So the block always reserves three lines
-   and the paragraph starts at the same height on every card. Titles run
-   1, 2 or 3 lines and none reaches 4; if a future one does, this is the
-   number to raise. */
-/* The block always reserves three lines so the paragraph starts at the
-   same height on every card. The title sits at the BOTTOM of it, not the
-   top: a one-line title then leaves its slack ABOVE, against the pill,
-   where it reads as air — left below, it read as a hole between the
-   title and the paragraph it belongs to. */
+   No reserved height. Holding three lines' worth kept the paragraph
+   starting at the same place on every card, but a one-line title then
+   carried the slack — under it first, which read as a hole, and above it
+   afterwards, which read no better. Natural height it is: the title sits
+   against the pill above and the paragraph below, and a short one simply
+   hands its room to the paragraph, which needs it. */
 .exp__title {
   width: 100%;
-  min-height: calc(3 * 1.06em);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   font-family: var(--serif);
   font-weight: 800;
   font-size: 46px;
