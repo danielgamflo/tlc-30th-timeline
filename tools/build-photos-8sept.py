@@ -53,10 +53,13 @@ PLAN = {
       "@2001-5th-Anniversary__2001--21-days-of-prayer-and-fasting.jpg"],
  5:  ["2002 A - First Service at GTP/2004.jpg",
       "2002 A - First Service at GTP/GTP renovation.jpg",
+      # the Celebrate! mailer used to sit here as a fourth cell. It sends
+      # readers to the Home Builders Association Building, which is the
+      # building the church LEFT on this date, and the same piece already
+      # runs in 1999 where it belongs.
       ["2002 A - First Service at GTP/2004 Building Front.JPG",
        "2002 A - First Service at GTP/IMG_2554 - mayberrystories Emma Pier.jpeg",
-       "2002 A - First Service at GTP/IMG_1577.JPG",
-       "@raiz__mailer.jpg"]],
+       "2002 A - First Service at GTP/IMG_1577.JPG"]],
  6:  ["@2002-B---Hosted-Reinhard-Bonnke__Miracle-Service-Invite.jpg",
       "@2002-B---Hosted-Reinhard-Bonnke__Reinhard-Bonnke-Invite.jpg"],
  41: ["2004 - Launched Axis/axiswed.JPG",
@@ -115,10 +118,12 @@ PLAN = {
        "2021 A - Launched MA Location/20250411-20250411-LG-NY5094.jpg"]],
  27: ["2021 B - Celebrated 25 Years/8011F875-1C15-469B-993C-164B41B27D4F.JPG"],
  29: ["2022 B - Axis Conf Sells Out/mondaypm-ch-29 drop box.JPG",
+      # AD37EEF1 was the same instant as thursdaypm-ch-20 — same song, same
+      # flames, same people, a tighter crop seconds apart — and the two sat
+      # in one grid together
       ["2022 B - Axis Conf Sells Out/thursdaypm-ch-20 drop box.JPG",
        "2022 B - Axis Conf Sells Out/wednesdaypm_brynn-52 brynn vanblaricom.JPG",
-       "2022 B - Axis Conf Sells Out/0D07ED76-31E0-4586-90B4-5F1261EB56AB.JPG",
-       "2022 B - Axis Conf Sells Out/AD37EEF1-398B-4038-B806-742D7CAD0341.JPG"]],
+       "2022 B - Axis Conf Sells Out/0D07ED76-31E0-4586-90B4-5F1261EB56AB.JPG"]],
  32: ["2024 A - Hosted First Revival Nights/IMG_0217.jpeg",
       ["2024 A - Hosted First Revival Nights/IMG_0209.jpeg",
        "2024 B - Launched South Africa Location/012424_REVIVAL_ep-77 EUNICE.jpg",
