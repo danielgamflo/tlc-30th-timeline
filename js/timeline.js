@@ -176,7 +176,15 @@ var SCENE_TIMELINE = (function () {
       var d = data[i];
       var words = (d.paragraph || "").split(/\s+/).filter(Boolean).length;
       var slides = slidesOf(d).length;
-      var want = LEAD + words / WPM * 60 + slides * SLIDE;
+      /* the first note is on screen the whole time and is read alongside
+         the paragraph; every note after it takes its turn, so it needs
+         its own reading time or the deck rotates faster than anyone can
+         follow it */
+      var notes = factsOf(d), extra = 0;
+      for (var f = 1; f < notes.length; f++) {
+        extra += (notes[f].stat || "").split(/\s+/).filter(Boolean).length;
+      }
+      var want = LEAD + (words + extra) / WPM * 60 + slides * SLIDE;
       holds.push(A.clamp(want, FLOOR, CEIL));
     }
 
