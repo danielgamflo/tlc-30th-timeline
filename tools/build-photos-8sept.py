@@ -15,15 +15,15 @@ from PIL import Image, ImageOps
 
 P    = "/Volumes/Danny SSD/THE LIFE CHURCH/MEMPHIS/2026/30th Aniversary Timeline/Working/Web Proyect"
 SRC  = os.path.join(P, "assets", "30th Anniversary Timeline - 8Sept")
-OLD  = os.path.join(P, "assets", "30th Anniversary Timeline Photos")
 SCAN = "/private/tmp/claude-501/-Users-danielgamboaflores/e20d5133-fc1a-4f0b-b5a5-dd9f9eec3536/scratchpad/scans"
 OUT  = os.path.join(P, "assets", "photos")
 
 LONG_EDGE, QUALITY = 1500, 72
 
 # ---- what each date shows, in order. a list inside the list is a grid.
-# "@name" is one of the print pieces lifted out of a PDF; "~name" is
-# rescued from the old folder, where the only copy lives.
+# "@name" is one of the print pieces lifted out of a PDF. This list
+# is the SOURCE of each picture, not the running order any more —
+# the order lives in data/timeline.json, where it was reviewed.
 PLAN = {
  1:  ["1996 Launch/1996-Ps-John-preview-service-COVER.jpg",
       ["1996 Launch/1996.png", "1996 Launch/1997 Homebuilders.jpg",
@@ -73,7 +73,8 @@ PLAN = {
       ["2005 C - Katrina/Katrina relief trip - Melissa Horn Emma Pier.jpeg",
        "2005 C - Katrina/Katrina relief1.jpg",
        "2005 C - Katrina/Photo_2026-08-16_200140 - Melissa Horn Emma Pier.jpeg"]],
- 12: ["~2009 Ps John GTP.JPG", "~2008.png"],
+ 12: ["2008 B - Launched TV Program/2009 Ps John GTP.JPG",
+      "2008 B - Launched TV Program/2008.png"],
  11: ["2008 A - First Make Room/2011.jpg", "2008 A - First Make Room/IMG_8198.JPG"],
  13: ["2008 C - Launched Collierville Location/2008 YMCA launch sign.JPG",
       ["2008 C - Launched Collierville Location/IMG_0411.JPG",
@@ -210,11 +211,9 @@ def loose(n):
 
 def resolve(ref):
     if ref.startswith("@"): return os.path.join(SCAN, ref[1:])
-    root = OLD if ref.startswith("~") else SRC
-    rel  = ref[1:] if ref.startswith("~") else ref
-    p = os.path.join(root, rel)
+    p = os.path.join(SRC, ref)
     if os.path.exists(p): return p
-    d, want = os.path.split(os.path.join(root, rel))
+    d, want = os.path.split(p)
     if os.path.isdir(d):
         for f in os.listdir(d):
             if loose(f) == loose(want): return os.path.join(d, f)
@@ -284,8 +283,14 @@ def strip_letterbox(im):
 
 
 def main():
-    if os.path.isdir(OUT): shutil.rmtree(OUT)
-    os.makedirs(OUT)
+    # NOT rmtree. The print pieces come from SCAN, a scratch directory
+    # that does not survive between sessions, so a wipe-and-rebuild
+    # deletes eight scans it then cannot regenerate — the artwork of the
+    # billboard, the Bonnke invites, the 2001 brochure. They are in the
+    # repository and they stay there; the build overwrites what it makes
+    # and leaves alone what it does not.
+    os.makedirs(OUT, exist_ok=True)
+    before = set(os.listdir(OUT))
     names, total, missing = {}, 0, []
     for did, slides in PLAN.items():
         for s in slides:
@@ -305,17 +310,27 @@ def main():
                 total += os.path.getsize(os.path.join(OUT, n))
 
     rows = json.load(open(os.path.join(P, "data", "timeline.json")))
+
+    # The PLAN chose which pictures a date got when there was nothing.
+    # There is something now: every list has been gone through with the
+    # church, photographs dropped and swapped and grids rebuilt, and each
+    # one carries a focus that was measured against what is in the frame.
+    # None of that is in the PLAN and none of it can be derived from it.
+    #
+    # So the build writes the FILES and leaves the lists alone. It only
+    # fills in a date that has no pictures at all, which is what the PLAN
+    # was for. Rerunning this after a folder changes is now safe.
     for r in rows:
         plan = PLAN.get(r["id"])
-        for k in ("photo", "photos", "focus"): r.pop(k, None)
         if not plan: continue
+        if r.get("photo") or r.get("photos"): continue
         out = []
-        for s in plan:
-            if isinstance(s, list):
-                g = [names[x] for x in s if x in names]
+        for sl in plan:
+            if isinstance(sl, list):
+                g = [names[x] for x in sl if x in names]
                 if g: out.append(g if len(g) > 1 else g[0])
-            elif s in names:
-                out.append(names[s])
+            elif sl in names:
+                out.append(names[sl])
         if not out: continue
         if len(out) == 1 and isinstance(out[0], str):
             r["photo"] = out[0]; r["focus"] = "50% 50%"
@@ -323,8 +338,22 @@ def main():
             r["photos"] = out
             r["focus"] = [["50% 50%"] * len(x) if isinstance(x, list) else "50% 50%" for x in out]
 
+    # a picture a date points at that the build no longer produces is the
+    # one thing that must not pass quietly
+    have = set(os.listdir(OUT))   # lo que hay, no solo lo que produjo
+    for r in rows:
+        for sl in (r.get("photos") or ([r["photo"]] if r.get("photo") else [])):
+            for f in (sl if isinstance(sl, list) else [sl]):
+                if f not in have and not f.lower().endswith((".mp4", ".mov")):
+                    print("  FALTA  %s  (la usa %s %s)" % (f, r["year"], r["short"]))
+
     with open(os.path.join(P, "data", "timeline.json"), "w") as f:
         f.write("[\n" + ",\n".join("  " + json.dumps(x, ensure_ascii=False) for x in rows) + "\n]\n")
+
+    kept = before - set(names.values())
+    if kept:
+        print("  %d conservados que este build no produce (escaneos): %s"
+              % (len(kept), ", ".join(sorted(kept)[:3]) + ("..." if len(kept) > 3 else "")))
 
     bare = [r["id"] for r in rows if not (r.get("photo") or r.get("photos"))]
     print("%d derivados, %.1f MB" % (len(names), total / 1024 / 1024))
