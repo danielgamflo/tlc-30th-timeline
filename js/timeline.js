@@ -520,6 +520,36 @@ var SCENE_TIMELINE = (function () {
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
+  /* Copy carries three things the doc has and plain text cannot.
+     Everything is escaped first, so the markup below is the only markup
+     that can ever reach the page.
+
+       *like this*   italic. The doc italicises campaign and programme
+                     names — "Reaching Forward in Faith" — and losing
+                     that on the way to the screen loses the meaning.
+
+       a line feed   a hard break. Twelve titles were asked to break at
+                     a named word; where the break falls was being
+                     decided by how wide the panel happened to be, which
+                     is why the same request kept coming back. Now the
+                     copy says where it goes.
+
+       last two      bound with a non-breaking space, so nothing ends
+       words         on a word sitting alone on its own line. A phrase
+                     that must hold together mid-sentence — "Baton
+                     Rouge", "worship services" — gets its own NB
+                     written into the copy, because which words those
+                     are is a judgement about the sentence, not a rule. */
+  var NB = "\u00A0";
+
+  function rich(s, allowBreaks) {
+    var out = esc(s);
+    out = out.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    out = out.replace(/[ \t]+(\S+)[ \t]*$/, NB + "$1");
+    out = allowBreaks ? out.replace(/\n/g, "<br>") : out.replace(/\n/g, " ");
+    return out;
+  }
+
   /* ---- expanded card content --------------------------------- */
 
   function showExpanded(i) {
@@ -540,8 +570,10 @@ var SCENE_TIMELINE = (function () {
     r.expStat.style.borderLeftColor = accent;
     r.expLabelT.textContent = d.label || "";
     r.expYear.textContent  = d.year;
-    r.expTitle.textContent = d.title;
-    r.expPara.textContent  = d.paragraph;
+    /* the title is the one place a hard break is honoured — the copy
+       names where it wants to turn */
+    r.expTitle.innerHTML = rich(d.title, true);
+    r.expPara.innerHTML  = rich(d.paragraph, false);
 
     var notes = factsOf(d);
     if (notes.length) {
@@ -554,8 +586,8 @@ var SCENE_TIMELINE = (function () {
       for (var n2 = 0; n2 < notes.length; n2++) {
         nh += '<div class="exp__fact">' +
               (notes[n2].tag ? "<i>" + esc(notes[n2].tag) + "</i>" : "") +
-              "<b>" + esc(notes[n2].stat) + "</b>" +
-              (notes[n2].source ? "<span>" + esc(notes[n2].source) + "</span>" : "") +
+              "<b>" + rich(notes[n2].stat, false) + "</b>" +
+              (notes[n2].source ? "<span>" + rich(notes[n2].source, false) + "</span>" : "") +
               "</div>";
       }
       r.expStat.innerHTML = nh;
