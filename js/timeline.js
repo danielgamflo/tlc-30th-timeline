@@ -400,6 +400,23 @@ var SCENE_TIMELINE = (function () {
        "focus": "30% 20%"            one value for the date
        "focus": ["30% 20%", "50% 40%"]   one per photo
      left out, it stays centred.                                   */
+  /* A photograph is normally cropped to fill its pane. Some must not be
+     - a poster, a scan, a graphic whose edges are the design. Until now
+     the only way to say so was the "-whole" in a filename, which the
+     build writes for print pieces and which nothing else could ask for.
+
+     A focus of "contain" says it in the data instead:
+         "focus": ["contain", "50% 30%"]
+     and an anchor may ride along - "contain 50% 20%" - for where the
+     picture sits inside the pane it no longer fills. */
+  function fitOf(f) {
+    if (typeof f === "string" && f.indexOf("contain") === 0) {
+      var rest = f.slice(7).trim();
+      return { cls: " exp__contain", pos: rest || "50% 50%" };
+    }
+    return { cls: "", pos: f };
+  }
+
   function focusOf(d, k, cell) {
     var f = d.focus;
     if (!f) return "50% 50%";
@@ -623,11 +640,16 @@ var SCENE_TIMELINE = (function () {
              asked to carry a fraction of the enlargement a full-bleed
              one would need */
           var g = shots[s2], n = Math.min(g.length, 4);
-          html += '<div class="exp__split exp__split--' + n + '">';
+          /* "foot": [2] turns the three-cell grid on slide 2 upside
+             down - two across the top, one spanning the bottom. */
+          var foot = (d.foot || []).indexOf(s2) >= 0 && n === 3
+                     ? " exp__split--foot" : "";
+          html += '<div class="exp__split exp__split--' + n + foot + '">';
           for (var c = 0; c < n; c++) {
-            html += '<div class="exp__cell"><img src="' + srcFor(g[c]) +
-                    '" alt="" style="object-position:' +
-                    focusOf(d, s2, c) + '"></div>';
+            var fc = fitOf(focusOf(d, s2, c));
+            html += '<div class="exp__cell"><img class="' + fc.cls.trim() +
+                    '" src="' + srcFor(g[c]) +
+                    '" alt="" style="object-position:' + fc.pos + '"></div>';
           }
           html += '</div>';
         } else if (isVideo(shots[s2])) {
@@ -641,8 +663,9 @@ var SCENE_TIMELINE = (function () {
                   'poster="' + stillFor(shots[s2]) + '" ' +
                   'muted playsinline preload="auto"></video>';
         } else {
-          html += '<img src="' + srcFor(shots[s2]) + '" alt="" ' +
-                  'style="object-position:' + focusOf(d, s2) + '">';
+          var ff = fitOf(focusOf(d, s2));
+          html += '<img class="' + ff.cls.trim() + '" src="' + srcFor(shots[s2]) +
+                  '" alt="" style="object-position:' + ff.pos + '">';
         }
       }
       r.expPhoto.innerHTML = html;

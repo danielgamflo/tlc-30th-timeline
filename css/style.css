@@ -579,11 +579,23 @@ html, body {
    slide covers the frame. A contained image does not, so without a
    background of its own the slide underneath shows straight through it
    and the two read as one double-exposed mess. */
+/* the element selector has to stay in front of the class: `.exp__photo
+   img` sets cover at 0-1-1, so a bare `.exp__contain` at 0-1-0 loses and
+   the picture is cropped anyway. */
 .exp__photo img[src*="-whole"],
-.exp__cell  img[src*="-whole"] {
+.exp__cell  img[src*="-whole"],
+.exp__photo img.exp__contain,
+.exp__cell  img.exp__contain {
   object-fit: contain;
   background: var(--cream);
 }
+
+/* the three-cell grid the other way up: two across the top and one
+   spanning the bottom. Asked for on 2004, where dropping the bottom-left
+   photograph was supposed to let the bottom-right have the whole row. */
+.exp__split--3.exp__split--foot > :first-child { grid-column: auto; }
+.exp__split--3.exp__split--foot { grid-template-rows: 1fr 2fr; }
+.exp__split--3.exp__split--foot > :last-child { grid-column: 1 / -1; }
 
 /* the focus tool's selection. dev only — .capture never shows it, so it
    can never land in a rendered frame. */
