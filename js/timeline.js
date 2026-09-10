@@ -630,7 +630,9 @@ var SCENE_TIMELINE = (function () {
     /* one photo or several — "photos": ["a.jpg","b.jpg"] cross-fades
        them across the hold, stacked, so the mask reveal still plays
        on the first one and the rest simply relieve it. */
+    /* a date with no photograph gives the pane back to the panel */
     var shots = slidesOf(d);
+    if (r.exp) r.exp.classList.toggle("expanded--nophoto", !shots.length);
     if (shots.length) {
       r.expPhoto.className = "exp__photo";
       var html = "";

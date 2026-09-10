@@ -523,6 +523,24 @@ html, body {
 .exp__photo img { width: 100%; height: 100%; object-fit: cover; display: block;
                   position: absolute; inset: 0; }
 
+/* Four dates have no photograph at all - Santiago, Read to Lead, Austin
+   Peay, Italy - and the pane was standing there as an empty khaki
+   rectangle over half the card, which reads as a picture that failed to
+   load rather than as a date without one.
+
+   With nothing to show, the pane goes and the panel has the card to
+   itself. The text does not run the full 1494px though: a line that long
+   is a line nobody reads, so it holds the measure it had beside a
+   photograph and sits in the middle. */
+.expanded--nophoto .exp__photo,
+.expanded--nophoto .exp__divider { display: none; }
+.expanded--nophoto .exp__panel {
+  max-width: 980px;
+  margin: 0 auto;
+  padding-left: 60px;
+  padding-right: 60px;
+}
+
 /* A clip is shown WHOLE — contain, not cover. The frame is portrait and
    footage is landscape, so cover would throw away a third of the picture;
    the black it sits in belongs to the video element itself, so a still
