@@ -946,15 +946,26 @@ var SCENE_TIMELINE = (function () {
       }
     }
 
-    /* several notes at the foot cross-fade across the hold, on the same
-       clock as the photographs above them. The first is simply there;
-       each of the rest arrives over the one before and stays. */
+    /* Several notes at the foot take turns across the hold.
+
+       NOT the way the photographs do it. A photograph arrives over the
+       one before and stays, because it COVERS it - the one underneath
+       stops mattering. Text covers nothing. Stacking notes the same way
+       left the first one lit under the second and the two read as one
+       illegible overprint, which is what Daniel caught.
+
+       So each note leaves before the next arrives: 0.4s to fade out,
+       then 0.4s to fade the next in, no moment with both on screen. */
     var notes = r.expStat.children;
     if (notes.length > 1) {
       var nslot = (HOLD - 1.2) / notes.length;
       for (var n4 = 0; n4 < notes.length; n4++) {
-        notes[n4].style.opacity = (n4 === 0) ? 1 :
-          A.round(A.ease(ct, tHold + 0.9 + n4 * nslot, 0.9, A.easeInOutCubic), 3);
+        var at = tHold + 0.9 + n4 * nslot;
+        var arrive = (n4 === 0) ? 1
+                   : A.ease(ct, at + 0.4, 0.4, A.easeInOutCubic);
+        var leave  = (n4 === notes.length - 1) ? 0
+                   : A.ease(ct, at + nslot, 0.4, A.easeInOutCubic);
+        notes[n4].style.opacity = A.round(arrive * (1 - leave), 3);
       }
     }
 
