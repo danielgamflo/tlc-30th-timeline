@@ -442,11 +442,6 @@ var APP = (function () {
         img.src = A.asset("assets/photos/" + f);
         warmed.push(img);
 
-        var done = img.decode ? img.decode() : Promise.resolve();
-        waits.push(Promise.race([
-          done["catch"](function () {}),      /* a bad photo must not block */
-          new Promise(function (go) { setTimeout(go, 4000); })
-        ]));
       }
     }
     return Promise.all(waits).then(function () { return rows; });
@@ -463,7 +458,25 @@ var APP = (function () {
     return m ? m[1] : Date.now();
   })();
 
-  fetch("data/timeline.json?v=" + VER)
+  /* which dates ship a "-cover" twin for the rail card. A list beats
+     asking the server for 39 files that mostly are not there: those
+     misses were 113 console errors on every load, and 113 wasted
+     requests per batch in the headless export.
+
+     It has to be ANSWERED before the rail is built — the card's src is
+     written once when its node is made, not per frame — so it is part
+     of the boot chain rather than a request fired alongside it. */
+  function loadCovers() {
+    return fetch("data/covers.json?v=" + VER)
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .catch(function () { return []; })
+      .then(function (list) {
+        for (var c = 0; c < list.length; c++) A.noteCover(list[c], true);
+      });
+  }
+
+  loadCovers()
+    .then(function () { return fetch("data/timeline.json?v=" + VER); })
     .then(function (res) { return res.json(); })
     .then(decodeAll)
     .then(function (rows) {

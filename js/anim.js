@@ -27,10 +27,34 @@ var A = (function () {
     var s = document.currentScript ||
             document.querySelector('script[src*="anim.js"]');
     var m = s && /\?v=([^&]+)/.exec(s.getAttribute("src") || "");
-    return m ? "?v=" + m[1] : "";
+    var v = m ? m[1] : "";
+
+    /* On localhost the photographs are being replaced in place all day —
+       same filename, new bytes — and the published stamp does not move
+       between those saves, so the browser kept serving the copy it
+       already had. Daniel edited a file, reloaded, and saw yesterday's
+       picture. Locally the stamp carries the page-load time as well, so
+       every reload asks for the file again. Published, it is untouched:
+       the version alone, doing the caching it is there to do. */
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+      return "?v=" + v + "." + Date.now();
+    }
+    return v ? "?v=" + v : "";
   })();
 
   function asset(path) { return path + stamp; }
+
+  /* The rail card is 200x132 and the big pane is 777x874 — the same
+     photograph cannot suit both, so a date may ship a second file for
+     the little one: the same name with "-cover" before the extension.
+
+     Whether that file exists is settled ONCE, before the first frame,
+     and kept in this set. render() then only reads the set, so it stays
+     a pure function of time and the headless export cannot catch a card
+     mid-swap. */
+  var covers = {};
+  function haveCover(name) { return covers[name] === true; }
+  function noteCover(name, yes) { covers[name] = yes; }
 
   /* progress 0..1 of a beat that starts at `start` and lasts `dur` */
   function seg(t, start, dur) {
@@ -125,6 +149,7 @@ var A = (function () {
   return {
     clamp: clamp, lerp: lerp, seg: seg, ease: ease, tween: tween, round: round,
     asset: asset, stamp: stamp,
+    haveCover: haveCover, noteCover: noteCover,
     luminance: luminance, contrast: contrast, inkOn: inkOn, mix: mix,
     linear: linear,
     easeOutCubic: easeOutCubic,

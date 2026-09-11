@@ -645,12 +645,22 @@ body.capture .exp__cell[data-sel] { outline: none; }
    The key stat is the one exception, kept as it was: it is anchored by
    the accent rule down its left edge, and that rule only reads as a
    margin note if the line beside it starts where the rule does. */
+/* Everything in the panel — the date, the pill, the title, the paragraph
+   and the note at the foot — sits as ONE block, centred vertically.
+
+   It used to be top-aligned with the note pinned to the bottom by
+   `margin-top: auto`, so every second a date's copy was short the slack
+   piled up in one place: a hole between the paragraph and the note, and
+   the block riding high. Asked for on all forty. Now the slack is split
+   evenly above and below, and the gap between paragraph and note is a
+   number rather than whatever was left over. */
 .exp__panel {
   flex: 1;
   padding: 46px 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   overflow: hidden;
   background: transparent;      /* the striped ground belongs to .expanded */
@@ -740,16 +750,38 @@ body.capture .exp__cell[data-sel] { outline: none; }
    that only steals reading height and makes the overflow worse. */
 .exp__body {
   --body-fade: 46px;
-  flex: 1;
+  /* was flex:1 — it swallowed the leftover height and pushed the note
+     away. It now takes the height of its own text and only gives ground
+     when there is not enough room, which is what keeps the scroll and
+     the fade working if the copy ever grows again. min-height:0 is what
+     lets a flex item actually shrink below its content. */
+  flex: 0 1 auto;
+  min-height: 0;
   width: 100%;                 /* align-items:center would otherwise shrink it */
   position: relative;
   overflow: hidden;
+}
+/* Static, not absolute. Absolute took it out of the flow, which was
+   fine while the body's height came from `flex: 1` — but the body now
+   sizes to its own text so the block can be centred, and an absolute
+   child gives it nothing to size to. The body collapsed to zero and the
+   paragraph printed straight over the note.
+
+   The upward creep is a transform either way, so nothing about the
+   scroll needed the positioning. */
+.exp__bodyinner { position: relative; width: 100%; }
+
+/* The fade only belongs there when text is actually being cut off. It
+   used to be on always, and once the copy stopped overflowing it was
+   simply thinning out the last line of every paragraph for no reason —
+   Daniel could see it. showExpanded adds this class only when the
+   paragraph is taller than its window. */
+.exp__body--fades {
   -webkit-mask-image: linear-gradient(to bottom,
           #000 0, #000 calc(100% - var(--body-fade)), transparent 100%);
           mask-image: linear-gradient(to bottom,
           #000 0, #000 calc(100% - var(--body-fade)), transparent 100%);
 }
-.exp__bodyinner { position: absolute; left: 0; top: 0; right: 0; }
 
 .exp__para {
   font-family: var(--serif);
@@ -764,7 +796,7 @@ body.capture .exp__cell[data-sel] { outline: none; }
 .exp__stat {
   width: 100%;
   text-align: left;            /* the one thing left alone, as asked */
-  margin-top: auto;
+  margin-top: 38px;            /* a set gap, not the leftover space */
   padding: 4px 0 0 20px;
   border-left: 6px solid var(--ink);
   flex: none;

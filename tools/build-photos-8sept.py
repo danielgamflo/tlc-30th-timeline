@@ -51,15 +51,9 @@ PLAN = {
        "2001 5th Anniversary/2001.JPG"],
       "@2001-5th-Anniversary__2001-Missions-Trifold.jpg",
       "@2001-5th-Anniversary__2001--21-days-of-prayer-and-fasting.jpg"],
- 5:  ["2002 A - First Service at GTP/2004.jpg",
+ 5: ["2002 A - First Service at GTP/2004 Building Front - cover.JPG",
       "2002 A - First Service at GTP/GTP renovation.jpg",
-      # the Celebrate! mailer used to sit here as a fourth cell. It sends
-      # readers to the Home Builders Association Building, which is the
-      # building the church LEFT on this date, and the same piece already
-      # runs in 1999 where it belongs.
-      ["2002 A - First Service at GTP/2004 Building Front.JPG",
-       "2002 A - First Service at GTP/IMG_2554 - mayberrystories Emma Pier.jpeg",
-       "2002 A - First Service at GTP/IMG_1577.JPG"]],
+      ["2002 A - First Service at GTP/2004.jpg", "2002 A - First Service at GTP/IMG_2554 - mayberrystories Emma Pier.jpeg", "2002 A - First Service at GTP/IMG_1577.JPG"]],
  6:  ["2002 B - Hosted Reinhard Bonnke/Miracle Service Invite.png",
       "2002 B - Hosted Reinhard Bonnke/Reinhard Bonnke Invite.png"],
  41: ["2004 - Launched Axis/axiswed.JPG",
@@ -69,13 +63,12 @@ PLAN = {
  8:  ["2005 B - Launched First Year of internship/2005 First Class of Damascus Road-COVER.JPG",
       ["2005 B - Launched First Year of internship/468223048_10162941475054587_9191860633540407670_n.jpg",
        "2005 B - Launched First Year of internship/IMG_0707.JPG"]],
- 9:  ["2005 C - Katrina/Katrina relief trip to Biloxi, Mississippi - COVER.jpeg",
-      ["2005 C - Katrina/Katrina relief trip - Melissa Horn Emma Pier.jpeg",
-       "2005 C - Katrina/Katrina relief1.jpg",
-       "2005 C - Katrina/Photo_2026-08-16_200140 - Melissa Horn Emma Pier.jpeg"]],
+ 9: ["2005 C - Katrina/Photo_2026-08-16_200140 - COVER.jpeg",
+      ["2005 C - Katrina/Katrina relief trip to Biloxi, Mississippi - COVER.jpeg", "2005 C - Katrina/Katrina relief1.jpg"]],
  12: ["2008 B - Launched TV Program/2009 Ps John GTP.JPG",
       "2008 B - Launched TV Program/2008.png"],
- 11: ["2008 A - First Make Room/2011.jpg", "2008 A - First Make Room/IMG_8198.JPG"],
+ 11: ["2008 A - First Make Room/Screenshot 2026-09-08 COVER.png",
+      ["2008 A - First Make Room/IMG_8198.JPG", "2008 A - First Make Room/2011.jpg"]],
  13: ["2008 C - Launched Collierville Location/2008 YMCA launch sign.JPG",
       ["2008 C - Launched Collierville Location/IMG_0411.JPG",
        "2008 C - Launched Collierville Location/IMG_0708.JPG"]],
@@ -89,12 +82,10 @@ PLAN = {
  16: ["2014 A - Launched East Memphis at Paradiso/471858485_10163191145089587_3370435142301144151_n.jpg",
       "2014 A - Launched East Memphis at Paradiso/2015.jpg",
       "2014 A - Launched East Memphis at Paradiso/468151643_10162920441999587_430435861007173487_n.jpg"],
- 18: ["2014 C - Hosted First Zoe Conf/2016.jpg", "2014 C - Hosted First Zoe Conf/2014.jpg"],
- 20: ["2015 B - Hosted first Sound of Christmas/122124SOC_EMSOCSOC_EMep-90.JPG",
-      ["2015 B - Hosted first Sound of Christmas/SOC Ps John & Leslie.jpg",
-       "2015 B - Hosted first Sound of Christmas/SOC older.jpg",
-       "2015 B - Hosted first Sound of Christmas/SOC older 2.jpg",
-       "2015 B - Hosted first Sound of Christmas/soc 2026.jpg"]],
+ 18: ["2014 C - Hosted First Zoe Conf/IMG_0503-COVER.jpg",
+      ["2014 C - Hosted First Zoe Conf/2014.jpg", "2014 C - Hosted First Zoe Conf/2016.jpg", "2014 C - Hosted First Zoe Conf/Screenshot 2026-09-09 at 3.40.26 PM.png", "2014 C - Hosted First Zoe Conf/Screenshot 2026-09-09 at 3.44.37 PM.png"]],
+ 20: ["2015 B - Hosted first Sound of Christmas/soc 2026- cover.jpg",
+      ["2015 B - Hosted first Sound of Christmas/SOC Ps John & Leslie.jpg", "2015 B - Hosted first Sound of Christmas/SOC older- crop so it's only the right side.jpg", "2015 B - Hosted first Sound of Christmas/SOC older 2.jpg", "2015 B - Hosted first Sound of Christmas/122124SOC_EMSOCSOC_EMep-90.JPG"]],
  21: ["2016 - broke ground on HSL Auditorium/E26A1462.CR2",
       ["2016 - broke ground on HSL Auditorium/468537246_10163101653019587_1576519272855988296_n.jpg",
        "2016 - broke ground on HSL Auditorium/468573758_10163071502734587_3456830922896276395_n.jpg",
@@ -103,12 +94,8 @@ PLAN = {
       "2017 - Houston Levee Auditorium Grand Opening/stnadalone photo.png",
       ["2017 - Houston Levee Auditorium Grand Opening/half photo.png", "2017 - Houston Levee Auditorium Grand Opening/half photo 2.png"],
       "2017 - Houston Levee Auditorium Grand Opening/VP Night .png"],
- 24: [["2019 Record 21 Mission Trips/Cuba_Missions-SM-23.jpg",
-       "2019 Record 21 Mission Trips/DeLDfHyYTsq0VR%fiIdtmA.jpg",
-       "2019 Record 21 Mission Trips/IMG_0044.JPG",
-       "2019 Record 21 Mission Trips/IMG_0634.JPG"],
-      "2019 Record 21 Mission Trips/1O9A0200.jpg",
-      "2019 Record 21 Mission Trips/Cuba_Missions-SM-49.jpg"],
+ 24: ["2019 Record 21 Mission Trips/Cuba_Missions-SM-49-COVER.jpg",
+      ["2019 Record 21 Mission Trips/Cuba_Missions-SM-23.jpg", "2019 Record 21 Mission Trips/DeLDfHyYTsq0VR%fiIdtmA.jpg", "2019 Record 21 Mission Trips/IMG_0044.JPG", "2019 Record 21 Mission Trips/IMG_0634.JPG"]],
  25: ["2020 A - Launched The Life Church New York/IMG_0767-COVER.jpg",
       ["2020 A - Launched The Life Church New York/20230329_ny_jc-0036.JPG", "2020 A - Launched The Life Church New York/IMG_0766.jpg"]],
  42: ["2020 B - Leadership in B&W Podcast Launched/KLP-2607-Leadership-in-Black-and-White-Audio-800x800.JPG",
@@ -119,42 +106,28 @@ PLAN = {
        "2021 A - Launched MA Location/20250411-20250411-LG-NY5094.jpg"]],
  27: ["2021 B - Celebrated 25 Years/25thAnv_2-COVER.jpg",
       ["2021 B - Celebrated 25 Years/ 111321-HSL-JP-1-2.jpg", "2021 B - Celebrated 25 Years/IMG_7117.JPG", "2021 B - Celebrated 25 Years/IMG_7120.JPG", "2021 B - Celebrated 25 Years/IMG_7122.JPG"]],
- 29: ["2022 B - Axis Conf Sells Out/mondaypm-ch-29 drop box.JPG",
-      # AD37EEF1 was the same instant as thursdaypm-ch-20 — same song, same
-      # flames, same people, a tighter crop seconds apart — and the two sat
-      # in one grid together
-      ["2022 B - Axis Conf Sells Out/thursdaypm-ch-20 drop box.JPG",
-       "2022 B - Axis Conf Sells Out/wednesdaypm_brynn-52 brynn vanblaricom.JPG",
-       "2022 B - Axis Conf Sells Out/0D07ED76-31E0-4586-90B4-5F1261EB56AB.JPG"]],
+ 29: ["2022 B - Axis Conf Sells Out/wednesdaypm_brynn-52 brynn vanblaricom-COVER.JPG",
+      ["2022 B - Axis Conf Sells Out/mondaypm-ch-29 drop box.JPG", "2022 B - Axis Conf Sells Out/thursdaypm-ch-20 drop box.JPG", "2022 B - Axis Conf Sells Out/0D07ED76-31E0-4586-90B4-5F1261EB56AB.JPG"]],
  32: ["2024 A - Hosted First Revival Nights/IMG_0775-COVER.jpg",
       ["2024 A - Hosted First Revival Nights/RN-1080X1080-collage 1.jpg", "2024 A - Hosted First Revival Nights/IMG_0209-collage .jpeg", "2024 A - Hosted First Revival Nights/IMG_0217-collage.jpeg", "2024 A - Hosted First Revival Nights/IMG_0776-collage 3.jpg"]],
  30: ["2023 A - Launched DC Metro Location/031923-JB-41.jpg",
       ["2023 A - Launched DC Metro Location/031923-JB-35.jpg",
        "2023 A - Launched DC Metro Location/031923-JB-49.jpg"]],
- 31: ["2023 B - Hosted First International Make Room/photo 2024-05-03, 10 00 11.JPG"],
+ 31: ["2023 B - Hosted First International Make Room/Make-Room-Latin-America-cover.JPG",
+      ["2023 B - Hosted First International Make Room/photo 2024-05-03, 10 00 11.JPG", "2023 B - Hosted First International Make Room/IMG_0777.jpg", "2023 B - Hosted First International Make Room/IMG_0778.jpg", "2023 B - Hosted First International Make Room/IMG_0779.jpg"]],
  33: ["2024 B - Launched South Africa Location/IMG_0780-cover.jpg",
       ["2024 B - Launched South Africa Location/DSC02519-collage.JPG", "2024 B - Launched South Africa Location/0E6B3014-collage.JPG", "2024 B - Launched South Africa Location/0E6B3491-collage.JPG", "2024 B - Launched South Africa Location/012424_REVIVAL_ep-77 collage.jpg"]],
- 34: ["2024 C - Launched First Prison Location/062324-SCDC-CH-4.jpg",
-      ["2024 C - Launched First Prison Location/062324-SCDC-CH-8.jpg",
-       "2024 C - Launched First Prison Location/SCDC-1.png",
-       "2024 C - Launched First Prison Location/SCDC-2.png"]],
+ 34: ["2024 C - Launched First Prison Location/SCDC-1-cover.png",
+      ["2024 C - Launched First Prison Location/062324-SCDC-CH-4.jpg", "2024 C - Launched First Prison Location/SCDC-2.png"]],
  35: ["2024 D - Axis Worship Debut/overflow cover.jpg",
       ["2024 D - Axis Worship Debut/AxisConf24-WEDPM-23.jpg",
        "2024 D - Axis Worship Debut/AxisConf24-WEDPM-24.jpg",
        "2024 D - Axis Worship Debut/Axis Worship PFP.JPG"]],
- 36: ["2024 E - Launched Nashville Location/060924_NASH_CH-25.jpg",
-      ["2024 E - Launched Nashville Location/NASH-SIGNPHOTO.png",
-       "2024 E - Launched Nashville Location/_NASH_CB_2.jpg"]],
- 37: ["2025 - Launched 2nd Prison Location 201 Poplar/PRISON-2.jpg",
-      ["2025 - Launched 2nd Prison Location 201 Poplar/PRISON-4.jpg",
-       "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-5.jpg",
-       "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-6.jpg",
-       "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-8.jpg"]],
- 38: ["2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-50.jpg",
-      ["2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-12.jpg",
-       "2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-89.jpg",
-       "2026 - Ground Breaking on Global Hub/260806 Ground Breaking 1.jpg",
-       "2026 - Ground Breaking on Global Hub/Sb1OXoLg.jpeg"]],
+ 36: ["2024 E - Launched Nashville Location/060924_NASH_CH-25-cover.jpg",
+      ["2024 E - Launched Nashville Location/NASH-SIGNPHOTO.png", "2024 E - Launched Nashville Location/IMG_0781.jpg"]],
+ 37: [["2025 - Launched 2nd Prison Location 201 Poplar/IMG_0782-collage.JPG", "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-5.jpg", "2025 - Launched 2nd Prison Location 201 Poplar/IMG_0783-collage.JPG", "2025 - Launched 2nd Prison Location 201 Poplar/PRISON-8.jpg"]],
+ 38: ["2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-20-COVER.jpg",
+      ["2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-50-collage.jpg", "2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-89-COLLAGE.jpg", "2026 - Ground Breaking on Global Hub/08.06.26_GROUNDBREAKING_CS-95-COLLAGE.jpg", "2026 - Ground Breaking on Global Hub/260806 Ground Breaking 1-COLLAGE.jpg"]],
  39: ["2026 - Launched Bible School/08.30.26_LLBS_CS-52-cover.jpg",
       ["2026 - Launched Bible School/08.30.26_LLBS_CS-60-collage- top big.jpg", "2026 - Launched Bible School/08.30.26_LLBS_CS-45-collage bottom.jpg", "2026 - Launched Bible School/08.30.26_LLBS_CS-51-collage bottom.jpg"]],
  17: ["2014 B - Launched Santiago Location/IMG-001-Cover.png",
@@ -281,6 +254,35 @@ def strip_letterbox(im):
     return im.crop((l, t, l + nw, t + nh))
 
 
+def date_folder(i, row):
+    """where a date's pictures live: running order, year, short name"""
+    s = unicodedata.normalize("NFKD", row["short"]).encode("ascii", "ignore").decode()
+    s = re.sub(r"[^A-Za-z0-9]+", "-", s).strip("-").lower()[:26].strip("-")
+    return "%02d-%s-%s" % (i + 1, row["year"], s)
+
+
+def refresh_covers():
+    """Which picture each date hands the rail card.
+
+    Any photograph of the date may carry a "-cover" twin, not only the
+    first — Daniel drops the file next to whichever one reads best small,
+    without having to know which cell of a collage comes first."""
+    out = []
+    rows = json.load(open(os.path.join(P, "data", "timeline.json")))
+    for r in rows:
+        for sl in (r.get("photos") or []):
+            for f in (sl if isinstance(sl, list) else [sl]):
+                cov = re.sub(r"(\.[^.]+)$", r"-cover\1", f)
+                if os.path.exists(os.path.join(OUT, cov)):
+                    out.append(f); break
+            else:
+                continue
+            break
+    with open(os.path.join(P, "data", "covers.json"), "w") as fh:
+        json.dump(out, fh, indent=1)
+    return out
+
+
 def main():
     # NOT rmtree. The print pieces come from SCAN, a scratch directory
     # that does not survive between sessions, so a wipe-and-rebuild
@@ -289,7 +291,23 @@ def main():
     # repository and they stay there; the build overwrites what it makes
     # and leaves alone what it does not.
     os.makedirs(OUT, exist_ok=True)
-    before = set(os.listdir(OUT))
+
+    # Each date owns a folder, numbered in running order, so the pictures
+    # on disk read the way the piece does. Which date a file belongs to
+    # comes from timeline.json, not from the PLAN: the PLAN chose the
+    # first set, the reviewed order is what is actually on screen.
+    rows_now = json.load(open(os.path.join(P, "data", "timeline.json")))
+    folder_of = {}
+    for i, row in enumerate(rows_now):
+        c = date_folder(i, row)
+        for sl in (row.get("photos") or []):
+            for f in (sl if isinstance(sl, list) else [sl]):
+                folder_of[os.path.basename(f)] = c
+
+    before = set()
+    for dp, dn, fn in os.walk(OUT):
+        for f in fn:
+            if not f.startswith("."): before.add(f)
     names, total, missing = {}, 0, []
     for did, slides in PLAN.items():
         for s in slides:
@@ -303,10 +321,13 @@ def main():
                 im = decode(p)
                 im = trim_page(im) if is_print(ref) else strip_letterbox(im)
                 if max(im.size) > LONG_EDGE: im.thumbnail((LONG_EDGE, LONG_EDGE), Image.LANCZOS)
-                im.save(os.path.join(OUT, n), "JPEG", quality=QUALITY,
+                sub = folder_of.get(n, "_sin-usar")
+                os.makedirs(os.path.join(OUT, sub), exist_ok=True)
+                dest = os.path.join(OUT, sub, n)
+                im.save(dest, "JPEG", quality=QUALITY,
                         optimize=True, progressive=True)
                 names[ref] = n
-                total += os.path.getsize(os.path.join(OUT, n))
+                total += os.path.getsize(dest)
 
     rows = json.load(open(os.path.join(P, "data", "timeline.json")))
 
@@ -339,11 +360,14 @@ def main():
 
     # a picture a date points at that the build no longer produces is the
     # one thing that must not pass quietly
-    have = set(os.listdir(OUT))   # lo que hay, no solo lo que produjo
+    have = set()                  # lo que hay en disco, no solo lo que produjo
+    for dp, dn, fn in os.walk(OUT):
+        for f in fn:
+            if not f.startswith("."): have.add(f)
     for r in rows:
         for sl in (r.get("photos") or ([r["photo"]] if r.get("photo") else [])):
             for f in (sl if isinstance(sl, list) else [sl]):
-                if f not in have and not f.lower().endswith((".mp4", ".mov")):
+                if os.path.basename(f) not in have and not f.lower().endswith((".mp4", ".mov")):
                     print("  FALTA  %s  (la usa %s %s)" % (f, r["year"], r["short"]))
 
     with open(os.path.join(P, "data", "timeline.json"), "w") as f:
@@ -353,6 +377,8 @@ def main():
     if kept:
         print("  %d conservados que este build no produce (escaneos): %s"
               % (len(kept), ", ".join(sorted(kept)[:3]) + ("..." if len(kept) > 3 else "")))
+
+    print("  %d portadas -cover" % len(refresh_covers()))
 
     bare = [r["id"] for r in rows if not (r.get("photo") or r.get("photos"))]
     print("%d derivados, %.1f MB" % (len(names), total / 1024 / 1024))

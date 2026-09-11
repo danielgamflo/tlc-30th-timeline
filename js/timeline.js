@@ -241,9 +241,20 @@ var SCENE_TIMELINE = (function () {
       box.className = "card__box";
 
       var photo;
-      /* the rail's small card is 200px wide — it shows the very first
-         photograph, opening a split slide if that is what comes first */
-      var firstShot = flatten(slidesOf(d))[0];
+      /* The rail's small card is 200px wide and WIDE, where the pane is
+         tall, so a date may ship a separate picture for it: the same
+         name with "-cover" before the extension.
+
+         It does not have to be the first photograph. Whichever of the
+         date's pictures has a "-cover" twin is the one the rail uses —
+         Daniel picks it by dropping the file in the folder, and does not
+         have to work out which cell of a collage happens to come first.
+         With none, the first photograph stands in. */
+      var todas = flatten(slidesOf(d));
+      var firstShot = todas[0];
+      for (var fc = 0; fc < todas.length; fc++) {
+        if (A.haveCover(todas[fc])) { firstShot = todas[fc]; break; }
+      }
       if (firstShot) {
         photo = document.createElement("img");
         photo.className = "card__photo";
@@ -410,11 +421,11 @@ var SCENE_TIMELINE = (function () {
      and an anchor may ride along - "contain 50% 20%" - for where the
      picture sits inside the pane it no longer fills. */
   function fitOf(f) {
-    if (typeof f === "string" && f.indexOf("contain") === 0) {
-      var rest = f.slice(7).trim();
-      return { cls: " exp__contain", pos: rest || "50% 50%" };
+    var s = String(f == null ? "50% 50%" : f);
+    if (s.indexOf("contain") === 0) {
+      return { cls: " exp__contain", pos: s.slice(7).trim() || "50% 50%" };
     }
-    return { cls: "", pos: f };
+    return { cls: "", pos: s || "50% 50%" };
   }
 
   function focusOf(d, k, cell) {
@@ -503,9 +514,13 @@ var SCENE_TIMELINE = (function () {
      small card on the rail is 200px wide and there are forty of them —
      it gets the still, not a second video element. */
   function stillFor(name) {
-    return A.asset(isVideo(name)
-      ? "assets/video/" + name.replace(/\.[^.]+$/, ".jpg")
-      : "assets/photos/" + name);
+    if (isVideo(name))
+      return A.asset("assets/video/" + name.replace(/\.[^.]+$/, ".jpg"));
+    /* "…-cover.jpg" beside the photograph wins here, and only here: the
+       rail card is wide where the pane is tall. Without one the pane's
+       own photograph is used, cropped to the middle band. */
+    return A.asset("assets/photos/" +
+      (A.haveCover(name) ? name.replace(/(\.[^.]+)$/, "-cover$1") : name));
   }
 
   /* the clip is a pure function of time like everything else:
@@ -700,6 +715,10 @@ var SCENE_TIMELINE = (function () {
     /* how far the paragraph has to creep, if at all */
     r.expInner.style.transform = "translateY(0px)";
     overflowPx = Math.max(0, r.expInner.offsetHeight - r.expBody.clientHeight);
+    /* the fade is a symptom of the cut, so it appears with it — but not
+       for a three-pixel trim, where a 46px fade is louder than the crop
+       it is hiding. Under half a line, let it clip. */
+    r.expBody.classList.toggle("exp__body--fades", overflowPx > 20);
   }
 
   /* ---- frame -------------------------------------------------- */

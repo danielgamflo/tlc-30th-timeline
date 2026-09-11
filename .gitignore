@@ -13,6 +13,17 @@ out/
 # the church's originals — 153MB of source material. the pipeline reads
 # them from here, the repo ships only assets/photos/. keep them on the
 # drive and in the church's own archive, not in a public repo.
-assets/30th Anniversary Timeline Photos/
+#
+# the rule used to name one folder, "…Timeline Photos", and the church
+# kept sending the material again under new names — "- 8Sept",
+# "- 10Sept". Neither matched, and 3GB of originals went up to the
+# public repo before anyone noticed. The pattern now takes whatever
+# date comes after the name.
+assets/30th Anniversary Timeline*/
+
+# the published folder carries only what the piece shows. Photographs
+# set aside and the backups of hand edits stay on the drive.
+assets/photos/_sin-usar/
+assets/_editadas-a-mano/
 .claude/
 tools/photo-report.json
