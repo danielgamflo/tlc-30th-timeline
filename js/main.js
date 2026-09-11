@@ -455,6 +455,10 @@ var APP = (function () {
   var VER = (function () {
     var tags = document.getElementsByTagName("script");
     var m = tags[tags.length - 1].src.match(/[?&]v=([^&]+)/);
+    /* the same reason as the photographs in anim.js: locally the lists
+       are rewritten between reloads under a version that has not moved */
+    if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+      return (m ? m[1] : "") + "." + Date.now();
     return m ? m[1] : Date.now();
   })();
 
