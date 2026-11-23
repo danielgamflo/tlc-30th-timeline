@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================
+     PROVISORIO. No es el arte final.
+
+     El vector del cumpleanos todavia no llega, y sin algo en el
+     centro no hay forma de juzgar como se reparte el confeti
+     alrededor: el hueco cambia por completo la lectura del cuadro.
+     Esto reproduce el tamano, la proporcion y los colores del
+     diseno para poder componer. Se reemplaza entero.
+     ============================================================ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800">
+  <defs>
+    <clipPath id="dentro">
+      <ellipse cx="500" cy="400" rx="396" ry="300"/>
+    </clipPath>
+    <path id="arcoArriba" d="M 160 400 A 340 258 0 0 1 840 400" fill="none"/>
+    <path id="arcoAbajo"  d="M 150 400 A 350 266 0 0 0 850 400" fill="none"/>
+  </defs>
+
+  <!-- el anillo olivo -->
+  <ellipse cx="500" cy="400" rx="462" ry="362"
+           fill="#666737" stroke="#1B1813" stroke-width="9"/>
+
+  <!-- el interior menta, con sus rayas verticales -->
+  <ellipse cx="500" cy="400" rx="396" ry="300" fill="#9FB0A3"/>
+  <g clip-path="url(#dentro)" opacity=".5">
+    <g id="rayas" fill="#6E8275">
+      <rect x="110" y="96" width="3" height="610"/>
+      <rect x="128" y="96" width="3" height="610"/>
+      <rect x="146" y="96" width="3" height="610"/>
+      <rect x="164" y="96" width="3" height="610"/>
+      <rect x="182" y="96" width="3" height="610"/>
+      <rect x="200" y="96" width="3" height="610"/>
+      <rect x="218" y="96" width="3" height="610"/>
+      <rect x="236" y="96" width="3" height="610"/>
+      <rect x="254" y="96" width="3" height="610"/>
+      <rect x="272" y="96" width="3" height="610"/>
+      <rect x="290" y="96" width="3" height="610"/>
+      <rect x="308" y="96" width="3" height="610"/>
+      <rect x="326" y="96" width="3" height="610"/>
+      <rect x="344" y="96" width="3" height="610"/>
+      <rect x="362" y="96" width="3" height="610"/>
+      <rect x="380" y="96" width="3" height="610"/>
+      <rect x="398" y="96" width="3" height="610"/>
+      <rect x="416" y="96" width="3" height="610"/>
+      <rect x="434" y="96" width="3" height="610"/>
+      <rect x="452" y="96" width="3" height="610"/>
+      <rect x="470" y="96" width="3" height="610"/>
+      <rect x="488" y="96" width="3" height="610"/>
+      <rect x="506" y="96" width="3" height="610"/>
+      <rect x="524" y="96" width="3" height="610"/>
+      <rect x="542" y="96" width="3" height="610"/>
+      <rect x="560" y="96" width="3" height="610"/>
+      <rect x="578" y="96" width="3" height="610"/>
+      <rect x="596" y="96" width="3" height="610"/>
+      <rect x="614" y="96" width="3" height="610"/>
+      <rect x="632" y="96" width="3" height="610"/>
+      <rect x="650" y="96" width="3" height="610"/>
+      <rect x="668" y="96" width="3" height="610"/>
+      <rect x="686" y="96" width="3" height="610"/>
+      <rect x="704" y="96" width="3" height="610"/>
+      <rect x="722" y="96" width="3" height="610"/>
+      <rect x="740" y="96" width="3" height="610"/>
+      <rect x="758" y="96" width="3" height="610"/>
+      <rect x="776" y="96" width="3" height="610"/>
+      <rect x="794" y="96" width="3" height="610"/>
+      <rect x="812" y="96" width="3" height="610"/>
+      <rect x="830" y="96" width="3" height="610"/>
+      <rect x="848" y="96" width="3" height="610"/>
+      <rect x="866" y="96" width="3" height="610"/>
+      <rect x="884" y="96" width="3" height="610"/>
+    </g>
+  </g>
+
+  <!-- el doble filete crema -->
+  <ellipse cx="500" cy="400" rx="414" ry="316"
+           fill="none" stroke="#F4F0E6" stroke-width="5"/>
+  <ellipse cx="500" cy="400" rx="400" ry="304"
+           fill="none" stroke="#F4F0E6" stroke-width="2.5"/>
+
+  <!-- los textos en arco -->
+  <text font-family="Museum, Georgia, serif" font-weight="800"
+        font-size="74" fill="#1B1813" letter-spacing="2">
+    <textPath href="#arcoArriba" startOffset="50%" text-anchor="middle">THE LIFE CHURCH</textPath>
+  </text>
+  <text font-family="Museum, Georgia, serif" font-weight="800"
+        font-size="74" fill="#1B1813" letter-spacing="2">
+    <textPath href="#arcoAbajo" startOffset="50%" text-anchor="middle">BIRTHDAY PARTY</textPath>
+  </text>
+
+  <!-- el 30, con su sombra negra desplazada. El grupo lleva id para
+       que el javascript pueda mover la sombra: es la luz corriendo
+       despacio por encima, y es el detalle que se lee caro. -->
+  <g id="treinta">
+    <text id="treinta-sombra" x="488" y="498" text-anchor="middle"
+          font-family="Museum, Georgia, serif" font-weight="800"
+          font-size="330" fill="#1B1813">30</text>
+    <text x="478" y="488" text-anchor="middle"
+          font-family="Museum, Georgia, serif" font-weight="800"
+          font-size="330" fill="#CB9216"
+          stroke="#1B1813" stroke-width="7" paint-order="stroke">30</text>
+    <text x="690" y="470" text-anchor="middle"
+          font-family="Museum, Georgia, serif" font-weight="800"
+          font-style="italic" font-size="92" fill="#1B1813">th</text>
+  </g>
+</svg>

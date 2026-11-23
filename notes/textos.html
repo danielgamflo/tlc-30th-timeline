@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Textos en español · The Life Church 30 años</title>
+<style>
+  :root { --papel:#F4F0E6; --tinta:#27231c; --mostaza:#CB9216; --gris:#8d8677; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--papel); color:var(--tinta);
+         font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  header.top { position:sticky; top:0; z-index:5; background:var(--papel);
+                border-bottom:2px solid var(--tinta); padding:16px 28px 13px; }
+  header.top h1 { margin:0; font-size:18px; }
+  header.top p { margin:4px 0 0; font-size:13px; color:var(--gris); max-width:60ch; }
+  .barra { display:flex; align-items:center; gap:16px; margin-top:10px; }
+  .barra button { font:inherit; font-size:13px; padding:6px 13px; border:1px solid var(--tinta);
+                   background:#fff; border-radius:7px; cursor:pointer; }
+  .barra button:hover { background:var(--mostaza); color:#fff; border-color:var(--mostaza); }
+  .cuenta { font-size:13px; color:var(--gris); margin-left:auto; }
+  main { padding:18px 28px 70px; max-width:1180px; }
+  .f { padding:20px 0 22px; border-bottom:1px solid #e2dbcb; }
+  .f.listo { opacity:.45; }
+  .f header { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .anio { font-size:27px; font-weight:800; letter-spacing:-.01em; }
+  .mes { color:var(--gris); font-size:14px; }
+  .ok { margin-left:auto; font-size:13px; color:var(--gris); cursor:pointer; user-select:none; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:30px; }
+  @media (max-width:860px) { .cols { grid-template-columns:1fr; } }
+  .es h2 { margin:0 0 8px; font-size:21px; line-height:1.18; }
+  .en { color:var(--gris); }
+  .en h3 { margin:0 0 8px; font-size:15px; font-weight:600; line-height:1.2; }
+  .en .par, .en .nota { font-size:13.5px; }
+  .par { margin:0 0 10px; }
+  .nota { margin:8px 0 0; padding-left:13px; border-left:2px solid #ddd5c2; }
+  .es .nota { font-style:italic; }
+  .tag { display:block; font-style:normal; font-size:11px; letter-spacing:.09em;
+          text-transform:uppercase; color:var(--gris); }
+  .src { font-style:normal; font-size:12px; color:var(--gris); }
+  textarea { width:100%; margin-top:12px; padding:9px 11px; font:inherit; font-size:14px;
+              border:1px solid #d9d2c4; border-radius:7px; background:#fff; resize:vertical;
+              min-height:42px; }
+  textarea:focus { outline:2px solid var(--mostaza); outline-offset:-1px; }
+</style></head><body>
+<header class="top">
+  <h1>Textos en español · 30 años</h1>
+  <p>A la izquierda la traducción; a la derecha el original en inglés, para comparar.
+     Los nombres propios se dejaron en inglés a propósito. Si algo no suena a ustedes,
+     escríbelo en la caja de esa fecha.</p>
+  <div class="barra">
+    <button id="copiar">Copiar los comentarios</button>
+    <span class="cuenta" id="cuenta"></span>
+  </div>
+</header>
+<main>
+    <article class="f" id="d1" data-k="d1">
+      <header>
+        <span class="anio">1996</span>
+        <span class="mes">10 de noviembre</span>
+        <label class="ok"><input type="checkbox" data-k="d1"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Comienzan los<br>Servicios Semanales</h2>
+          <p class="par">The Life Church of Memphis comenzó oficialmente el 10 de noviembre de 1996. Los pastores John y Leslie Siebeling, junto a otras siete personas que se habían mudado a Memphis ese año, dieron un paso de fe creyendo que Dios los usaría para alcanzar a la ciudad y más allá. Ese primer domingo llegaron 152 personas y la iglesia nació.</p>
+          <p class="nota"><span class="tag">Dato</span> La iglesia empezó a reunirse cada semana en el edificio de la Homebuilders Association, en Germantown Parkway.</p>
+        </div>
+        <div class="en">
+          <h3>The Life Church Started Weekly Services</h3>
+          <p class="par">The Life Church of Memphis officially began on November 10, 1996. Pastors John and Leslie Siebeling, along with seven others who moved to Memphis earlier that year, stepped out in faith, believing that God would use them to reach people in the city and beyond. On that first Sunday, 152 people showed up and the church was officially born.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> The Church began meeting weekly at the Homebuilders Association Building on Germantown Parkway.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d1"></textarea>
+    </article>
+    <article class="f" id="d2" data-k="d2">
+      <header>
+        <span class="anio">1998</span>
+        <span class="mes">Verano</span>
+        <label class="ok"><input type="checkbox" data-k="d2"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer Equipo<br>Misionero</h2>
+          <p class="par">The Life Church envió su primer equipo misionero de corto plazo a Nairobi, Kenia, y así comenzó un legado de servir a las personas y llevar la esperanza de Jesús por el mundo.</p>
+          <p class="nota"><span class="tag">Cifra</span> The Life Church ha enviado 209 equipos a viajes misioneros desde 1998.</p>
+        </div>
+        <div class="en">
+          <h3>Sent First<br>Global Missions Team</h3>
+          <p class="par">The Life Church sent its first short-term missions team to Nairobi, Kenya, beginning a legacy of serving people and taking the hope of Jesus around the world.</p>
+          <p class="nota"><span class="tag">Stat</span> The Life Church has sent 209 different teams on mission trips since 1998.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d2"></textarea>
+    </article>
+    <article class="f" id="d40" data-k="d40">
+      <header>
+        <span class="anio">1999</span>
+        <span class="mes">Enero</span>
+        <label class="ok"><input type="checkbox" data-k="d40"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primeras Oficinas<br>en Cordova</h2>
+          <p class="par">The Life Church arrendó su primer espacio de oficinas en Bonnie Lane y lo adaptó para incluir una sala grande para reuniones y oración. Fue un paso mayor: el primer lugar semipermanente que pudimos llamar nuestro. Con poco más de dos años, la iglesia crecía en grupos pequeños, bautismos y familias nuevas.</p>
+          <p class="nota"><span class="tag">Cifra</span> 16 grupos celulares (hoy Life Groups) se reunían con un promedio de 160 personas.</p>
+        </div>
+        <div class="en">
+          <h3>Leased Office Space<br>in Cordova</h3>
+          <p class="par">The Life Church leased its first office space, customizing the space under construction on Bonnie Lane to include a large room for church meetings and prayer. This was a major step in the history of the church as it marked the first semi-permanent space we could call our own. At just over two years old, The Life Church was seeing growth in small groups, water baptisms and in reaching new families in the city.</p>
+          <p class="nota"><span class="tag">Stat</span> 16 Cell Groups (now Life Groups) were meeting with an average of 160 people attending.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d40"></textarea>
+    </article>
+    <article class="f" id="d3" data-k="d3">
+      <header>
+        <span class="anio">2000</span>
+        <span class="mes">Otoño</span>
+        <label class="ok"><input type="checkbox" data-k="d3"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera Valla<br>Publicitaria</h2>
+          <p class="par">The Life Church lanzó *Reaching Forward in Faith*, su primera campaña de generosidad enfocada en el futuro de la iglesia, y puso su primera valla en Germantown Parkway, frente al edificio de la Home Builders Association. Esa valla desencadenó una serie de hechos que llevaron a tener un lugar permanente para los servicios.</p>
+          <p class="nota"><span class="tag">Dato</span> El edificio de la Home Builders Association fue demolido y en su lugar se construyó una farmacia CVS.</p>
+        </div>
+        <div class="en">
+          <h3>Leased First Billboard</h3>
+          <p class="par">The Life Church launched *Reaching Forward in Faith*, its first giving campaign focused on our church&#x27;s future, and placed its first billboard on Germantown Parkway in front of the Home Builders Association Building. Through a series of events, this billboard led to major steps towards a permanent facility for Sunday worship services.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> The Home Builders Association Building was demolished and rebuilt as a CVS Pharmacy.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d3"></textarea>
+    </article>
+    <article class="f" id="d4" data-k="d4">
+      <header>
+        <span class="anio">2001</span>
+        <span class="mes">28 de octubre</span>
+        <label class="ok"><input type="checkbox" data-k="d4"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>5 Años como Iglesia</h2>
+          <p class="par">The Life Church celebró cinco años de ministerio en Memphis, agradeciendo todo lo que Dios había hecho y mirando lo que haría. En ese momento la iglesia empezaba a ver crecimiento real y se preparaba para mudarse a su primer edificio propio en Germantown Parkway.</p>
+          <p class="nota"><span class="tag">Dato</span> Llegamos al 5º aniversario con 21 días de ayuno y oración, del 1 al 21 de octubre, y 24 horas de oración del viernes al sábado por la noche.</p>
+        </div>
+        <div class="en">
+          <h3>Celebrated 5 Years<br>as a Church</h3>
+          <p class="par">The Life Church celebrated five years of ministry in Memphis, giving thanks for all God had done and looking ahead to all He would do. At the time, our church was beginning to see real momentum and growth and was preparing to move into our first permanent facility on Germantown Parkway.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Headed into our 5th anniversary with 21 Days of Prayer and Fasting from October 1-21, followed by 24 hours of prayer from Friday night through Saturday night.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d4"></textarea>
+    </article>
+    <article class="f" id="d5" data-k="d5">
+      <header>
+        <span class="anio">2002</span>
+        <span class="mes">31 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d5"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer Servicio en<br>Edificio Propio</h2>
+          <p class="par">The Life Church se mudó a su primer edificio, en Cordova. Ese espacio se volvió el centro de la iglesia y más tarde el impulso para abrir nuevas sedes. Allí vivimos un crecimiento sin precedentes: llegamos a tener seis servicios cada fin de semana para recibir a todos los que llegaban.</p>
+          <p class="nota"><span class="tag">Dato</span> Antes de la remodelación, el edificio era un supermercado Jitney Premier.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First Service at Permanent Building</h3>
+          <p class="par">The Life Church moved into its first building in Cordova. This space became a hub for our church and would later be the catalyst for launching multiple new locations. In this facility, we experienced unprecedented growth and at one point hosted six worship services every weekend to accommodate the number of people attending.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Before renovations, the building was used as a Jitney Premier grocery store.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d5"></textarea>
+    </article>
+    <article class="f" id="d6" data-k="d6">
+      <header>
+        <span class="anio">2002</span>
+        <span class="mes">22 de septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d6"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Reinhard Bonnke en un<br>Servicio de Milagros</h2>
+          <p class="par">The Life Church recibió al evangelista Reinhard Bonnke para un servicio especial de milagros, un momento poderoso de ministerio y fe para nuestra iglesia.</p>
+          <p class="nota"><span class="tag">Cifra</span> El ministerio de Reinhard Bonnke registró más de 79 millones de decisiones de salvación, la gran mayoría en sus cruzadas por África.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted Reinhard Bonnke For Miracle Service</h3>
+          <p class="par">The Life Church hosted evangelist Reinhard Bonnke for a special Miracle Service, creating a powerful moment of ministry and faith for our church.</p>
+          <p class="nota"><span class="tag">Stat</span> Reinhard Bonnke’s ministry documented more than 79 million salvation decisions, with the vast majority during his crusades across Africa.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d6"></textarea>
+    </article>
+    <article class="f" id="d41" data-k="d41">
+      <header>
+        <span class="anio">2004</span>
+        <span class="mes">Primavera</span>
+        <label class="ok"><input type="checkbox" data-k="d41"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nace<br>Axis Student Ministries</h2>
+          <p class="par">The Life Church comenzó un ministerio juvenil para estudiantes de 6º a 12º grado. Lo que partió como una reunión semanal de un puñado de adolescentes se transformó en un movimiento que ha impactado a decenas de miles de estudiantes en más de 20 años.</p>
+          <p class="nota"><span class="tag">Dato</span> En el verano de 2004 enviamos el primer viaje misionero de Axis, a Perú.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>Axis Student Ministries</h3>
+          <p class="par">The Life Church started a youth ministry for students in 6th-12th grade. What began as a small, weekly gathering of a handful of teenagers has turned into a true movement-impacting tens of thousands of students over the past 20+ years.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> In the summer of 2004, we sent our first-ever Axis mission trip to Peru.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d41"></textarea>
+    </article>
+    <article class="f" id="d8" data-k="d8">
+      <header>
+        <span class="anio">2005</span>
+        <span class="mes">Agosto</span>
+        <label class="ok"><input type="checkbox" data-k="d8"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer Internado<br>de Liderazgo</h2>
+          <p class="par">Convencida de la importancia de formar líderes en la casa de Dios, The Life Church creó el internado Damascus Road, hoy Life Leadership, para guiar y entrenar a la próxima generación de líderes cristianos.</p>
+          <p class="nota"><span class="tag">Cifra</span> 690 estudiantes se graduaron a lo largo de 20 años.</p>
+        </div>
+        <div class="en">
+          <h3>Launched Leadership Internship Program</h3>
+          <p class="par">Recognizing the importance of developing leaders in God&#x27;s House, The Life Church established the Damascus Road internship program (renamed Life Leadership) to mentor and train the next generation of Christian leaders.</p>
+          <p class="nota"><span class="tag">Stat</span> 690 students graduated throughout the 20 years.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d8"></textarea>
+    </article>
+    <article class="f" id="d9" data-k="d9">
+      <header>
+        <span class="anio">2005</span>
+        <span class="mes">Septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d9"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Servicios Suspendidos<br>para Servir en Katrina</h2>
+          <p class="par">Frente al huracán Katrina, The Life Church suspendió sus servicios dominicales y movilizó voluntarios y recursos para servir a los afectados en Biloxi, Mississippi, y Baton Rouge, Luisiana.</p>
+          <p class="nota"><span class="tag">Cifra</span> Más de 300 miembros de la iglesia viajaron a servir a quienes lo necesitaban.</p>
+        </div>
+        <div class="en">
+          <h3>Canceled Sunday Services to Serve</h3>
+          <p class="par">In response to Hurricane Katrina, The Life Church canceled regular Sunday morning services and mobilized volunteers and resources to serve those affected by the storm in Biloxi, Mississippi and Baton Rouge, Louisiana.</p>
+          <p class="nota"><span class="tag">Stat</span> Over 300 church members made the trip to serve those in need.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d9"></textarea>
+    </article>
+    <article class="f" id="d12" data-k="d12">
+      <header>
+        <span class="anio">2008</span>
+        <span class="mes">Comienzos</span>
+        <label class="ok"><input type="checkbox" data-k="d12"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer Programa<br>de Televisión</h2>
+          <p class="par">Para llegar más allá de los servicios del fin de semana en Germantown Parkway, The Life Church comenzó a transmitir por televisión, llevando la adoración y la enseñanza a miles de hogares de la región.</p>
+          <p class="nota"><span class="tag">Cifra</span> El programa promedió más de 50.000 espectadores cada fin de semana durante los 10 años que estuvo al aire.</p>
+        </div>
+        <div class="en">
+          <h3>Launched TV Program</h3>
+          <p class="par">Extending its reach beyond weekend services at the Germantown Parkway location, The Life Church began broadcasting services on television, bringing the worship and teaching experience to thousands of homes across the region.</p>
+          <p class="nota"><span class="tag">Stat</span> The TV program averaged over 50,000 viewers each weekend over the 10 years it ran.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d12"></textarea>
+    </article>
+    <article class="f" id="d11" data-k="d11">
+      <header>
+        <span class="anio">2008</span>
+        <span class="mes">6 y 7 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d11"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer<br>Make Room</h2>
+          <p class="par">The Life Church lanzó Make Room, un ministerio para equipar e inspirar a pastores y líderes a edificar la iglesia local, desarrollar sus equipos y crecer en liderazgo. Con los años, Make Room se volvió un ministerio internacional que ayuda a miles de pastores y líderes en todo el mundo.</p>
+          <p class="nota"><span class="tag">Cifra</span> En 2026, más de 1.000 pastores y líderes asistieron a un evento Make Room.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First<br>Make Room Event</h3>
+          <p class="par">The Life Church launched Make Room, a ministry designed to equip and inspire pastors and other church leaders to build the local church, develop their teams and grow their leadership. Over the years, Make Room has now grown to an international ministry helping thousands of pastors and leaders all over the world.</p>
+          <p class="nota"><span class="tag">Stat</span> In 2026, over 1,000 pastors and church leaders attended a Make Room event.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d11"></textarea>
+    </article>
+    <article class="f" id="d13" data-k="d13">
+      <header>
+        <span class="anio">2008</span>
+        <span class="mes">23 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d13"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: Collierville,<br>en el YMCA</h2>
+          <p class="par">Como la sede de Cordova seguía llenándose, pudimos abrir una segunda sede en el YMCA de Schilling Farms, en Collierville. Esa sede con el tiempo se convirtió en Houston Levee. Por primera vez fuimos una iglesia en más de un lugar.</p>
+          <p class="nota"><span class="tag">Cifra</span> Se inauguró un Domingo de Resurrección con 179 personas.</p>
+        </div>
+        <div class="en">
+          <h3>Launched Collierville Location at YMCA</h3>
+          <p class="par">As The Life Church continued to reach capacity at the location in Cordova, we were able to launch a second location at the YMCA at Schilling Farms in Collierville. This location eventually became Houston Levee. For the first time, our church was one church in more than one location.</p>
+          <p class="nota"><span class="tag">Stat</span> Launched on Easter Sunday with 179 people in attendance.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d13"></textarea>
+    </article>
+    <article class="f" id="d14" data-k="d14">
+      <header>
+        <span class="anio">2009</span>
+        <span class="mes">13 al 16 de julio</span>
+        <label class="ok"><input type="checkbox" data-k="d14"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera<br>Axis Conference</h2>
+          <p class="par">The Life Church realizó la primera Axis Youth Conference, luego Axis Nation y hoy Axis Conference, para estudiantes de 6º a 12º grado. Así nació un evento anual de varios días para que la nueva generación se encuentre con Dios. La primera reunió a poco más de 200 estudiantes y fue el comienzo de un movimiento que hoy alcanza a miles cada verano.</p>
+          <p class="nota"><span class="tag">Dato</span> El pastor Matthew Barnett, del Dream Center de Los Ángeles, predicó la noche de apertura.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First<br>Axis Conference</h3>
+          <p class="par">The Life Church held the first Axis Youth Conference (renamed Axis Nation and then Axis Conference) for students in 6th-12th grade, beginning an annual multi-day event for the next generation to encounter God. The first conference hosted just over 200 students and was the beginning of a national movement of young people that now reaches thousands of students and dozens of churches every summer.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Pastor Matthew Barnett from the Los Angeles Dream Center was the opening night speaker.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d14"></textarea>
+    </article>
+    <article class="f" id="d15" data-k="d15">
+      <header>
+        <span class="anio">2011</span>
+        <span class="mes">Otoño</span>
+        <label class="ok"><input type="checkbox" data-k="d15"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nace FeedMemphis</h2>
+          <p class="par">Con la carga de enfrentar la crisis de hambre en Memphis, The Life Church lanzó FeedMemphis, una iniciativa permanente para responder a las necesidades concretas de la ciudad. La iglesia respondió con generosidad radical y pudo comprar camiones que cada viernes salían cargados de bolsas de mercadería hacia las escuelas.</p>
+          <p class="nota"><span class="tag">Cifra</span> En marzo de 2010 Memphis fue nombrada la “capital del hambre de Estados Unidos”: el 26% de los habitantes del área metropolitana no lograba costear la comida de su familia. <span class="src">Food Research Action Center</span></p>
+        </div>
+        <div class="en">
+          <h3>Launched FeedMemphis Outreach Initiative</h3>
+          <p class="par">With a burden to solve the food insecurity crisis in Memphis, The Life Church launched FeedMemphis, an ongoing outreach initiative to meet the practical needs of the city. The church rallied with radical generosity and was able to purchase multiple trucks that were filled with bags of groceries and taken to local schools every Friday.</p>
+          <p class="nota"><span class="tag">Stat</span> Memphis was named the “Hunger Capital of the United States” in March 2010, finding that 26% of residents in the greater Memphis metropolitan area struggled to afford food for their families.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d15"></textarea>
+    </article>
+    <article class="f" id="d16" data-k="d16">
+      <header>
+        <span class="anio">2014</span>
+        <span class="mes">9 de febrero</span>
+        <label class="ok"><input type="checkbox" data-k="d16"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede:<br>East Memphis</h2>
+          <p class="par">The Life Church abrió una nueva sede en East Memphis, en el teatro Malco Paradiso, la tercera del área de Memphis. Después de siete meses reuniéndonos en un cine, pudimos comprar milagrosamente la propiedad de Highland, donde estamos hoy, a Victory University.</p>
+          <p class="nota"><span class="tag">Dato</span> El edificio de nuestra sede Highland se fundó en 1941 como Mid-South Bible Center y luego fue una iglesia a la que asistió Elvis Presley.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>East Memphis Location</h3>
+          <p class="par">The Life Church opened a new location in East Memphis at the Malco Paradiso Theatre, expanding to our third location in the Memphis area. After meeting in a movie theatre for seven months, we were miraculously able to purchase the current Highland location property from Victory University.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> The building our current Highland location moved into was founded in 1941 as the Mid-South Bible Center and later became a church that Elvis Presley attended.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d16"></textarea>
+    </article>
+    <article class="f" id="d17" data-k="d17">
+      <header>
+        <span class="anio">2014</span>
+        <span class="mes">25 de mayo</span>
+        <label class="ok"><input type="checkbox" data-k="d17"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: Santiago</h2>
+          <p class="par">The Life Church abrió una sede internacional en Santiago de Chile, extendiendo su alcance fuera de Estados Unidos. Liderada por los pastores Josh y Jessica Fuentes, The Life Church - Santiago ha sido un faro de esperanza y un lugar de vidas transformadas en una de las ciudades más grandes de Sudamérica.</p>
+          <p class="nota"><span class="tag">Dato</span> ¡Se inauguró el día del cumpleaños del pastor John!</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>The Life Church - Santiago</h3>
+          <p class="par">The Life Church opened an international location in Santiago, Chile, extending the church&#x27;s reach outside of the United States. Led by Pastors Josh and Jessica Fuentes, The Life Church - Santiago has been a beacon of hope and a place of life-change for one of the largest cities on the continent of South America.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Launched on Pastor John&#x27;s birthday!</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d17"></textarea>
+    </article>
+    <article class="f" id="d18" data-k="d18">
+      <header>
+        <span class="anio">2014</span>
+        <span class="mes">18 al 20 de septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d18"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera<br>Zoe Conference</h2>
+          <p class="par">The Life Church lanzó la Life Women&#x27;s Conference, hoy Zoe Conference, un encuentro para mujeres de todas las edades que buscan encontrarse con Dios y crecer en fortaleza, amistad y propósito. Una parte central fue el anhelo de la pastora Leslie Siebeling de crear la Life Women&#x27;s Foundation, un fondo para bendecir y levantar mujeres cada año.</p>
+          <p class="nota"><span class="tag">Cifra</span> 57 mujeres tomaron la decisión de un Fresh Start en la primera conferencia.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First<br>Zoe Conference</h3>
+          <p class="par">The Life Church launched Life Women&#x27;s Conference (now Zoe Conference), a gathering for ladies of all ages to encounter God and grow in strength, friendship and purpose. One major part of the conference was Pastor Leslie Siebeling&#x27;s heart to launch the Life Women&#x27;s Foundation - a fund designed to bless and lift up women every year.</p>
+          <p class="nota"><span class="tag">Stat</span> 57 women made a Fresh Start decision at the first conference.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d18"></textarea>
+    </article>
+    <article class="f" id="d19" data-k="d19">
+      <header>
+        <span class="anio">2015</span>
+        <span class="mes">Agosto</span>
+        <label class="ok"><input type="checkbox" data-k="d19"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nace Read to Lead</h2>
+          <p class="par">The Life Church lanzó un programa extraescolar de lectura y liderazgo que abre oportunidades a niños de la comunidad de Raleigh. Ha acompañado a cientos de niños año tras año, grado tras grado, con la meta de que mejoren su nivel de lectura y crezcan como líderes.</p>
+          <p class="nota"><span class="tag">Cifra</span> En los primeros ocho años del programa, el 83,3% de los niños subió su nivel de lectura y bajó sus suspensiones escolares.</p>
+        </div>
+        <div class="en">
+          <h3>Started Read to Lead After-School Program</h3>
+          <p class="par">The Life Church launched an after-school literacy and leadership program, creating opportunities for underserved children in the Raleigh community. This program has served hundreds of children and walks with the students year-over-year through every grade with the goal of helping them increase their reading levels and grow as leaders.</p>
+          <p class="nota"><span class="tag">Stat</span> In the first eight years of our program, 83.3% of the children saw an increase in reading scores and a decrease in school suspensions.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d19"></textarea>
+    </article>
+    <article class="f" id="d20" data-k="d20">
+      <header>
+        <span class="anio">2015</span>
+        <span class="mes">Diciembre</span>
+        <label class="ok"><input type="checkbox" data-k="d20"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer<br>Sound of Christmas</h2>
+          <p class="par">The Life Church lanzó The Sound of Christmas, una producción anual que lleva música espectacular y un mensaje de esperanza a la Navidad. Cada año, miles de personas de la comunidad lo hacen parte de su tradición navideña.</p>
+          <p class="nota"><span class="tag">Cifra</span> Hemos realizado 42 funciones distintas de Sound of Christmas en los últimos 10 años.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First<br>Sound of Christmas</h3>
+          <p class="par">The Life Church launched The Sound of Christmas, an annual production bringing spectacular music and a message of hope to the Christmas season. Each year, thousands of people from the community make the Sound of Christmas a part of their holiday tradition.</p>
+          <p class="nota"><span class="tag">Stat</span> We’ve hosted 42 different Sound of Christmas shows over the last 10 years.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d20"></textarea>
+    </article>
+    <article class="f" id="d21" data-k="d21">
+      <header>
+        <span class="anio">2016</span>
+        <span class="mes">Mayo</span>
+        <label class="ok"><input type="checkbox" data-k="d21"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera Piedra del<br>Nuevo Houston Levee</h2>
+          <p class="par">The Life Church emprendió el proyecto más grande de su historia hasta entonces: un auditorio nuevo de 4.800 metros cuadrados que llevó la capacidad de la sede Houston Levee de unas 450 butacas a más de 2.000.</p>
+          <p class="nota"><span class="tag">Cifra</span> El proyecto tomó 16 meses de principio a fin.</p>
+        </div>
+        <div class="en">
+          <h3>Broke Ground on New Houston Levee Facility</h3>
+          <p class="par">The Life Church embarked on the largest and most significant project to-date: a brand new 52,000-square-foot worship space that increased the size of the auditorium at the Houston Levee location from approximately 450 seats to over 2000.</p>
+          <p class="nota"><span class="tag">Stat</span> The project took 16 months to complete from start to finish.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d21"></textarea>
+    </article>
+    <article class="f" id="d22" data-k="d22">
+      <header>
+        <span class="anio">2017</span>
+        <span class="mes">9 y 10 de septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d22"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Inauguración del<br>Auditorio Houston Levee</h2>
+          <p class="par">Después de más de un año de obras, The Life Church inauguró su nuevo edificio en Houston Levee. Fue una estaca clavada en la ciudad de Memphis y, con el tiempo, el centro desde donde Dios traería la expansión global de nuestra iglesia.</p>
+          
+        </div>
+        <div class="en">
+          <h3>Houston Levee Auditorium Grand Opening</h3>
+          <p class="par">After over a year of construction, The Life Church opened our new Houston Levee facility. This step marked a significant stake in the ground in the city of Memphis and would eventually become the hub for the global expansion God would bring to our church.</p>
+          
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d22"></textarea>
+    </article>
+    <article class="f" id="d23" data-k="d23">
+      <header>
+        <span class="anio">2019</span>
+        <span class="mes">21 de abril</span>
+        <label class="ok"><input type="checkbox" data-k="d23"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: Austin Peay</h2>
+          <p class="par">The Life Church abrió una nueva sede en Austin Peay Highway, llegando al sector de Raleigh en Memphis y haciendo posible alcanzar a más personas. Hoy más de 1.000 personas llaman hogar a esta sede cada domingo.</p>
+          <p class="nota"><span class="tag">Cifra</span> Más de 1.000 Fresh Starts registrados en The Life Church - Austin Peay en lo que va de 2026.</p>
+        </div>
+        <div class="en">
+          <h3>Launched the Austin Peay Location</h3>
+          <p class="par">The Life Church opened a new location on Austin Peay Highway, expanding our presence to the Raleigh area of Memphis and making it possible to reach more people. Today, over 1,000 people call this location their home each Sunday.</p>
+          <p class="nota"><span class="tag">Stat</span> Over 1,000 Fresh Starts recorded at The Life Church - Austin Peay so far in 2026.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d23"></textarea>
+    </article>
+    <article class="f" id="d24" data-k="d24">
+      <header>
+        <span class="anio">2019</span>
+        <span class="mes">Verano</span>
+        <label class="ok"><input type="checkbox" data-k="d24"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Récord: 21 Equipos<br>Misioneros</h2>
+          <p class="par">The Life Church envió 21 equipos misioneros por el mundo, llevando el Evangelio a las naciones y sirviendo a comunidades en cinco continentes. Cientos de personas de nuestra iglesia pudieron viajar en misiones cortas y ver a Dios hacer cosas increíbles.</p>
+          <p class="nota"><span class="tag">Dato</span> Hubo viajes a Colombia, Cuba, Etiopía, Hong Kong, Hungría, India, Japón y Zimbabue, entre otros.</p>
+        </div>
+        <div class="en">
+          <h3>Sent a Record 21 Global Mission Teams</h3>
+          <p class="par">The Life Church sent 21 mission teams around the world, taking the Gospel to the nations and serving communities across five continents. Hundreds of people from our church got the opportunity to travel around the world on short-term trips and see God do incredible things.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Included trips to Colombia, Cuba, Ethiopia, Hong Kong, Hungary, India, Japan and Zimbabwe and more.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d24"></textarea>
+    </article>
+    <article class="f" id="d25" data-k="d25">
+      <header>
+        <span class="anio">2020</span>
+        <span class="mes">12 de abril</span>
+        <label class="ok"><input type="checkbox" data-k="d25"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: New York</h2>
+          <p class="par">The Life Church abrió su primera sede en Nueva York con los pastores Wayne y Classy Francis, extendiendo su alcance del sur al noreste del país. En 2023 abrimos un edificio permanente en Mamaroneck Avenue que ha llevado a un aumento de más de 700% en asistencia en tres años.</p>
+          <p class="nota"><span class="tag">Dato</span> The Life Church se fusionó con Authentic Church y abrió en plena pandemia de COVID-19.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>The Life Church - New York</h3>
+          <p class="par">The Life Church established our first location in New York with Lead Pastors Wayne and Classy Francis, expanding the church&#x27;s reach from the South to the Northeast. In 2023, we opened a permanent facility on Mamaroneck Avenue that has led to an increase of over 700% in attendance in the last three years.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> The Life Church merged with Authentic Church and officially launched in the middle of the COVID-19 pandemic.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d25"></textarea>
+    </article>
+    <article class="f" id="d42" data-k="d42">
+      <header>
+        <span class="anio">2020</span>
+        <span class="mes">Septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d42"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nace el Podcast<br>Leadership in Black &amp; White</h2>
+          <p class="par">El pastor John y el pastor Wayne comenzaron un podcast para conversar sobre temas que ayudan a crecer a los líderes cristianos. Parte de la familia de podcasts de K-LOVE, sale cada lunes y aborda iglesia, ministerio, familia, relaciones y más.</p>
+          <p class="nota"><span class="tag">Cifra</span> Hasta hoy se han publicado 215 episodios.</p>
+        </div>
+        <div class="en">
+          <h3>Launched Leadership in Black &amp; White Podcast</h3>
+          <p class="par">Pastor John and Pastor Wayne started a podcast to discuss topics to help Christian leaders grow. A part of the K-LOVE podcast family, episodes are released every Monday and cover subjects like church, ministry, family, relationships and more.</p>
+          <p class="nota"><span class="tag">Stat</span> There have been 215 episodes of the podcast released to date.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d42"></textarea>
+    </article>
+    <article class="f" id="d26" data-k="d26">
+      <header>
+        <span class="anio">2021</span>
+        <span class="mes">17 de octubre</span>
+        <label class="ok"><input type="checkbox" data-k="d26"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: Massachusetts</h2>
+          <p class="par">The Life Church abrió una sede en Massachusetts con el pastor Emy Vazquez. Antes Excel Church, está a las afueras de Boston y fue la segunda del noreste. En 2025 nos mudamos a nuestro primer edificio permanente en Fitchburg y la asistencia casi se triplicó en menos de dos años.</p>
+          <p class="nota"><span class="tag">Cifra</span> En 2026 lanzamos los servicios de Axis, con más de 100 estudiantes cada semana.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>The Life Church - MA</h3>
+          <p class="par">The Life Church opened a location in Massachusetts with Lead Pastor Emy Vazquez. Formerly Excel Church, this location was just outside of Boston and became the second in the Northeast. In 2025, we moved into our first permanent facility in Fitchburg and attendance has nearly tripled in less than two years.</p>
+          <p class="nota"><span class="tag">Stat</span> In 2026, we launched Axis services averaging over 100 students every week.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d26"></textarea>
+    </article>
+    <article class="f" id="d27" data-k="d27">
+      <header>
+        <span class="anio">2021</span>
+        <span class="mes">10 de noviembre</span>
+        <label class="ok"><input type="checkbox" data-k="d27"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>25º Aniversario</h2>
+          <p class="par">The Life Church celebró 25 años de ministerio, un hito para mirar atrás y ver todo lo que Dios había hecho. En ese momento la iglesia tenía siete sedes en el mundo. Cinco años después son 12, y vienen más en camino.</p>
+          <p class="nota"><span class="tag">Dato</span> Durante la celebración se anunciaron dos sedes futuras: Italia y DC Metro.</p>
+        </div>
+        <div class="en">
+          <h3>Celebrated 25th Anniversary</h3>
+          <p class="par">The Life Church celebrated 25 years of ministry, a significant milestone and moment to look back at all that God had done. At the time of the celebration, The Life Church had seven locations around the world. Just five years later, our church has grown to 12 locations with more on the way.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Announced two future locations (Italy &amp; DC Metro) during the weekend celebration.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d27"></textarea>
+    </article>
+    <article class="f" id="d28" data-k="d28">
+      <header>
+        <span class="anio">2022</span>
+        <span class="mes">30 de enero</span>
+        <label class="ok"><input type="checkbox" data-k="d28"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede:<br>Florencia, Italia</h2>
+          <p class="par">The Life Church abrió una sede en Florencia, Italia, con los pastores Marco y Tiina Geraci, extendiendo su alcance internacional a Europa. Hoy The Life Church - Italy es una de las iglesias más grandes de Florencia y tiene servicios en italiano y en inglés.</p>
+          <p class="nota"><span class="tag">Cifra</span> En octubre de 2023 lanzamos el servicio en inglés: asistieron 175 personas y 4 hicieron un Fresh Start.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>The Life Church - Italy</h3>
+          <p class="par">The Life Church established a location in Florence, Italy with Pastors Marco and Tiina Geraci, expanding the church&#x27;s international reach into Europe. Today, The Life Church - Italy is one of the largest churches in all of Florence and hosts both an Italian-speaking and English-speaking service.</p>
+          <p class="nota"><span class="tag">Stat</span> In October 2023, we launched an English-speaking service for the first time. 175 people attended and 4 people made Fresh Starts.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d28"></textarea>
+    </article>
+    <article class="f" id="d29" data-k="d29">
+      <header>
+        <span class="anio">2022</span>
+        <span class="mes">Junio</span>
+        <label class="ok"><input type="checkbox" data-k="d29"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Axis Conference<br>Agota Sus Cupos</h2>
+          <p class="par">Axis Conference llegó por primera vez a su capacidad máxima de 2.000 estudiantes, un hito en su crecimiento más allá de una conferencia juvenil local. Hoy más de 40 iglesias del país traen a sus estudiantes cada verano.</p>
+          <p class="nota"><span class="tag">Dato</span> En los últimos cinco años hemos recibido grupos juveniles de Alabama, Arizona, Arkansas, California, Georgia, Illinois, Iowa, Kentucky, Maryland, Michigan, Mississippi, Missouri, Nuevo México, Carolina del Norte, Ohio, Oklahoma, Tennessee y Virginia.</p>
+        </div>
+        <div class="en">
+          <h3>Axis Conference Sold Out</h3>
+          <p class="par">Axis Conference reached capacity at 2,000 students for the first time, marking a significant milestone in the conference&#x27;s growth beyond a local youth conference. Today, more than 40 churches around the country bring their students to participate in Axis Conference every summer.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Over the past five years, we have hosted youth groups from Alabama, Arizona, Arkansas, California, Georgia, Illinois, Iowa, Kentucky, Maryland, Michigan, Mississippi, Missouri, New Mexico, North Carolina, Ohio, Oklahoma, Tennessee and Virginia.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d29"></textarea>
+    </article>
+    <article class="f" id="d32" data-k="d32">
+      <header>
+        <span class="anio">2023</span>
+        <span class="mes">Enero</span>
+        <label class="ok"><input type="checkbox" data-k="d32"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primeras<br>Revival Nights</h2>
+          <p class="par">The Life Church lanzó Revival Nights, servicios para encontrarse con la presencia de Dios a través de la adoración, la enseñanza y la oración. Estas noches se han vuelto un cierre extraordinario para nuestros 21 días de ayuno y oración.</p>
+          <p class="nota"><span class="tag">Dato</span> Hemos recibido a amigos increíbles como Chad Veach, Israel Houghton, Charlotte Gambill, Dr. Manny Arango, Leeland Mooring, Aaron Burke, Jabin Chavez, Dino Rizzo, Earl McClellan y Rich Wilkerson, Jr.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First Revival Nights</h3>
+          <p class="par">The Life Church launched Revival Nights, powerful services to encounter God&#x27;s presence through worship, teaching and prayer. These nights have served as incredible conclusions to our annual 21 Days of Fasting &amp; Prayer.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> We have hosted incredible friends including Chad Veach, Israel Houghton, Charlotte Gambill, Dr. Manny Arango, Leeland Mooring, Aaron Burke, Jabin Chavez, Dino Rizzo, Earl McClellan and Rich Wilkerson, Jr.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d32"></textarea>
+    </article>
+    <article class="f" id="d30" data-k="d30">
+      <header>
+        <span class="anio">2023</span>
+        <span class="mes">19 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d30"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: DC Metro</h2>
+          <p class="par">The Life Church abrió una sede para el área metropolitana de Washington, extendiendo su presencia a la capital del país. En los últimos dos años esta sede ha crecido más de un 50% mientras se reúne en una escuela local.</p>
+          <p class="nota"><span class="tag">Dato</span> Los pastores de DC Metro, Andreas y Jerrica Nunley, se mudaron desde Memphis para abrir esta sede.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>The Life Church - DC Metro</h3>
+          <p class="par">The Life Church opened a location serving the DC metropolitan area, expanding our US presence into the nation&#x27;s capital. In the last two years, this location has grown by more than 50% while meeting in a local school.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Our DC Metro location pastors, Andreas and Jerrica Nunley, moved from Memphis to help launch this location.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d30"></textarea>
+    </article>
+    <article class="f" id="d31" data-k="d31">
+      <header>
+        <span class="anio">2023</span>
+        <span class="mes">19 y 20 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d31"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primer Make Room<br>Internacional</h2>
+          <p class="par">The Life Church llevó Make Room fuera del país por primera vez, con el evento de liderazgo para pastores y líderes en Santiago de Chile. Dos meses después realizamos el segundo Make Room internacional en Florencia, Italia.</p>
+          <p class="nota"><span class="tag">Cifra</span> En ese evento estuvieron representadas más de 30 iglesias y nos conectamos con más de 200 pastores y líderes de varios países de Sudamérica, entre ellos Perú, Argentina, Brasil y España.</p>
+        </div>
+        <div class="en">
+          <h3>Hosted First<br>International<br>Make Room Event</h3>
+          <p class="par">The Life Church took Make Room internationally for the first time, hosting the leadership event for pastors and church leaders in Santiago, Chile. Just two months later, we hosted our second international Make Room event in Florence, Italy.</p>
+          <p class="nota"><span class="tag">Stat</span> At this event, over 30 churches were represented and we connected with over 200 pastors and church leaders from many countries in South America, including Peru, Argentina, Brazil and Spain.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d31"></textarea>
+    </article>
+    <article class="f" id="d33" data-k="d33">
+      <header>
+        <span class="anio">2024</span>
+        <span class="mes">3 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d33"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: Sudáfrica</h2>
+          <p class="par">The Life Church abrió su tercera sede internacional en Johannesburgo, Sudáfrica, liderada por los pastores Adrian y Leigh Wright. Fue un paso hacia el cumplimiento de una profecía que los pastores John y Leslie habían recibido sobre volver al continente africano.</p>
+          <p class="nota"><span class="tag">Dato</span> Después de casi 9 años como Anchor Church Joburg, se unieron a la familia global de The Life Church.</p>
+        </div>
+        <div class="en">
+          <h3>Launched The Life Church - South Africa</h3>
+          <p class="par">The Life Church opened our third international location in Johannesburg, South Africa, led by Pastors Adrian and Leigh Wright. This became a step toward the fulfillment of a powerful prophecy Pastors John and Leslie received about returning to the continent of Africa.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> After existing as Anchor Church Joburg for nearly 9 years, they joined The Life Church global family.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d33"></textarea>
+    </article>
+    <article class="f" id="d34" data-k="d34">
+      <header>
+        <span class="anio">2024</span>
+        <span class="mes">31 de marzo</span>
+        <label class="ok"><input type="checkbox" data-k="d34"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera Sede<br>en una Cárcel</h2>
+          <p class="par">The Life Church abrió una sede en la División de Correccionales del Condado de Shelby, llevando la esperanza de Jesús a hombres privados de libertad con servicios cada domingo. Desde entonces hemos realizado varios bautismos y cientos de hombres han entregado su vida a Jesús.</p>
+          <p class="nota"><span class="tag">Dato</span> Cada semana un equipo de voluntarios dirige un servicio con adoración, mensaje, ministración y la oportunidad de hacer un Fresh Start.</p>
+        </div>
+        <div class="en">
+          <h3>Launched First Prison Location</h3>
+          <p class="par">The Life Church established a location at the Shelby County Division of Corrections, bringing the hope of Jesus to incarcerated men through weekly Sunday services. Since launch, we have hosted multiple baptism services and seen hundreds of men surrender their lives to Jesus.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Every week, a team of volunteers leads a service that includes worship, a message, ministry time and an opportunity to make a Fresh Start.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d34"></textarea>
+    </article>
+    <article class="f" id="d35" data-k="d35">
+      <header>
+        <span class="anio">2024</span>
+        <span class="mes">Junio</span>
+        <label class="ok"><input type="checkbox" data-k="d35"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera Canción<br>de Axis Worship</h2>
+          <p class="par">Axis Worship lanzó su primera canción original, un hito creativo para el ministerio de adoración de nuestros estudiantes. “Overflow” suma casi 200.000 reproducciones en todas las plataformas.</p>
+          <p class="nota"><span class="tag">Dato</span> Lanzaron su primer EP, “Songs For Wednesday”, en Axis Conference 2026.</p>
+        </div>
+        <div class="en">
+          <h3>Released Axis Worship Original Song</h3>
+          <p class="par">Axis Worship released its first original song, marking a creative milestone for our church&#x27;s student worship ministry. &quot;Overflow&quot; has since been streamed nearly 200,000 times across all platforms.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> Released debut EP “Songs For Wednesday” at Axis Conference in 2026.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d35"></textarea>
+    </article>
+    <article class="f" id="d36" data-k="d36">
+      <header>
+        <span class="anio">2024</span>
+        <span class="mes">8 de septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d36"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nueva Sede: Nashville</h2>
+          <p class="par">The Life Church abrió una sede en el sector de Bellevue, en Nashville. Comenzó a reunirse en el verano de 2024 y se inauguró oficialmente en septiembre, con un edificio ya pensado para sostener el crecimiento y alcanzar a toda la comunidad.</p>
+          <p class="nota"><span class="tag">Cifra</span> En el primer servicio previo a la apertura asistieron 226 personas y hubo 11 Fresh Starts.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>The Life Church - Nashville</h3>
+          <p class="par">The Life Church opened a location in the Bellevue area of Nashville. This location began meeting in the summer of 2024 and officially launched in September, with a beautiful building already designed to support continued growth and reach people throughout the Nashville community.</p>
+          <p class="nota"><span class="tag">Stat</span> At our first Pre-Launch Service in Nashville, 226 people attended and there were 11 Fresh Starts.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d36"></textarea>
+    </article>
+    <article class="f" id="d37" data-k="d37">
+      <header>
+        <span class="anio">2025</span>
+        <span class="mes">23 de febrero</span>
+        <label class="ok"><input type="checkbox" data-k="d37"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Segunda Sede<br>en una Cárcel</h2>
+          <p class="par">The Life Church amplió su ministerio en cárceles con una segunda sede en el recinto 201 Poplar. Allí se realizan al menos cinco servicios cada domingo, con cientos de hombres participando cada mes.</p>
+          <p class="nota"><span class="tag">Cifra</span> Más de 4.300 decisiones de Fresh Start en las dos sedes desde su apertura.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>Second Prison Location</h3>
+          <p class="par">The Life Church expanded our prison ministry with a second location serving inmates at the 201 Poplar facility. This location hosts a minimum of five services each Sunday with hundreds of men participating every month.</p>
+          <p class="nota"><span class="tag">Stat</span> Over 4,300 Fresh Start decisions at both prison locations since launch.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d37"></textarea>
+    </article>
+    <article class="f" id="d38" data-k="d38">
+      <header>
+        <span class="anio">2026</span>
+        <span class="mes">8 de agosto</span>
+        <label class="ok"><input type="checkbox" data-k="d38"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Primera Piedra del<br>Global Hub y el<br>Edificio Next Gen</h2>
+          <p class="par">The Life Church comenzó la construcción del Global Hub y el edificio Next Generation, 4.600 metros cuadrados con más espacio para niños, oficinas, área creativa, salas de reunión y más. Al terminarse será el centro global de nuestra iglesia en el mundo.</p>
+          <p class="nota"><span class="tag">Dato</span> El nuevo espacio duplicará nuestra capacidad actual para los ministerios Next Gen.</p>
+        </div>
+        <div class="en">
+          <h3>Groundbreaking for<br>Global Hub &amp;<br>Next Gen Building</h3>
+          <p class="par">The Life Church began construction on the Global Hub &amp; Next Generation Building, a 50,000-square-foot facility with increased kids&#x27; space, office and creative workspace, meeting space and more. Once completed, this facility will serve as the Global Hub for our expanding and growing church around the world.</p>
+          <p class="nota"><span class="tag">Fun Fact</span> The new space will double our current capacity to host Next Gen ministries.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d38"></textarea>
+    </article>
+    <article class="f" id="d39" data-k="d39">
+      <header>
+        <span class="anio">2026</span>
+        <span class="mes">1 de septiembre</span>
+        <label class="ok"><input type="checkbox" data-k="d39"> revisada</label>
+      </header>
+      <div class="cols">
+        <div class="es">
+          <h2>Nace<br>Life Leadership<br>Bible School</h2>
+          <p class="par">The Life Church lanzó Life Leadership Bible School, un programa online de dos años para crecer en teología, ministerio y liderazgo.</p>
+          <p class="nota"><span class="tag">Cifra</span> Más de 370 estudiantes de siete países están matriculados en la primera generación.</p>
+        </div>
+        <div class="en">
+          <h3>Launched<br>Life Leadership<br>Bible School</h3>
+          <p class="par">The Life Church launched Life Leadership Bible School, a two-year online program designed to help people grow in theology, ministry, and leadership.</p>
+          <p class="nota"><span class="tag">Stat</span> Over 370 students representing seven different countries are enrolled in the inaugural class.</p>
+        </div>
+      </div>
+      <textarea placeholder="¿Cambiarías algo? Escríbelo aquí…" data-k="d39"></textarea>
+    </article></main>
+<script>
+  var K='tlc-textos-es';
+  var g=JSON.parse(localStorage.getItem(K)||'{}');
+  function guardar(){ localStorage.setItem(K,JSON.stringify(g)); pintar(); }
+  function pintar(){
+    var n=0,t=0;
+    document.querySelectorAll('.f').forEach(function(a){
+      t++; var k=a.dataset.k, d=g[k]||{};
+      a.classList.toggle('listo',!!d.ok);
+      a.querySelector('input').checked=!!d.ok;
+      a.querySelector('textarea').value=d.nota||'';
+      if(d.ok) n++;
+    });
+    document.getElementById('cuenta').textContent=n+' de '+t+' revisadas';
+  }
+  document.addEventListener('change',function(e){
+    if(e.target.type!=='checkbox') return;
+    var k=e.target.dataset.k; g[k]=g[k]||{}; g[k].ok=e.target.checked; guardar();
+  });
+  document.addEventListener('input',function(e){
+    if(e.target.tagName!=='TEXTAREA') return;
+    var k=e.target.dataset.k; g[k]=g[k]||{}; g[k].nota=e.target.value;
+    localStorage.setItem(K,JSON.stringify(g));
+  });
+  document.getElementById('copiar').onclick=function(){
+    var out=[];
+    document.querySelectorAll('.f').forEach(function(a){
+      var d=g[a.dataset.k]||{};
+      if(d.nota&&d.nota.trim())
+        out.push(a.querySelector('.anio').textContent+' · '+
+                 a.querySelector('.es h2').innerText.replace(/\n/g,' ')+'\n  '+d.nota.trim());
+    });
+    var txt=out.length?out.join('\n\n'):'(sin comentarios)';
+    navigator.clipboard.writeText(txt);
+    this.textContent=out.length?('copiados '+out.length+' comentarios'):'no hay comentarios';
+    setTimeout(function(b){b.textContent='Copiar los comentarios';},2200,this);
+  };
+  pintar();
+</script>
+</body></html>

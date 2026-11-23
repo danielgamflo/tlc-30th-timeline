@@ -1,0 +1,243 @@
+/* ============================================================
+   The Life Church Santiago — Domingo de Alabanza
+   Promo de 30 segundos
+   ------------------------------------------------------------
+   Hereda la paleta y la tipografia del loop de los 30 anos: es la
+   misma campana, y dos piezas que se ven distinto en la misma
+   pantalla se leen como un error, no como variedad.
+
+   Todo lo que se mueve lo mueve el javascript escribiendo variables
+   aca. El css define como se ve cada estado, nunca cuando ocurre:
+   si el tiempo viviera en una transicion de css, el exportador
+   headless — que salta de cuadro en cuadro sin dejar correr el
+   reloj — capturaria siempre el estado inicial.
+   ============================================================ */
+
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-light.otf") format("opentype");
+  font-weight: 300; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-regular.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-ultrabold.otf") format("opentype");
+  font-weight: 800; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: "Museum";
+  src: url("../assets/fonts/ppmuseum-regularitalic.otf") format("opentype");
+  font-weight: 400; font-style: italic; font-display: block;
+}
+
+:root {
+  --orange: #BB6024;
+  --mustard: #CB9216;
+  --olive:  #666737;
+  --sage:   #9FB0A3;   /* el verde del fondo, como lo pidio Daniel */
+  --trama:  #77847A;   /* y el de los nombres que corren encima */
+  --cream:  #D7D0C5;
+  --ink:    #27231c;
+  --paper:  #F4F0E6;
+
+  --serif: "Museum", Georgia, serif;
+
+  /* el grano del loop: una linea cada 5.5px al 5%. No es ruido
+     agregado, es la trama del papel, y es lo que hace que las
+     fotografias y el vector parezcan impresos en la misma hoja */
+  --hatch-gap: 5.5px;
+  --hatch-ink: rgba(39,35,28,.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  background: #15130f;
+  overflow: hidden;
+  font-family: var(--serif);
+}
+
+.viewport {
+  position: fixed; inset: 0;
+}
+
+/* El escenario mide siempre lo mismo en unidades propias y se escala
+   entero al calce de la ventana. Asi una coordenada escrita aca vale
+   lo mismo en pantalla y en el archivo exportado.
+
+   Se centra con posicion absoluta y no con place-items: una caja de
+   1680px dentro de una ventana mas angosta desborda, y un centrado de
+   grid sobre algo desbordado deja la mitad fuera de la pantalla. */
+.stage {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 1680px; height: 1050px;
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+.stage[data-format="1080x1920"] { width: 1080px; height: 1920px; }
+.stage[data-format="1920"]      { width: 1920px; height: 1080px; }
+
+/* ---------- fondo ---------- */
+.fondo {
+  position: absolute; inset: 0;
+  background: var(--sage);
+}
+
+/* ---------- acto 1 · el mosaico ---------- */
+.mosaico {
+  position: absolute; inset: 0;
+  display: grid;
+  gap: var(--mos-gap, 10px);
+  padding: var(--mos-gap, 10px);
+  opacity: var(--mos-opacidad, 1);
+}
+
+.celda {
+  position: relative;
+  overflow: hidden;
+  background: var(--olive);
+  opacity: var(--celda-op, 0);
+  transform: scale(var(--celda-escala, 1.14));
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+/* El empuje lento vive aca y no en la rejilla. Escalar el contenedor
+   entero recortaria la columna de la izquierda, y ahi es justo donde
+   viven los rotulos: se perdian las primeras letras de cada nombre.
+   Cada fotografia creciendo dentro de su propia celda da el mismo
+   movimiento sin comerse nada. */
+.celda__foto {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: var(--foco, 50% 50%);
+  transform: scale(var(--foto-escala, 1));
+  transform-origin: 50% 50%;
+  /* se despinta hacia el verde cuando el mosaico se drena */
+  filter: saturate(var(--celda-sat, 1));
+}
+
+/* la etiqueta no es un rotulo: es la semilla de las tiras. Lo que
+   dice cada celda es lo que despues sale corriendo en las filas. */
+.celda__lugar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 10px 12px;
+  font-size: 15px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--cream);
+  background: linear-gradient(to top, rgba(39,35,28,.78), rgba(39,35,28,0));
+  opacity: var(--celda-rotulo, 0);
+}
+.celda__lugar b { font-weight: 300; opacity: .75; }
+
+/* ---------- acto 2 · las tiras ---------- */
+/* Una trama, no un rotulo. En la referencia los nombres llenan el
+   fondo entero y las lineas casi se tocan: separadas se leen como
+   subtitulos sueltos, apretadas se leen como tela estampada. */
+.tiras {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  opacity: var(--tiras-op, 0);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 23 lineas repartidas en el alto del cuadro: el js escribe la altura
+   exacta de cada una, porque depende del formato */
+.tira { overflow: hidden; height: var(--tira-alto, 46px); }
+
+.tira__riel {
+  display: flex; align-items: center;
+  height: 100%;
+  white-space: nowrap;
+  transform: translateX(var(--riel-x, 0px));
+  will-change: transform;
+}
+
+.tira__riel span {
+  font-size: var(--tira-fuente, 34px); font-weight: 800;
+  letter-spacing: .02em; text-transform: uppercase;
+  color: var(--trama);
+  padding-right: 22px;
+}
+.tira__riel i {
+  font-style: normal; color: var(--trama);
+  opacity: .55; padding-right: 22px;
+}
+
+/* ---------- acto 3 · el sello ---------- */
+.sello {
+  position: absolute;
+  left: 50%; top: var(--sello-y, 50%);
+  width: var(--sello-w, 1010px);
+  transform: translate(-50%, -50%)
+             scale(var(--sello-escala, 1))
+             rotate(var(--sello-giro, 0deg));
+  transform-origin: 50% 50%;
+  opacity: var(--sello-op, 0);
+  will-change: transform, opacity;
+}
+.sello svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* El sello NO se enciende por partes de color. Se intento y se veia
+   como un error: el contorno negro del rombo y el aro del ovalo son
+   un unico trazado, asi que separarlos por color dejaba el rombo
+   dibujado a ancho completo mientras su relleno dorado todavia venia
+   saliendo del centro — y el DESDE 1996 quedaba negro sobre nada.
+
+   En su lugar se revela entero, con una apertura eliptica desde el
+   centro. Nada puede entrar antes que otra cosa porque todo llega
+   junto, y las puntas del rombo son lo ultimo en asomar, que es lo
+   que da la sensacion de estampado. */
+.sello__recorte {
+  clip-path: ellipse(var(--rev-x, 0%) var(--rev-y, 0%) at 50% 50%);
+}
+
+/* lo unico que entra por su cuenta: las letras de los dos textos
+   curvos, una tras otra alrededor del ovalo */
+.sello .letra { opacity: var(--letra-op, 0); }
+
+/* El acto 4 ya no tiene estilos propios: la fecha y los horarios
+   salieron de esta pieza porque son lo unico que puede cambiar hasta
+   el ultimo minuto, y Daniel los monta en After Effects. Lo que la
+   pieza entrega ahora es el espacio: el sello sube y la mitad de
+   abajo queda limpia. */
+
+/* ---------- el grano ---------- */
+.grano {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--hatch-ink) 0, var(--hatch-ink) 1px,
+    transparent 1px, transparent var(--hatch-gap));
+  mix-blend-mode: multiply;
+}
+
+/* ---------- controles y hud ---------- */
+/* la promo no tiene controles; el elemento existe solo para que el
+   exportador pueda verificar que nada de interfaz quedo a la vista */
+.controls { display: none; }
+
+
+.hud {
+  position: fixed; left: 14px; bottom: 12px; z-index: 50;
+  display: flex; gap: 16px; align-items: center;
+  font: 400 12px/1 ui-monospace, Menlo, monospace;
+  color: #cfc9bb; letter-spacing: .06em;
+  background: rgba(21,19,15,.84);
+  padding: 9px 14px; border-radius: 4px;
+}
+.hud__mode { color: var(--mustard); font-weight: 700; }
+.hud__keys { opacity: .55; }
+body.hud-off .hud { display: none; }

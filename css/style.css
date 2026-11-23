@@ -637,7 +637,9 @@ body.capture .exp__cell[data-sel] { outline: none; }
   width: var(--stroke-lg);      /* matches the card's stroke */
   margin-left: calc(var(--stroke-lg) / -2);
   background: var(--ink);
-  transform: scaleY(0);
+  /* the draw is one number, written by render(); which way it grows is
+     the stylesheet's business, because that depends on the shape */
+  transform: scaleY(var(--draw, 0));
   transform-origin: center center;
 }
 
@@ -846,22 +848,176 @@ body.capture .exp__cell[data-sel] { outline: none; }
   opacity: .72;
 }
 
-/* ---------- square 1080 ------------------------------------- */
+/* ---------- Santiago: 1680 x 1050 -----------------------------
+   The design is drawn for 1920. The card already scales to 87.5% of
+   the stage, but type does not scale with it, so on this screen every
+   word was proportionally 14% larger than the design intends — which
+   is why 1680 ran tighter than the 1920 even in English. Scaling the
+   panel by that same 0.875 makes this screen a faithful miniature
+   instead of a cramped copy, and the fit comes back with it. */
 
-.stage[data-format="1080"] .expanded {
-  width: 940px; height: 940px;
-  margin: -470px 0 0 -470px;
+.stage[data-format="1680"] .exp__panel { padding: 40px 44px; }
+.stage[data-format="1680"] .exp__label {
+  height: 30px; line-height: 30px; font-size: 24px;
+}
+.stage[data-format="1680"] .exp__yearwrap { margin: 7px 0 33px; }
+.stage[data-format="1680"] .exp__year {
+  font-size: 66px; padding: 4px 30px 9px;
+}
+.stage[data-format="1680"] .exp__title {
+  font-size: 35px; margin-bottom: 16px;
+}
+.stage[data-format="1680"] .exp__para { font-size: 22px; }
+.stage[data-format="1680"] .exp__stat {
+  margin-top: 33px; padding-left: 18px; border-left-width: 5px;
+}
+.stage[data-format="1680"] .exp__stat i { font-size: 15px; }
+.stage[data-format="1680"] .exp__stat b { font-size: 25px; }
+.stage[data-format="1680"] .exp__stat span { font-size: 16px; }
+
+/* ---------- square: 1024 lobby wall, 1080 --------------------- */
+
+/* The card's size comes from BOXES in timeline.js and lands on the wrap,
+   which this fills; the 940 square and its negative margin that used to
+   sit here belonged to an older structure and fought it. All that is
+   square about the card itself is that photo and panel stack. */
+.stage[data-shape="square"] .expanded {
   flex-direction: column;
 }
-.stage[data-format="1080"] .exp__photo {
-  width: 100%; height: 44%;
-  border-right: 0;
-  border-bottom: var(--stroke-lg) solid var(--ink);
+/* Photo across the top, panel beneath, and the line between them is the
+   divider doing what it does on the 1920 — drawn, not a static border.
+   A border-bottom here as well would simply be a second line. */
+.stage[data-shape="square"] .exp__photo {
+  width: 100%; height: 50%;       /* half the card each: photo, then text */
+  clip-path: inset(100% 0 0 0);   /* unmasks upward off the divider */
 }
-.stage[data-format="1080"] .exp__panel { padding: 36px 44px 40px; }
-.stage[data-format="1080"] .exp__year { font-size: 74px; margin: 8px 0 48px; }
-.stage[data-format="1080"] .exp__title { font-size: 30px; margin-bottom: 16px; }
-.stage[data-format="1080"] .exp__para { font-size: 21px; }
+/* What the 1920 stacks, the square sets side by side: its pane is wide
+   and short, so a stacked pair would be two letterbox strips. Two go
+   left and right; three put the big one at the left, full height, with
+   the other two down the right. */
+/* The bands beside a print piece, filled with the piece's own colours:
+   a copy of it, enlarged to cover and blurred past reading, sitting
+   behind. Cheaper than measuring an average colour and warmer than one,
+   because it keeps the picture's own light where the picture is. */
+.stage[data-shape="square"] .exp__cell--fill::before {
+  content: "";
+  position: absolute;
+  inset: -8%;                       /* the blur must not thin at the edges */
+  background-image: var(--fill);
+  background-size: cover;
+  background-position: center;
+  filter: blur(26px) saturate(1.08);
+  z-index: 0;
+}
+.stage[data-shape="square"] .exp__cell--fill img { z-index: 1; }
+/* the contained photo carries a cream ground of its own, which would
+   simply cover what we just painted */
+.stage[data-shape="square"] .exp__cell--fill img.exp__contain {
+  background: transparent;
+}
+
+.stage[data-shape="square"] .exp__split--2 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+}
+.stage[data-shape="square"] .exp__split--3 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+.stage[data-shape="square"] .exp__split--3 > :first-child {
+  grid-column: 1; grid-row: 1 / -1;
+}
+.stage[data-shape="square"] .exp__divider {
+  left: 0; right: 0; top: 50%; bottom: auto;
+  width: auto; height: var(--stroke-lg);
+  margin-left: 0;
+  margin-top: calc(var(--stroke-lg) / -2);
+  transform: scaleX(var(--draw, 0));
+}
+/* The head runs across the top instead of down the middle. Stacked and
+   centred, the month, the pill and the title ate more than half of a
+   panel that is already half as tall as the 1920's, and the paragraph
+   was left with nothing. Month and pill sit at the left, the title
+   stands beside them, and the paragraph gets the full width underneath.
+   The pill comes down to 52px: at 74 it was the loudest thing on a
+   screen where the text is what has to carry. */
+.stage[data-shape="square"] .exp__panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    "label ."
+    "year  title"
+    "body  body"
+    "stat  stat";
+  column-gap: 26px;
+  /* Every row is its own height and the whole block is centred: no row
+     stretches, so nothing opens a gap between the paragraph and the
+     stat, and the air above equals the air below. */
+  align-content: center;
+  align-items: start;
+  text-align: left;
+  padding: 26px 46px 30px;
+}
+/* the month sits over the pill, centred on it — the column is as wide as
+   whichever of the two is wider, and both centre inside it */
+.stage[data-shape="square"] .exp__label {
+  grid-area: label;
+  width: auto;
+  justify-self: center;
+  text-align: center;
+  font-size: 21px;
+  height: 26px; line-height: 26px;
+}
+.stage[data-shape="square"] .exp__yearwrap {
+  grid-area: year;
+  align-self: start;
+  justify-self: center;
+  margin: 2px 0 0;
+}
+.stage[data-shape="square"] .exp__year {
+  font-size: 44px;
+  padding: 2px 20px 6px;
+}
+/* the throw is 22px behind the 1920's 76px pill; at 44px that same throw
+   reads as a shadow that came loose from its pill */
+.stage[data-shape="square"] .exp__yearwrap::before {
+  transform: translate(calc(var(--shade-x) * 1.35), calc(var(--shade-y) * 1.35));
+}
+.stage[data-shape="square"] .exp__title {
+  grid-area: title;
+  align-self: start;
+  text-align: left;
+  font-size: 30px;
+  margin: 3px 0 0;          /* its cap height meets the top of the pill */
+}
+/* one line has nothing to hang: it centres on the pill instead */
+.stage[data-shape="square"] .exp__title--one {
+  align-self: center;
+  margin-top: 0;
+}
+.stage[data-shape="square"] .exp__body {
+  grid-area: body;
+  padding-top: 26px;
+  /* Clipped to its row, never past it. The body reports a min-content
+     height of zero — min-height:0 and overflow:hidden — so a grid with
+     no room simply hands it a shorter row, and with align-items:start it
+     would render at its full height anyway and lay the paragraph over
+     the stat. Stretched, it is confined; overflow then shows up as a cut
+     line, which is honest and measurable, instead of two texts on top of
+     one another. */
+  align-self: stretch;
+}
+.stage[data-shape="square"] .exp__para { font-size: 21px; text-align: left; }
+.stage[data-shape="square"] .exp__stat { grid-area: stat; margin-top: 18px; }
+
+/* The note at the foot kept the 1920's voice — 29px italic against a
+   21px paragraph — which in the square read as the loudest thing on the
+   card and, more to the point, did not fit: the block alone stood 222px
+   of a 386px panel. It speaks under the paragraph now, not over it. */
+.stage[data-shape="square"] .exp__stat i { font-size: 13px; margin-bottom: 4px; }
+.stage[data-shape="square"] .exp__stat b { font-size: 19px; line-height: 1.24; }
+.stage[data-shape="square"] .exp__stat span { font-size: 14px; margin-top: 5px; }
 
 /* ============================================================
    THE RUNNING BARS

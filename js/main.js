@@ -9,9 +9,20 @@
 
 var APP = (function () {
 
-  var FPS = 30;
+  /* 30 on screen. The LED lobby wall wanted 24, and seek() snaps t onto
+     this grid — ask for 24ths against a 30ths grid and two consecutive
+     frames land on the same instant, which reads as judder. So the rate
+     is the export's to choose, by url, and nothing else changes: every
+     scene is a function of t, not of frame number. */
+  var FPS = (function () {
+    var m = /[?&]fps=(\d+)/.exec(window.location.search);
+    var n = m ? parseInt(m[1], 10) : 30;
+    return (n >= 1 && n <= 120) ? n : 30;
+  })();
   var FORMATS = {
+    "1024": [1024, 1024],   /* the LED lobby wall: 8 tiles of 128mm */
     "1080": [1080, 1080],
+    "1680": [1680, 1050],   /* Santiago's screen — 16:10, not 16:9 */
     "1920": [1920, 1080],
     "5760": [5760, 1080]
   };
@@ -27,6 +38,14 @@ var APP = (function () {
 
   function build() {
     stage    = document.getElementById("stage");
+
+    /* the crest is artwork, not text: Santiago ships its own file */
+    if (A.lang === "es") {
+      document.documentElement.lang = "es";
+      var mark = document.getElementById("logo-mark");
+      if (mark) mark.src = A.asset("assets/logo/30anos-santiago.png");
+    }
+
     hud      = document.getElementById("hud");
     hudMode  = document.getElementById("hud-mode");
     hudTime  = document.getElementById("hud-time");
@@ -194,6 +213,10 @@ var APP = (function () {
     stage.style.width  = d[0] + "px";
     stage.style.height = d[1] + "px";
     stage.dataset.format = key;
+    /* Layout belongs to the SHAPE, not to a resolution. Keyed this way,
+       1024 and 1080 share one set of square rules and the format stays
+       free to carry tuning that is really about pixels. */
+    stage.dataset.shape = d[0] === d[1] ? "square" : "wide";
     SCENE_TIMELINE.invalidate();   /* cached sizes belong to the old format */
     if (stage.querySelector(".ticker__unit")) TICKER.build(stage);
     fit();
@@ -270,7 +293,10 @@ var APP = (function () {
       else document.documentElement.requestFullscreen();
       return;
     }
-    if (k === "1") { setFormat("1080"); return; }
+    /* 1 is the square we actually deliver — the LED lobby wall. The old
+       1080 square stays in FORMATS for anyone who asks for it, but it is
+       not the one you want under your thumb while working. */
+    if (k === "1") { setFormat("1024"); return; }
     if (k === "2") { setFormat("1920"); return; }
     if (k === "3") { setFormat("5760"); return; }
 
@@ -293,7 +319,40 @@ var APP = (function () {
       showFocus(res);
       return;
     }
-    if (k === "x" || k === "X") { copyFocus(); return; }
+
+    /* G: whole picture, or filling its box. F is already fullscreen. */
+    if (k === "g" || k === "G") {
+      e.preventDefault(); pause();
+      showFocus(SCENE_TIMELINE.toggleFit());
+      seek(t);
+      return;
+    }
+
+    /* , and . walk the cells of a collage without clicking — an
+       extension's overlay on the photographs eats that click */
+    if (k === "," || k === ".") {
+      e.preventDefault(); pause();
+      showFocus(SCENE_TIMELINE.cycleCell(k === "." ? 1 : -1));
+      return;
+    }
+
+    /* Q and E bring the picture closer or let it back out. Panning alone
+       cannot rescue a crop cut for the 1920's tall pane and shown in the
+       square's wide one. The redraw is what puts the new scale on screen:
+       the drift writes the transform, and it only writes it on a frame. */
+    if (k === "q" || k === "Q" || k === "e" || k === "E") {
+      e.preventDefault(); pause();
+      var dz = (k === "e" || k === "E" ? 1 : -1) * (e.shiftKey ? 0.01 : 0.05);
+      showFocus(SCENE_TIMELINE.nudgeFocus(0, 0, dz));
+      seek(t);
+      return;
+    }
+    /* X copies; shift-X writes a file instead, because forty dates of
+       framing is more than anyone wants to paste into a chat window */
+    if (k === "x" || k === "X") {
+      if (e.shiftKey) saveFocus(); else copyFocus();
+      return;
+    }
   }
 
   var FOCUS_KEYS = {
@@ -321,13 +380,34 @@ var APP = (function () {
     return text;
   }
 
+  /* The same set, as a file in Downloads. The page cannot write into the
+     project — and should not: the piece is a function of the JSON, and
+     the JSON is edited deliberately, not by a keystroke behind your
+     back. This just carries the numbers out of the browser. */
+  function saveFocus() {
+    var text = SCENE_TIMELINE.focusDump();
+    var name = "focus-" + format + ".json";
+    var url  = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    var a    = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    /* the browser decides where it lands, and some refuse outright — so
+       this says what was asked for, not that it happened */
+    if (hudFocus) hudFocus.textContent = name + " → Downloads";
+  }
+
   /* ---- boot -------------------------------------------------- */
 
   function start(rows) {
     build();
     SCENE_TIMELINE.setData(rows);
     computeTiming();
-    setFormat("1920");
+    /* "?format=1024" opens straight into the square. The wall is a whole
+       working session of its own now, and pressing 1 after every reload
+       is how you end up tuning the wrong format by mistake. */
+    var asked = (/[?&]format=([A-Za-z0-9]+)/.exec(window.location.search) || [])[1];
+    setFormat(FORMATS[asked] ? asked : "1920");
     seek(0);
     window.addEventListener("resize", fit);
     window.addEventListener("keydown", keys);
@@ -479,9 +559,36 @@ var APP = (function () {
       });
   }
 
+  /* The Spanish file carries words and nothing else: it is laid over the
+     rows by id, so photographs, framing, colour and timing keep one
+     source. A date missing from it simply stays in English rather than
+     disappearing, which is the safe way to fail while a translation is
+     still being written. */
+  function applyLang(rows) {
+    if (A.lang !== "es") return rows;
+    return fetch("data/textos-es.json?v=" + VER)
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (txt) {
+        var by = {}, i;
+        for (i = 0; i < txt.length; i++) by[txt[i].id] = txt[i];
+        for (i = 0; i < rows.length; i++) {
+          var t = by[rows[i].id];
+          if (!t) continue;
+          if (t.label)     rows[i].label     = t.label;
+          if (t.short)     rows[i].short     = t.short;
+          if (t.title)     rows[i].title     = t.title;
+          if (t.paragraph) rows[i].paragraph = t.paragraph;
+          if (t.facts)     rows[i].facts     = t.facts;
+        }
+        return rows;
+      })
+      .catch(function () { return rows; });
+  }
+
   loadCovers()
     .then(function () { return fetch("data/timeline.json?v=" + VER); })
     .then(function (res) { return res.json(); })
+    .then(applyLang)
     .then(decodeAll)
     .then(function (rows) {
       var fonts = (document.fonts && document.fonts.ready)

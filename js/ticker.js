@@ -14,7 +14,12 @@
 var TICKER = (function () {
 
   var SPEED = 30;      /* px per second */
-  var PHRASE = ["The Life Church", "30th Anniversary", "1996 — 2026"];
+  /* Santiago runs the church's own line instead of the anniversary
+     label. It is longer, so one unit of the pattern is wider and the
+     phrase comes around less often — which is the point of a motto. */
+  var PHRASE = A.lang === "es"
+    ? ["The Life Church", "Celebrando 30 años de la fidelidad de Dios", "1996 — 2026"]
+    : ["The Life Church", "30th Anniversary", "1996 — 2026"];
 
   /* the bars are not there from frame 0: they arrive as the logo
      leaves — top drops in, bottom rises in — and they clear again

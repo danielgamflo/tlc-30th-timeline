@@ -72,8 +72,26 @@ var SCENE_TIMELINE = (function () {
 
   var holds = [], starts = [], span = 0;
 
-  var BOX_W = 1500;       /* final width                                 */
-  var BOX_H = 880;        /* final height                                */
+  /* The card was two constants and they were the 1920's. A 1024 stage is
+     narrower than 1500, so on a square screen the card was not merely
+     mis-styled, it was built to a size that does not fit. Each shape
+     names its own box now, and the wide one names exactly the numbers it
+     has always had: the 1920 is unchanged by construction, not by hope.
+     Proof lives in tools/export.js --stills, which renders the same
+     frames before and after and compares them byte for byte. */
+  var BOXES = {
+    wide:   { w: 1500, h: 880 },
+    square: { w: 890,  h: 890 },
+    /* Santiago's screen is 1680x1050: 88% of the 1920's width and 97%
+       of its height, so the 1500 card would nearly touch both edges.
+       Same proportion of the stage the design was drawn with — 78% of
+       the width, 81% of the height — keeps its margins. Looked up by
+       format first, then by shape. */
+    "1680": { w: 1312, h: 856 }
+  };
+  var BOX_W = BOXES.wide.w;   /* final width                             */
+  var BOX_H = BOXES.wide.h;   /* final height                            */
+  var SHAPE = "wide";         /* set from the stage whenever it changes   */
   /* how much of SPIN the diamond takes to arrive; the rest is the turn.
      three readable beats inside one phase, so the running time does not
      move: the diamond appears, it turns, then it stretches.          */
@@ -82,9 +100,13 @@ var SCENE_TIMELINE = (function () {
   /* the flat diamond it starts as — the crest's lozenge, 2.5:1.
      Wider than the 880 square it turns into, so the shape narrows
      through the turn and opens out again in the stretch. Push LOZ_W
-     past 1200 and that pinch becomes the loudest thing in the move. */
-  var LOZ_W = 1200;
-  var LOZ_H = 480;
+     past 1200 and that pinch becomes the loudest thing in the move.
+
+     Both numbers follow the card: four fifths of its width, at 2.5:1.
+     On the wide card that is 0.8 x 1500 = 1200 and 1200 / 2.5 = 480,
+     which is what stood here as literals. */
+  var LOZ_W = BOX_W * 0.8;
+  var LOZ_H = LOZ_W / 2.5;
 
   /* the turn's curve. Quint — the 90-90 the stretch uses — is far too
      steep for 45 degrees in half a second: it holds still for two tenths,
@@ -135,6 +157,15 @@ var SCENE_TIMELINE = (function () {
   var expW = 0, expH = 0;         /* cached; cleared when the format changes */
 
   function invalidate() {
+    /* the format changed, so the card's own size may have changed with
+       it — everything downstream (the clip polygon, the frame stroke,
+       the turn's envelope) reads these. */
+    var st = document.getElementById("stage");
+    SHAPE = st && st.dataset.shape === "square" ? "square" : "wide";
+    var box = (st && BOXES[st.dataset.format]) || BOXES[SHAPE];
+    BOX_W = box.w; BOX_H = box.h;
+    LOZ_W = BOX_W * 0.8; LOZ_H = LOZ_W / 2.5;
+
     expW = 0; expH = 0; shownIndex = -1;
     for (var i = 0; i < nodes.length; i++) nodes[i].last = null;
   }
@@ -420,12 +451,49 @@ var SCENE_TIMELINE = (function () {
          "focus": ["contain", "50% 30%"]
      and an anchor may ride along - "contain 50% 20%" - for where the
      picture sits inside the pane it no longer fills. */
+  /* A framing may also carry a zoom: "50% 40% x1.30". Panning alone
+     cannot save a crop cut for a tall pane and shown in a wide one —
+     sometimes the picture has to come closer. The zoom multiplies the
+     settle-and-drift scale the photograph already rides, so the two
+     never fight; absent, it is 1 and nothing changes, which is why the
+     1920 does not move. */
+  function parseFocus(v) {
+    var s = String(v == null ? "50% 50%" : v).trim();
+    var m = /\sx([0-9.]+)$/.exec(s);
+    return { pos: (m ? s.slice(0, m.index) : s).trim() || "50% 50%",
+             z: m ? parseFloat(m[1]) : 1 };
+  }
+
+  function composeFocus(pos, z) {
+    return (z && Math.abs(z - 1) > 0.001) ? pos + " x" + z.toFixed(2) : pos;
+  }
+
+  /* "contain" is a fit, not a position, and it may carry an anchor:
+     "contain 50% 20%". Nudging one as if the whole string were a pair of
+     percentages is how a saved file came back holding "NaN% NaN% x2.30".
+     The anchor still moves; the zoom does not, because a zoom on a
+     picture shown whole crops away the reason it is shown whole. */
+  function splitFit(v) {
+    var s = String(v == null ? "50% 50%" : v).trim();
+    var whole = s.indexOf("contain") === 0;
+    if (whole) s = s.slice(7).trim() || "50% 50%";
+    var p = parseFocus(s);
+    return { whole: whole, pos: p.pos, z: whole ? 1 : p.z };
+  }
+
+  function joinFit(whole, pos, z) {
+    return whole ? "contain " + pos : composeFocus(pos, z);
+  }
+
   function fitOf(f) {
     var s = String(f == null ? "50% 50%" : f);
+    /* contain shows the whole picture; a zoom would crop away exactly
+       what that is for, so it is not offered there */
     if (s.indexOf("contain") === 0) {
-      return { cls: " exp__contain", pos: s.slice(7).trim() || "50% 50%" };
+      return { cls: " exp__contain", pos: s.slice(7).trim() || "50% 50%", z: 1 };
     }
-    return { cls: "", pos: s || "50% 50%" };
+    var p = parseFocus(s);
+    return { cls: "", pos: p.pos, z: p.z };
   }
 
   function focusOf(d, k, cell) {
@@ -453,6 +521,49 @@ var SCENE_TIMELINE = (function () {
   function slidesOf(d) {
     if (d.photos && d.photos.length) return d.photos;
     return d.photo ? [d.photo] : [];
+  }
+
+  /* ---- the square's own cut ----------------------------------
+     The 1920 shows a photograph, then a pair; its pane is tall, so the
+     pair stacks. The square's pane is wide and short, and there the two
+     read better beside the first: one picture at the left, the pair at
+     the right — which is the three-cell grid the square already draws.
+
+     The hold is NOT recomputed. computeHolds still counts the 1920's
+     slides, so both formats run to the same second and the merged
+     composition simply stands for as long as the two it replaces. That
+     is what keeps the wall and the big screen in step.
+
+     Focus travels with the photograph. The values are indexed by slide,
+     so merging two slides would otherwise hand each picture the framing
+     of another one. */
+  function squareCut(d) {
+    if (d._sq) return d._sq;
+    var src = slidesOf(d), slides = [], focus = [];
+    for (var i = 0; i < src.length; i++) {
+      var cur = src[i], nxt = src[i + 1];
+      if (!(cur instanceof Array) && nxt instanceof Array && nxt.length === 2) {
+        slides.push([cur, nxt[0], nxt[1]]);
+        focus.push([focusOf(d, i), focusOf(d, i + 1, 0), focusOf(d, i + 1, 1)]);
+        i++;                       /* the pair has been taken */
+      } else if (cur instanceof Array) {
+        var row = [];
+        for (var c = 0; c < cur.length; c++) row.push(focusOf(d, i, c));
+        slides.push(cur.slice()); focus.push(row);
+      } else {
+        slides.push(cur); focus.push(focusOf(d, i));
+      }
+    }
+    /* framing tuned for the square is kept in its own field, shaped like
+       the square's own cut, so it can never reach the 1920 */
+    if (d.focusSq && d.focusSq.length === slides.length) focus = d.focusSq;
+    d._sq = { slides: slides, focus: focus };
+    return d._sq;
+  }
+
+  /* what this shape draws, and the framing that goes with it */
+  function cutFor(d) {
+    return SHAPE === "square" ? squareCut(d) : { slides: slidesOf(d), focus: null };
   }
 
   /* the foot of the panel can carry more than one note. Give a date
@@ -612,7 +723,11 @@ var SCENE_TIMELINE = (function () {
     r.expYear.textContent  = d.year;
     /* the title is the one place a hard break is honoured — the copy
        names where it wants to turn */
-    r.expTitle.innerHTML = rich(d.title, true);
+    /* The breaks written into the titles were judged against the 1920's
+       716px panel. The square's title sits in a wider column, where those
+       same breaks leave half a line of air on the right — so there the
+       copy wraps to the measure it actually has. */
+    r.expTitle.innerHTML = rich(d.title, SHAPE !== "square");
     r.expPara.innerHTML  = rich(d.paragraph, false);
 
     var notes = factsOf(d);
@@ -646,7 +761,8 @@ var SCENE_TIMELINE = (function () {
        them across the hold, stacked, so the mask reveal still plays
        on the first one and the rest simply relieve it. */
     /* a date with no photograph gives the pane back to the panel */
-    var shots = slidesOf(d);
+    var cut = cutFor(d);
+    var shots = cut.slides;
     if (r.exp) r.exp.classList.toggle("expanded--nophoto", !shots.length);
     if (shots.length) {
       r.expPhoto.className = "exp__photo";
@@ -659,13 +775,29 @@ var SCENE_TIMELINE = (function () {
           var g = shots[s2], n = Math.min(g.length, 4);
           /* "foot": [2] turns the three-cell grid on slide 2 upside
              down - two across the top, one spanning the bottom. */
-          var foot = (d.foot || []).indexOf(s2) >= 0 && n === 3
+          /* the square lays its three out left-to-right, so "which one
+             is at the foot" has nothing to turn upside down */
+          var foot = SHAPE !== "square" && (d.foot || []).indexOf(s2) >= 0 && n === 3
                      ? " exp__split--foot" : "";
           html += '<div class="exp__split exp__split--' + n + foot + '">';
           for (var c = 0; c < n; c++) {
-            var fc = fitOf(focusOf(d, s2, c));
-            html += '<div class="exp__cell"><img class="' + fc.cls.trim() +
-                    '" src="' + srcFor(g[c]) +
+            var fc = fitOf(cut.focus ? cut.focus[s2][c] : focusOf(d, s2, c));
+            /* A print piece is shown whole, so it leaves bands. On the
+               square those bands are large, and flat cream in a cell is
+               a dead block — so the photograph's own colours fill them,
+               blurred, out of a copy of itself. The 1920's bands are
+               narrow and already approved, so this stays here. */
+            /* absolute, deliberately: a relative url() inside a custom
+               property is resolved against the STYLESHEET, so a plain
+               "assets/…" here goes looking in css/assets and finds
+               nothing — silently, since a missing background paints
+               nothing at all. */
+            var fill = (SHAPE === "square" && fc.cls)
+              ? " exp__cell--fill\" style=\"--fill:url('" +
+                new URL(srcFor(g[c]), document.baseURI).href + "')"
+              : "";
+            html += '<div class="exp__cell' + fill + '"><img class="' + fc.cls.trim() +
+                    '" src="' + srcFor(g[c]) + '" data-z="' + fc.z +
                     '" alt="" style="object-position:' + fc.pos + '"></div>';
           }
           html += '</div>';
@@ -680,8 +812,9 @@ var SCENE_TIMELINE = (function () {
                   'poster="' + stillFor(shots[s2]) + '" ' +
                   'muted playsinline preload="auto"></video>';
         } else {
-          var ff = fitOf(focusOf(d, s2));
+          var ff = fitOf(cut.focus ? cut.focus[s2] : focusOf(d, s2));
           html += '<img class="' + ff.cls.trim() + '" src="' + srcFor(shots[s2]) +
+                  '" data-z="' + ff.z +
                   '" alt="" style="object-position:' + ff.pos + '">';
         }
       }
@@ -709,6 +842,16 @@ var SCENE_TIMELINE = (function () {
     /* the year travels one pill-length, so measure this pill */
     r.expYearWrap.style.transform = "none";
     yearTravel = r.expYear.offsetWidth || 380;
+
+    /* A title of two or three lines hangs from the top of the pill and
+       reads as one block with it. A title of ONE line, hung the same
+       way, sits high against a pill twice its height — so a single line
+       centres on the pill instead. Which it is cannot be known from the
+       copy: it depends on where the words wrap at this width, so it is
+       measured after the words are in. */
+    var lh = parseFloat(getComputedStyle(r.expTitle).lineHeight) || 36;
+    r.expTitle.classList.toggle("exp__title--one",
+                                r.expTitle.offsetHeight < lh * 1.5);
 
     if (window.NOTES) NOTES.setDate(d);
 
@@ -898,11 +1041,16 @@ var SCENE_TIMELINE = (function () {
 
     /* 4a. the divider builds out of its own centre toward both edges */
     var line = A.ease(ct, tWiden + 0.20, 0.40, A.easeOutQuint);
-    r.expDivider.style.transform = "scaleY(" + A.round(line, 4) + ")";
+    r.expDivider.style.setProperty("--draw", A.round(line, 4));
 
-    /* 4b. and the photo is unmasked off that line, sweeping left */
+    /* 4b. and the photo is unmasked off that line — leftward on the wide
+       card, where the line stands beside it; upward on the square, where
+       it lies underneath. */
     var wipe = A.ease(ct, tWiden + 0.45, 0.65, A.easeInOutQuint);
-    r.expPhoto.style.clipPath = "inset(0 0 0 " + A.round((1 - wipe) * 100, 2) + "%)";
+    var hide = A.round((1 - wipe) * 100, 2);
+    r.expPhoto.style.clipPath = SHAPE === "square"
+      ? "inset(" + hide + "% 0 0 0)"
+      : "inset(0 0 0 " + hide + "%)";
 
     /* 3. the year travels right to left about one pill-length, on a
        90-90 curve, and does not show at all until halfway — then it
@@ -937,7 +1085,23 @@ var SCENE_TIMELINE = (function () {
     if (shots.length) {
       var settle = A.lerp(1.06, 1, A.easeOutQuint(A.seg(ct, tWiden + 0.45, 0.80)));
       var drift = A.lerp(1, DRIFT, A.ease(ct, tHold + 0.9, HOLD - 0.9, A.linear));
-      var zoom = "scale(" + A.round(settle * drift, 4) + ")";
+      var base = settle * drift;
+      /* each photograph may carry its own zoom on top of the shared one */
+      var zoomOn = function (img) {
+        var z = parseFloat(img.getAttribute("data-z"));
+        z = z > 0 ? z : 1;
+        /* A zoom pulls toward a point, and that point is the framing.
+           object-fit crops BEFORE any transform, so on a photograph that
+           already fills its cell in one axis — a tall 824x927 in the
+           square's wide pane — object-position has nothing left to move
+           along that axis, and the keys go dead exactly when the zoom
+           made you want them. Anchoring the scale gives the pan its
+           meaning back. Only when zoomed: the 1920 carries no zooms, and
+           an origin of its own would move it. */
+        img.style.transformOrigin =
+          z > 1 ? (img.style.objectPosition || "50% 50%") : "";
+        return "scale(" + A.round(base * z, 4) + ")";
+      };
 
       /* several shots on one date cross-fade across the hold */
       var slot = (HOLD - 1.2) / shots.length;
@@ -960,9 +1124,10 @@ var SCENE_TIMELINE = (function () {
              its own cell. scaling the grid itself would pull the
              gutters apart and push the outer cells off the pane. */
           var cells = el.getElementsByTagName("img");
-          for (var c2 = 0; c2 < cells.length; c2++) cells[c2].style.transform = zoom;
+          for (var c2 = 0; c2 < cells.length; c2++)
+            cells[c2].style.transform = zoomOn(cells[c2]);
         } else {
-          el.style.transform = zoom;
+          el.style.transform = zoomOn(el);
         }
       }
     }
@@ -1081,9 +1246,48 @@ var SCENE_TIMELINE = (function () {
       return SCENE_TIMELINE.currentFocus();
     },
 
-    nudgeFocus: function (dx, dy) {
+    nudgeFocus: function (dx, dy, dz) {
       if (shownIndex < 0) return null;
       var d = data[shownIndex];
+
+      /* The square draws its own cut, so the cell under the cursor
+         belongs to THAT arrangement, and what it writes goes to
+         focusSq — the 1920's framing is never touched by tuning the
+         wall, and the two can disagree on purpose. */
+      if (SHAPE === "square") {
+        var cut = squareCut(d);
+        if (!cut.slides.length) return null;
+        var ks = SCENE_TIMELINE.visibleSlide(); if (ks < 0) ks = 0;
+        var gs = cut.slides[ks] instanceof Array ? cut.slides[ks] : null;
+        var cs = gs ? Math.min(selCell, gs.length - 1) : -1;
+        var cur = splitFit(gs ? cut.focus[ks][cs] : cut.focus[ks]);
+        var xy = cur.pos.split(" ");
+        var ps = Math.round(A.clamp((parseFloat(xy[0]) || 50) + dx, 0, 100)) + "% " +
+                 Math.round(A.clamp((parseFloat(xy[1]) || 50) + dy, 0, 100)) + "%";
+        /* rounded here, not only where it is written out: adding 0.05 to
+           itself enough times gives 1.1500000000000001 */
+        var zs = Math.round(A.clamp(cur.z + (dz || 0), 1, 2.5) * 100) / 100;
+        var vs = joinFit(cur.whole, ps, zs);
+        if (gs) cut.focus[ks][cs] = vs; else cut.focus[ks] = vs;
+        d.focusSq = cut.focus;
+
+        var se = r.expPhoto.children[ks];
+        if (se) {
+          var si = gs ? se.getElementsByTagName("img")[cs]
+                      : (se.tagName === "IMG" ? se : null);
+          if (si) {
+            si.style.objectPosition = ps;
+            si.setAttribute("data-z", zs);
+            /* moves the picture under a zoom, where object-position alone
+               cannot — and shows it now, without waiting for a frame */
+            si.style.transformOrigin = zs > 1 ? ps : "";
+          }
+        }
+        return { year: d.year, photo: gs ? gs[cs] : cut.slides[ks],
+                 k: ks + 1, of: cut.slides.length,
+                 cell: gs ? cs + 1 : 0, cells: gs ? gs.length : 0, focus: vs };
+      }
+
       var slides = slidesOf(d);
       if (!slides.length) return null;
 
@@ -1105,10 +1309,13 @@ var SCENE_TIMELINE = (function () {
         }
       }
 
-      var cur = (group ? focus[k][c] : focus[k]).split(" ");
-      var x = A.clamp(parseFloat(cur[0]) + dx, 0, 100);
-      var y = A.clamp(parseFloat(cur[1]) + dy, 0, 100);
-      var val = Math.round(x) + "% " + Math.round(y) + "%";
+      var now = splitFit(group ? focus[k][c] : focus[k]);
+      var cur = now.pos.split(" ");
+      var x = A.clamp((parseFloat(cur[0]) || 50) + dx, 0, 100);
+      var y = A.clamp((parseFloat(cur[1]) || 50) + dy, 0, 100);
+      var pos = Math.round(x) + "% " + Math.round(y) + "%";
+      var zw = Math.round(A.clamp(now.z + (dz || 0), 1, 2.5) * 100) / 100;
+      var val = joinFit(now.whole, pos, zw);
       if (group) focus[k][c] = val; else focus[k] = val;
       d.focus = slides.length === 1 && !group ? focus[0] : focus;
 
@@ -1119,14 +1326,20 @@ var SCENE_TIMELINE = (function () {
       if (slideEl) {
         var img = group ? slideEl.getElementsByTagName("img")[c]
                         : (slideEl.tagName === "IMG" ? slideEl : null);
-        if (img) img.style.objectPosition = val;
+        if (img) {
+          img.style.objectPosition = pos;
+          img.setAttribute("data-z", zw);
+          img.style.transformOrigin = zw > 1 ? pos : "";
+        }
       }
 
       /* the small card on the rail shows the first photograph, so it has
          to follow along or the two disagree while you are working */
       if (k === 0 && (!group || c === 0) &&
           nodes[shownIndex] && nodes[shownIndex].photo) {
-        nodes[shownIndex].photo.style.objectPosition = val;
+        /* the position only: a zoom on the end of the string is ours, not
+           something object-position can read */
+        nodes[shownIndex].photo.style.objectPosition = pos;
       }
 
       return { year: d.year, photo: group ? group[c] : slides[k],
@@ -1135,9 +1348,91 @@ var SCENE_TIMELINE = (function () {
                focus: val };
     },
 
+    /* Whole, or filling its box. The 1920 decides this per photograph in
+       "focus", and the square inherits it — but a print piece that earns
+       its bands in a tall pane can be the wrong call in a wide one, and
+       the other way round. This flips it for the shape you are looking
+       at, and the zoom comes back with it, because a photograph that
+       fills its box is one you can push into. */
+    toggleFit: function () {
+      if (shownIndex < 0) return null;
+      var d = data[shownIndex];
+      var k = SCENE_TIMELINE.visibleSlide(); if (k < 0) k = 0;
+      var el = r.expPhoto.children[k];
+      if (!el) return null;
+
+      var sq = SHAPE === "square";
+      var cut = sq ? squareCut(d) : null;
+      var slides = sq ? cut.slides : slidesOf(d);
+      if (!slides.length || k >= slides.length) return null;
+      var group = slides[k] instanceof Array ? slides[k] : null;
+      var c = group ? Math.min(selCell, group.length - 1) : -1;
+
+      var cur = splitFit(sq ? (group ? cut.focus[k][c] : cut.focus[k])
+                            : focusOf(d, k, group ? c : undefined));
+      var val = joinFit(!cur.whole, cur.pos, cur.z);
+
+      if (sq) {
+        if (group) cut.focus[k][c] = val; else cut.focus[k] = val;
+        d.focusSq = cut.focus;
+      } else {
+        var f = [];
+        for (var i = 0; i < slides.length; i++) {
+          if (slides[i] instanceof Array) {
+            var g = [];
+            for (var j = 0; j < slides[i].length; j++) g.push(focusOf(d, i, j));
+            f.push(g);
+          } else f.push(focusOf(d, i));
+        }
+        if (group) f[k][c] = val; else f[k] = val;
+        d.focus = slides.length === 1 && !group ? f[0] : f;
+      }
+
+      /* the fit is a class, so flip it on the element rather than
+         rebuilding the card and losing the frame you are judging */
+      var img = group ? el.getElementsByTagName("img")[c]
+                      : (el.tagName === "IMG" ? el : el.getElementsByTagName("img")[0]);
+      if (img) {
+        img.classList.toggle("exp__contain", !cur.whole);
+        img.style.objectPosition = cur.pos;
+        img.setAttribute("data-z", cur.whole ? cur.z : 1);
+      }
+      return { year: d.year, photo: group ? group[c] : slides[k],
+               k: k + 1, of: slides.length,
+               cell: group ? c + 1 : 0, cells: group ? group.length : 0,
+               focus: val };
+    },
+
+    /* Walk the cells of the slide on screen without the mouse. A browser
+       extension that lays its own button over every photograph — a
+       Pinterest "Save", say — swallows the click that picks a cell, and
+       the tool then looks broken: one cell moves and the rest do not. */
+    cycleCell: function (dir) {
+      if (shownIndex < 0) return null;
+      var k = SCENE_TIMELINE.visibleSlide();
+      var el = k >= 0 ? r.expPhoto.children[k] : null;
+      var cells = el && el.querySelectorAll ? el.querySelectorAll(".exp__cell") : null;
+      if (!cells || !cells.length) return SCENE_TIMELINE.currentFocus();
+      var n = cells.length;
+      return SCENE_TIMELINE.selectCell(cells[((selCell + dir) % n + n) % n]);
+    },
+
     currentFocus: function () {
       if (shownIndex < 0) return null;
       var d = data[shownIndex];
+
+      if (SHAPE === "square") {
+        var cq = squareCut(d);
+        if (!cq.slides.length) return { year: d.year, photo: null, focus: null };
+        var kq = Math.max(SCENE_TIMELINE.visibleSlide(), 0);
+        var gq = cq.slides[kq] instanceof Array ? cq.slides[kq] : null;
+        var cc = gq ? Math.min(selCell, gq.length - 1) : -1;
+        return { year: d.year, photo: gq ? gq[cc] : cq.slides[kq],
+                 k: kq + 1, of: cq.slides.length,
+                 cell: gq ? cc + 1 : 0, cells: gq ? gq.length : 0,
+                 focus: gq ? cq.focus[kq][cc] : cq.focus[kq] };
+      }
+
       var slides = slidesOf(d);
       if (!slides.length) return { year: d.year, photo: null, focus: null };
       var k = Math.max(SCENE_TIMELINE.visibleSlide(), 0);
@@ -1153,6 +1448,18 @@ var SCENE_TIMELINE = (function () {
        one string per single slide, one array per split */
     focusDump: function () {
       var out = [];
+
+      /* in the square it hands back focusSq, in the square's own shape,
+         which is what data/timeline.json wants pasted in */
+      if (SHAPE === "square") {
+        for (var s = 0; s < data.length; s++) {
+          var ds = data[s], cs2 = squareCut(ds);
+          if (!cs2.slides.length) continue;
+          out.push({ id: ds.id, year: ds.year, focusSq: cs2.focus });
+        }
+        return JSON.stringify(out, null, 1);
+      }
+
       for (var i = 0; i < data.length; i++) {
         var d = data[i];
         var slides = slidesOf(d);

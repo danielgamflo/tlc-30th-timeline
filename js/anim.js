@@ -44,6 +44,13 @@ var A = (function () {
 
   function asset(path) { return path + stamp; }
 
+  /* "?lang=es" is the Santiago cut: the words change and nothing else
+     does. The Spanish text lives in its own file and is laid over the
+     same rows, so the photographs, the framing and the timing have one
+     source — swap a photograph tomorrow and both languages get it.
+     Defined here because every scene asks, and anim.js loads first. */
+  var lang = /[?&]lang=es\b/.test(window.location.search) ? "es" : "en";
+
   /* The rail card is 200x132 and the big pane is 777x874 — the same
      photograph cannot suit both, so a date may ship a second file for
      the little one: the same name with "-cover" before the extension.
@@ -148,7 +155,7 @@ var A = (function () {
 
   return {
     clamp: clamp, lerp: lerp, seg: seg, ease: ease, tween: tween, round: round,
-    asset: asset, stamp: stamp,
+    asset: asset, stamp: stamp, lang: lang,
     haveCover: haveCover, noteCover: noteCover,
     luminance: luminance, contrast: contrast, inkOn: inkOn, mix: mix,
     linear: linear,

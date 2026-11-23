@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Life Church &mdash; 30th Birthday Party</title>
+<link rel="stylesheet" href="css/fiesta.css?v=3">
+</head>
+<body>
+
+  <div class="viewport">
+    <!-- 1280 es el led del lobby; 3840x990 la pantalla principal.
+         No son recortes uno del otro: cada uno trae su propia densidad
+         de confeti y su propio tamano de sello. -->
+    <!-- el 1920x1080 lo fija el css por data-format, como los otros dos -->
+    <div class="stage" id="stage" data-format="1280">
+
+      <!-- El confeti va en canvas y no en elementos del DOM: a 3840 de
+           ancho son varios cientos de piezas, y cada una como nodo
+           propio vuelve lenta tanto la pagina como la exportacion.
+           Dibujado desde t en cada cuadro sigue siendo determinista. -->
+      <canvas class="confeti confeti--lejos" id="confeti-lejos"></canvas>
+
+      <!-- el sello va en medio de los dos planos de confeti, para que
+           algunas piezas pasen por delante: eso es lo que da el relieve -->
+      <div class="sello" id="sello"><!-- el svg entra aca --></div>
+
+      <canvas class="confeti confeti--cerca" id="confeti-cerca"></canvas>
+
+      <!-- Aqui iba una trama de papel sobre todo el cuadro. Fuera: el
+           fondo se recorta por luminancia en after effects, y unas
+           rayas encima de lo que se va a recortar solo estorban. -->
+
+    </div>
+  </div>
+
+  <!-- el exportador comprueba que esto este oculto antes de grabar -->
+  <div class="controls" id="controls"></div>
+
+  <div class="hud" id="hud">
+    <span class="hud__mode" id="hud-mode">PAUSA</span>
+    <span class="hud__time" id="hud-time">0.00s</span>
+    <span class="hud__fmt"  id="hud-fmt">1280&times;1280</span>
+    <span class="hud__keys">espacio &middot; &larr;&rarr; 1s &middot; &#8679;&larr;&rarr; 0.1s &middot; 1 lobby &middot; 2 principal &middot; R reinicia &middot; H oculta</span>
+  </div>
+
+<script src="js/fiesta.js?v=6"></script>
+</body>
+</html>

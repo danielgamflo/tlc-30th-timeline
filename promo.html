@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Life Church Santiago — Domingo de Alabanza</title>
+<link rel="stylesheet" href="css/promo.css?v=1">
+</head>
+<body>
+
+  <div class="viewport">
+    <!-- 1680x1050 es la pantalla de Santiago. El formato se cambia por
+         ?format= igual que en el loop, para que la vertical de redes
+         salga de esta misma pagina y no de un archivo aparte. -->
+    <div class="stage" id="stage" data-format="1680" data-acto="mosaico">
+
+      <!-- ====== FONDO ====== -->
+      <!-- el verde salvia vive aca abajo y se descubre cuando las
+           fotografias se drenan: no entra, estaba -->
+      <div class="fondo" id="fondo"></div>
+
+      <!-- ====== ACTO 1 · EL MOSAICO ====== -->
+      <div class="mosaico" id="mosaico"></div>
+
+      <!-- ====== ACTO 2 · LAS TIRAS ====== -->
+      <!-- las filas las arma el js: su cantidad depende del alto del
+           formato, y la vertical de redes necesita mas que la
+           horizontal para que la trama se vea igual de densa -->
+      <div class="tiras" id="tiras"></div>
+
+      <!-- ====== ACTO 3 · EL SELLO ====== -->
+      <div class="sello" id="sello">
+        <div class="sello__recorte" id="sello-recorte"><!-- el svg entra aca --></div>
+      </div>
+
+      <!-- ====== ACTO 4 · EL ESPACIO PARA LA INFORMACION ======
+           El texto de la fecha y los horarios NO va aqui: lo monta
+           Daniel en After Effects, porque es lo unico que puede
+           cambiar hasta ultima hora. Lo que entrega esta pieza es el
+           sitio donde ponerlo: el sello se encoge y sube, y la mitad
+           de abajo queda limpia. -->
+
+      <!-- el grano del papel, encima de todo, como en el loop -->
+      <div class="grano" aria-hidden="true"></div>
+
+    </div>
+  </div>
+
+  <!-- El exportador comprueba que esto este oculto antes de grabar: es
+       su forma de no descubrir recien en el archivo terminado que un
+       boton quedo encima de la pieza. La promo no tiene controles, pero
+       el elemento existe para poder responder esa pregunta. -->
+  <div class="controls" id="controls"></div>
+
+  <div class="hud" id="hud">
+    <span class="hud__mode" id="hud-mode">PAUSA</span>
+    <span class="hud__time" id="hud-time">0.00s</span>
+    <span class="hud__acto" id="hud-acto">mosaico</span>
+    <span class="hud__keys">espacio &middot; &larr;&rarr; 1s &middot; &#8679;&larr;&rarr; 0.1s &middot; R reinicia &middot; H oculta</span>
+  </div>
+
+<script src="js/promo.js?v=1"></script>
+</body>
+</html>

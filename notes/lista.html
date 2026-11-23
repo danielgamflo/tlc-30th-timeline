@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fotos maestras · lista de trabajo</title>
+<style>
+  :root { --papel:#F4F0E6; --tinta:#27231c; --mostaza:#CB9216; --gris:#8d8677; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--papel); color:var(--tinta);
+         font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  header { position:sticky; top:0; background:var(--papel); border-bottom:2px solid var(--tinta);
+            padding:18px 26px 14px; z-index:5; }
+  h1 { margin:0 0 4px; font-size:24px; letter-spacing:.01em; }
+  .spec { display:flex; gap:26px; flex-wrap:wrap; margin-top:10px; font-size:13px; }
+  .spec div { background:#fff; border:1px solid #d9d2c4; border-radius:8px; padding:8px 12px; }
+  .spec b { display:block; font-size:18px; }
+  .prog { margin-left:auto; font-size:13px; color:var(--gris); }
+  ul { list-style:none; margin:0; padding:14px 26px 60px; max-width:900px; }
+  .row { display:flex; gap:14px; padding:13px 0; border-bottom:1px solid #e2dbcb; }
+  .row.done .body { opacity:.38; }
+  .tick input { position:absolute; opacity:0; }
+  .tick span { display:block; width:22px; height:22px; border:2px solid var(--tinta);
+                border-radius:5px; cursor:pointer; margin-top:2px; }
+  .tick input:checked + span { background:var(--mostaza); box-shadow:inset 0 0 0 3px var(--papel); }
+  .head { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+  .head b { font-size:18px; }
+  .sh { color:var(--gris); }
+  .meta { margin-left:auto; font-size:12px; color:var(--gris); white-space:nowrap; }
+  .dir { font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--gris); margin-top:2px; }
+  /* Como en la pieza: un filete delgado al costado del texto, sobre el
+     mismo papel — no una tarjeta blanca con una pestaña de color. Marca
+     "esto lo pidió la iglesia" sin gritar. */
+  .ped { margin:7px 0 0; padding:2px 0 2px 13px;
+         border-left:2px solid var(--mostaza); font-size:14px; }
+  .ped b { color:var(--mostaza); font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+  .ok { display:inline-block; font-size:12px; color:#666737; }
+  footer { padding:0 26px 40px; max-width:900px; font-size:13px; color:var(--gris); }
+  code { background:#fff; border:1px solid #d9d2c4; padding:2px 6px; border-radius:4px;
+          font-size:12px; }
+</style></head><body>
+<header>
+  <h1>Fotos maestras · lista de trabajo</h1>
+  <div class="spec">
+    <div><b>1000 × 1000</b>cada archivo, cuadrado</div>
+    <div><b>890 × 500</b>zona segura, centrada</div>
+    <div><b>sin miniaturas</b>el riel recorta solo</div>
+    <div><b>mismos nombres</b>y misma carpeta</div>
+    <div class="prog" id="prog"></div>
+  </div>
+</header>
+<ul id="lista">
+    <li class="row" data-k="d1">
+      <label class="tick"><input type="checkbox" data-k="d1"><span></span></label>
+      <div class="body">
+        <div class="head"><b>1996</b> <span class="sh">First celebration service</span>
+          <span class="meta">4 diapositiva(s) · 8 foto(s) · 1 · 3 · 1 · 3</span></div>
+        <div class="dir">01-1996-first-celebration-service</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d2">
+      <label class="tick"><input type="checkbox" data-k="d2"><span></span></label>
+      <div class="body">
+        <div class="head"><b>1998</b> <span class="sh">First missions team</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">02-1998-first-missions-team</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d40">
+      <label class="tick"><input type="checkbox" data-k="d40"><span></span></label>
+      <div class="body">
+        <div class="head"><b>1999</b> <span class="sh">First permanent office</span>
+          <span class="meta">3 diapositiva(s) · 4 foto(s) · 1 · 1 · 2</span></div>
+        <div class="dir">03-1999-first-permanent-office</div>
+        <p class="ped"><b>Olivia</b> Sacar el impreso de Kids Life. Lo reemplaza el pantallazo de Ps John en la oficina (carpeta 1999 del DB): el mapa del impreso no muestra las oficinas.</p><p class="ped"><b>Olivia</b> Ese pantallazo va DENTRO del collage, junto al bautismo. Es borroso y en celda chica no se nota.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d3">
+      <label class="tick"><input type="checkbox" data-k="d3"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2000</b> <span class="sh">First billboard</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">04-2000-first-billboard</div>
+        <p class="ped"><b>Parker / Olivia</b> Sacar las dos tarjetas “Come Experience Life” (folleto frente y reverso).</p>
+      </div>
+    </li>
+    <li class="row" data-k="d4">
+      <label class="tick"><input type="checkbox" data-k="d4"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2001</b> <span class="sh">5th anniversary</span>
+          <span class="meta">3 diapositiva(s) · 3 foto(s) · 1 · 1 · 1</span></div>
+        <div class="dir">05-2001-5th-anniversary</div>
+        <p class="ped"><b>Olivia</b> Deben ser estas tres del DB: “2001 New Campaign Invite”, “2001” y “NEW COVER” (la fachada). Sale el tríptico azul INFLUENCE.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d5">
+      <label class="tick"><input type="checkbox" data-k="d5"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2002</b> <span class="sh">Our own building</span>
+          <span class="meta">3 diapositiva(s) · 5 foto(s) · 1 · 1 · 3</span></div>
+        <div class="dir">06-2002-our-own-building</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d6">
+      <label class="tick"><input type="checkbox" data-k="d6"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2002</b> <span class="sh">Reinhard Bonnke</span>
+          <span class="meta">1 diapositiva(s) · 2 foto(s) · 2</span></div>
+        <div class="dir">07-2002-reinhard-bonnke</div>
+        <p class="ped"><b>Olivia</b> Agregar el pantallazo de Bonnke en el escenario que está en el DB.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d41">
+      <label class="tick"><input type="checkbox" data-k="d41"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2004</b> <span class="sh">Axis Student Ministries</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">08-2004-axis-student-ministries</div>
+        <p class="ped"><b>Olivia</b> Del collage dejar SOLO la foto de abajo (el grupo en el bosque). Salen las dos de arriba.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d8">
+      <label class="tick"><input type="checkbox" data-k="d8"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2005</b> <span class="sh">First internship class</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">09-2005-first-internship-class</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d9">
+      <label class="tick"><input type="checkbox" data-k="d9"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2005</b> <span class="sh">Serving Katrina</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">10-2005-serving-katrina</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d12">
+      <label class="tick"><input type="checkbox" data-k="d12"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2008</b> <span class="sh">TV program</span>
+          <span class="meta">2 diapositiva(s) · 2 foto(s) · 1 · 1</span></div>
+        <div class="dir">11-2008-tv-program</div>
+        <p class="ped"><b>Olivia</b> Usar la portada marcada en el DB más las otras dos fotos de esa carpeta.</p><p class="ped"><b>Olivia</b> Mantener la foto predicando; sacar la del público.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d11">
+      <label class="tick"><input type="checkbox" data-k="d11"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2008</b> <span class="sh">First Make Room</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">12-2008-first-make-room</div>
+        <p class="ped"><b>Parker</b> Sacar la portada: está muy borrosa. El collage pasa a ser la primera imagen.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d13">
+      <label class="tick"><input type="checkbox" data-k="d13"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2008</b> <span class="sh">Collierville launch</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">13-2008-collierville-launch</div>
+        <p class="ped"><b>Olivia</b> Usar la portada que está en el DB.</p><p class="ped"><b>Olivia</b> Reemplazar la foto del auditorio por la de alabanza del DB.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d14">
+      <label class="tick"><input type="checkbox" data-k="d14"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2009</b> <span class="sh">First Axis Conference</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">14-2009-first-axis-conference</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d15">
+      <label class="tick"><input type="checkbox" data-k="d15"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2011</b> <span class="sh">Feed Memphis</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">15-2011-feed-memphis</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d16">
+      <label class="tick"><input type="checkbox" data-k="d16"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2014</b> <span class="sh">East Memphis launch</span>
+          <span class="meta">2 diapositiva(s) · 2 foto(s) · 1 · 1</span></div>
+        <div class="dir">16-2014-east-memphis-launch</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d17">
+      <label class="tick"><input type="checkbox" data-k="d17"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2014</b> <span class="sh">Santiago launch</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">17-2014-santiago-launch</div>
+        <p class="ped"><b>por confirmar</b> De la lista del 10: “reemplazar la foto de arriba de Ps Josh por la de alabanza”. Revisar si ya está.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d18">
+      <label class="tick"><input type="checkbox" data-k="d18"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2014</b> <span class="sh">First Zoe Conference</span>
+          <span class="meta">3 diapositiva(s) · 6 foto(s) · 1 · 4 · 1</span></div>
+        <div class="dir">18-2014-first-zoe-conference</div>
+        <p class="ped"><b>Olivia</b> Collage nuevo con las dos fotos que mandó (escenario de Life Women’s Conference) y sacar el collage de cuatro.</p>
+      </div>
+    </li>
+    <li class="row" data-k="d19">
+      <label class="tick"><input type="checkbox" data-k="d19"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2015</b> <span class="sh">Read to Lead</span>
+          <span class="meta">1 diapositiva(s) · 3 foto(s) · 3</span></div>
+        <div class="dir">19-2015-read-to-lead</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d20">
+      <label class="tick"><input type="checkbox" data-k="d20"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2015</b> <span class="sh">First Sound of Christmas</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">20-2015-first-sound-of-christmas</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d21">
+      <label class="tick"><input type="checkbox" data-k="d21"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2016</b> <span class="sh">Broke ground, Houston Levee</span>
+          <span class="meta">3 diapositiva(s) · 8 foto(s) · 1 · 3 · 4</span></div>
+        <div class="dir">21-2016-broke-ground-houston-levee</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d22">
+      <label class="tick"><input type="checkbox" data-k="d22"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2017</b> <span class="sh">Auditorium opening</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">22-2017-auditorium-opening</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d23">
+      <label class="tick"><input type="checkbox" data-k="d23"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2019</b> <span class="sh">Austin Peay launch</span>
+          <span class="meta">1 diapositiva(s) · 2 foto(s) · 2</span></div>
+        <div class="dir">23-2019-austin-peay-launch</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d24">
+      <label class="tick"><input type="checkbox" data-k="d24"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2019</b> <span class="sh">21 mission teams</span>
+          <span class="meta">3 diapositiva(s) · 8 foto(s) · 1 · 4 · 3</span></div>
+        <div class="dir">24-2019-21-mission-teams</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d25">
+      <label class="tick"><input type="checkbox" data-k="d25"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2020</b> <span class="sh">New York launch</span>
+          <span class="meta">2 diapositiva(s) · 2 foto(s) · 1 · 1</span></div>
+        <div class="dir">25-2020-new-york-launch</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d42">
+      <label class="tick"><input type="checkbox" data-k="d42"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2020</b> <span class="sh">Leadership podcast</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">26-2020-leadership-podcast</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d26">
+      <label class="tick"><input type="checkbox" data-k="d26"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2021</b> <span class="sh">Massachusetts launch</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">27-2021-massachusetts-launch</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d27">
+      <label class="tick"><input type="checkbox" data-k="d27"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2021</b> <span class="sh">25th anniversary</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">28-2021-25th-anniversary</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d28">
+      <label class="tick"><input type="checkbox" data-k="d28"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2022</b> <span class="sh">Italy launch</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">29-2022-italy-launch</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d29">
+      <label class="tick"><input type="checkbox" data-k="d29"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2022</b> <span class="sh">Axis sells out</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">30-2022-axis-sells-out</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d32">
+      <label class="tick"><input type="checkbox" data-k="d32"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2023</b> <span class="sh">First Revival Nights</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">31-2023-first-revival-nights</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d30">
+      <label class="tick"><input type="checkbox" data-k="d30"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2023</b> <span class="sh">DC Metro launch</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">32-2023-dc-metro-launch</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d31">
+      <label class="tick"><input type="checkbox" data-k="d31"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2023</b> <span class="sh">First international Make Room</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">33-2023-first-international-make-r</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d33">
+      <label class="tick"><input type="checkbox" data-k="d33"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2024</b> <span class="sh">South Africa launch</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">34-2024-south-africa-launch</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d34">
+      <label class="tick"><input type="checkbox" data-k="d34"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2024</b> <span class="sh">First prison location</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">35-2024-first-prison-location</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d35">
+      <label class="tick"><input type="checkbox" data-k="d35"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2024</b> <span class="sh">First original song</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">36-2024-first-original-song</div>
+        <span class="ok">resuelta en la tanda anterior</span>
+      </div>
+    </li>
+    <li class="row" data-k="d36">
+      <label class="tick"><input type="checkbox" data-k="d36"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2024</b> <span class="sh">Nashville launch</span>
+          <span class="meta">2 diapositiva(s) · 3 foto(s) · 1 · 2</span></div>
+        <div class="dir">37-2024-nashville-launch</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d37">
+      <label class="tick"><input type="checkbox" data-k="d37"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2025</b> <span class="sh">Second prison location</span>
+          <span class="meta">1 diapositiva(s) · 4 foto(s) · 4</span></div>
+        <div class="dir">38-2025-second-prison-location</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d38">
+      <label class="tick"><input type="checkbox" data-k="d38"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2026</b> <span class="sh">Broke ground, Global Hub</span>
+          <span class="meta">2 diapositiva(s) · 5 foto(s) · 1 · 4</span></div>
+        <div class="dir">39-2026-broke-ground-global-hub</div>
+        
+      </div>
+    </li>
+    <li class="row" data-k="d39">
+      <label class="tick"><input type="checkbox" data-k="d39"><span></span></label>
+      <div class="body">
+        <div class="head"><b>2026</b> <span class="sh">Bible school launch</span>
+          <span class="meta">2 diapositiva(s) · 4 foto(s) · 1 · 3</span></div>
+        <div class="dir">40-2026-bible-school-launch</div>
+        
+      </div>
+    </li></ul>
+<footer>
+  <p>Después de cada carpeta, para comprobar medidas y pesos:</p>
+  <p><code>python3 tools/revisar-fotos.py 02-1998-first-missions-team</code></p>
+  <p>Lo que la herramienta no puede juzgar es el encuadre: lo importante
+     tiene que caber en la ventana centrada de 890 × 500, porque el 1920
+     recorta vertical y el cuadrado recorta una franja apaisada.</p>
+</footer>
+<script>
+  var K='tlc-fotos-maestras';
+  var hecho=JSON.parse(localStorage.getItem(K)||'{}');
+  function pintar(){
+    var n=0, t=0;
+    document.querySelectorAll('.row').forEach(function(li){
+      t++;
+      var k=li.dataset.k, on=!!hecho[k];
+      li.classList.toggle('done',on);
+      li.querySelector('input').checked=on;
+      if(on) n++;
+    });
+    document.getElementById('prog').textContent=n+' de '+t+' carpetas listas';
+  }
+  document.getElementById('lista').addEventListener('change',function(e){
+    if(e.target.tagName!=='INPUT') return;
+    hecho[e.target.dataset.k]=e.target.checked;
+    localStorage.setItem(K,JSON.stringify(hecho));
+    pintar();
+  });
+  pintar();
+</script>
+</body></html>
